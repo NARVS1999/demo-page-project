@@ -49,6 +49,17 @@ ALTER TABLE posts DROP COLUMN IF EXISTS published;
 -- error code on violation.
 UPDATE posts SET slug = btrim(regexp_replace(lower(title), '[^a-z0-9]+', '-', 'g'), '-') WHERE slug IS NULL;
 
+-- Pre-CMS posts can share a title → identical backfilled slugs would make the
+-- unique index below throw 23505 and abort the whole migration. Append a short
+-- id fragment to the LATER rows of each duplicate group (uuid comparison is
+-- stable), keeping the earliest row's slug. Self-guarding: no-op when no
+-- duplicates exist, so the statement stays safe to re-run.
+UPDATE posts p SET slug = p.slug || '-' || substr(p.id::text, 1, 8)
+WHERE EXISTS (
+  SELECT 1 FROM posts p2
+  WHERE p2.slug = p.slug AND p2.id < p.id
+);
+
 CREATE UNIQUE INDEX IF NOT EXISTS posts_slug_idx ON posts (slug);
 
 CREATE INDEX IF NOT EXISTS posts_category_id_idx ON posts (category_id);
