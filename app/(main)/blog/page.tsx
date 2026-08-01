@@ -10,7 +10,6 @@ import { BlogCard, type BlogPostCard } from "@/components/blog/blog-card";
 import { BlogSearch } from "@/components/blog/blog-search";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 
