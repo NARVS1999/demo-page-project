@@ -73,8 +73,8 @@ export function AdminShell({
       <Sidebar collapsible="offcanvas">
         <SidebarHeader>
           <Link href="/admin" className="flex items-center gap-2 px-2 py-1">
-            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-r from-indigo-600 to-indigo-500">
-              <Blocks className="h-4 w-4 text-white" aria-hidden="true" />
+            <span className="flex h-8 w-8 items-center justify-center rounded-sm bg-primary">
+              <Blocks className="h-4 w-4 text-primary-foreground" aria-hidden="true" />
             </span>
             <span className="text-base font-semibold tracking-tight">Admin</span>
           </Link>

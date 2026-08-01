@@ -18,8 +18,8 @@ export function AuthCard({
   return (
     <div className="w-full max-w-md rounded-xl border bg-card p-8 shadow-none">
       <div className="flex flex-col items-center gap-2 text-center">
-        <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-r from-indigo-600 to-indigo-500">
-          <Blocks className="h-5 w-5 text-white" aria-hidden="true" />
+        <span className="flex h-10 w-10 items-center justify-center rounded-sm bg-primary">
+          <Blocks className="h-5 w-5 text-primary-foreground" aria-hidden="true" />
         </span>
         <h1 className="text-3xl font-semibold tracking-tight">{title}</h1>
         <p className="text-base text-muted-foreground">{description}</p>
