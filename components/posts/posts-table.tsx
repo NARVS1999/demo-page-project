@@ -7,23 +7,10 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { useActionState } from "react";
 import { useRouter } from "next/navigation";
 import { Ellipsis, FileText, Pencil, Plus, Trash2 } from "lucide-react";
-import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -31,7 +18,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { deletePost } from "@/app/(main)/posts/actions";
+import { DeletePostDialog } from "@/components/posts/delete-post-dialog";
 
 export type PostRow = {
   id: string;
@@ -53,14 +40,6 @@ export function PostsTable({
   showEmptyAction?: boolean;
 }) {
   const router = useRouter();
-  const [state, formAction, pending] = useActionState(deletePost, null);
-
-  React.useEffect(() => {
-    if (state?.ok) {
-      toast.success("Post deleted.");
-      router.refresh();
-    }
-  }, [state, router]);
 
   if (posts.length === 0) {
     return (
@@ -161,38 +140,18 @@ export function PostsTable({
                       Edit
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
-                    <AlertDialog>
-                      <AlertDialogTrigger asChild>
-                        <DropdownMenuItem
-                          variant="destructive"
-                          onSelect={(event) => event.preventDefault()}
-                        >
-                          <Trash2 className="mr-2 h-4 w-4" />
-                          Delete
-                        </DropdownMenuItem>
-                      </AlertDialogTrigger>
-                      <AlertDialogContent>
-                        <AlertDialogHeader>
-                          <AlertDialogTitle>Delete post?</AlertDialogTitle>
-                          <AlertDialogDescription>
-                            This will permanently delete the post. This action cannot be undone.
-                          </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                          <AlertDialogCancel>Cancel</AlertDialogCancel>
-                          <form action={formAction}>
-                            <input type="hidden" name="id" value={post.id} />
-                            <AlertDialogAction
-                              type="submit"
-                              disabled={pending}
-                              className="bg-destructive text-white hover:bg-destructive/90"
-                            >
-                              {pending ? "Deleting…" : "Delete"}
-                            </AlertDialogAction>
-                          </form>
-                        </AlertDialogFooter>
-                      </AlertDialogContent>
-                    </AlertDialog>
+                    <DeletePostDialog
+                      postId={post.id}
+                      postTitle={post.title}
+                    >
+                      <DropdownMenuItem
+                        variant="destructive"
+                        onSelect={(event) => event.preventDefault()}
+                      >
+                        <Trash2 className="mr-2 h-4 w-4" />
+                        Delete
+                      </DropdownMenuItem>
+                    </DeletePostDialog>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </td>
