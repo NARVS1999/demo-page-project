@@ -58,18 +58,34 @@ async function runMigrations() {
       await sqlDirect.query(sql);
     } catch (error) {
       // The driver rejects multi-statement payloads ("cannot insert multiple
-      // commands into a prepared statement") — fall back to executing
-      // statement-by-statement. Split on ";\n" (NOT bare ";") so semicolons
-      // inside single-line comments (e.g. "-- (idempotent; applied by …)")
-      // never cut mid-comment. DDL-only migrations make this safe.
+      // commands into a prepared statement") — ONLY that failure falls back to
+      // executing statement-by-statement. Any other error (a genuine SQL error
+      // in a future migration) is re-thrown so the real message surfaces
+      // (IN-02 — previously `void error` swallowed it, which could leave
+      // partially applied DDL with no ledger entry). Split on ";\n" (NOT bare
+      // ";") so semicolons inside single-line comments (e.g.
+      // "-- (idempotent; applied by …)") never cut mid-comment. DDL-only
+      // migrations make this safe.
+      const message = error instanceof Error ? error.message : String(error);
+      if (!message.includes("multiple commands")) {
+        throw new Error(`Migration ${version} failed: ${message}`, { cause: error });
+      }
       const statements = sql
         .split(/;\s*\n/)
         .map((s) => s.trim())
         .filter((s) => s.length > 0);
-      for (const statement of statements) {
-        await sqlDirect.query(statement);
+      try {
+        for (const statement of statements) {
+          await sqlDirect.query(statement);
+        }
+      } catch (statementError) {
+        // Preserve the original multi-statement rejection as the cause so the
+        // root failure is never lost (IN-02).
+        throw new Error(
+          `Migration ${version} failed at statement: ${statementError instanceof Error ? statementError.message : String(statementError)}`,
+          { cause: error },
+        );
       }
-      void error;
     }
 
     await sqlDirect`INSERT INTO schema_migrations (version) VALUES (${version}) ON CONFLICT DO NOTHING`;
