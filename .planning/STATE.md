@@ -5,15 +5,15 @@ milestone_name: milestone
 current_phase: 0
 current_phase_name: Template Foundation
 status: executing
-stopped_at: "CHECKPOINT 00-02-03: awaiting Neon credentials (DATABASE_URL + DATABASE_URL_DIRECT)"
-last_updated: "2026-08-01T17:31:18.814Z"
+stopped_at: Completed 00-02-PLAN.md
+last_updated: "2026-08-01T18:32:08.951Z"
 last_activity: 2026-08-01
 last_activity_desc: Roadmap created
 progress:
   total_phases: 1
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 2
-  completed_plans: 1
+  completed_plans: 2
 ---
 
 # Project State
@@ -28,11 +28,11 @@ See: .planning/PROJECT.md (updated 2026-08-01)
 ## Current Position
 
 Phase: 0 of 5 (Template Foundation)
-Plan: 1 of 2 in current phase
+Plan: 2 of 2 in current phase
 Status: Ready to execute
 Last activity: 2026-08-01 — Roadmap created
 
-Progress: [█████░░░░░] 50%
+Progress: [██████████] 100%
 
 ## Performance Metrics
 
@@ -59,6 +59,7 @@ Progress: [█████░░░░░] 50%
 | Plan | Duration | Tasks | Files |
 |------|----------|-------|-------|
 | Phase 00 P00-01 | 40 | 3 tasks | 40 files |
+| Phase 00-template-foundation P00-02 | 85 | 10 tasks | 62 files |
 
 ## Accumulated Context
 
@@ -75,6 +76,11 @@ Recent decisions affecting current work:
 - [Phase ?]: shadcn 4.16.1 uses preset flow (radix-nova) — no base-color prompt; baseColor zinc enforced manually per Token authority clause
 - [Phase ?]: npm 11.18 EALLOWSCRIPTS blocks CLI-internal installs (CNA/shadcn) — manual dep installs then CLI re-run is the working pattern
 - [Phase ?]: create-next-app refuses non-empty dirs with --yes — temp-dir scaffold + copy is the reliable path
+- [Phase ?]: Login returns generic 401 on ANY DB error (incl. missing users table pre-seed) — deterministic pre-seed checks + no DB-state enumeration
+- [Phase ?]: Proxy Origin check rejects only MISMATCH; missing Origin (curl/scripts) passes — browsers always attach Origin on POST
+- [Phase ?]: Server actions return {ok:true}; client navigates + toasts (redirect() would discard return values and lose UI-SPEC toasts)
+- [Phase ?]: Seed migration runner splits multi-statement DDL on ';\n' — semicolons inside single-line comments are safe
+- [Phase ?]: neon timestamptz rows arrive as JS Date — compare with getTime(), not localeCompare
 
 ### Pending Todos
 
@@ -92,6 +98,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-08-01T17:31:18.789Z
-Stopped at: CHECKPOINT 00-02-03: awaiting Neon credentials (DATABASE_URL + DATABASE_URL_DIRECT)
-Resume file: .planning/phases/00-template-foundation/00-02-PLAN.md
+Last session: 2026-08-01T18:32:08.928Z
+Stopped at: Completed 00-02-PLAN.md
+Resume file: None

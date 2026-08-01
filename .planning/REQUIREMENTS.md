@@ -8,15 +8,15 @@
 ### Template Foundation
 
 - [x] **TMPL-01**: `nextjs-starter` template with App Router, TypeScript, Tailwind v4
-- [ ] **TMPL-02**: Auth system — login/register/logout with credentials, session in Postgres via jose JWT
-- [ ] **TMPL-03**: Database pool — `@neondatabase/serverless` with neon() for queries, Pool for transactions
-- [ ] **TMPL-04**: Mock services layer — `lib/mock/*` with interfaces matching real APIs (payment, email, SMS, OAuth, maps, storage)
-- [ ] **TMPL-05**: Seed script — `npm run seed` populates demo data
+- [x] **TMPL-02**: Auth system — login/register/logout with credentials, session in Postgres via jose JWT
+- [x] **TMPL-03**: Database pool — `@neondatabase/serverless` with neon() for queries, Pool for transactions
+- [x] **TMPL-04**: Mock services layer — `lib/mock/*` with interfaces matching real APIs (payment, email, SMS, OAuth, maps, storage)
+- [x] **TMPL-05**: Seed script — `npm run seed` populates demo data
 - [x] **TMPL-06**: Dark/light theme toggle
-- [ ] **TMPL-07**: Loading/error states for all pages
-- [ ] **TMPL-08**: Sample CRUD page (users or posts) as reference implementation
-- [ ] **TMPL-09**: Input validation via Zod in `lib/validate.ts`
-- [ ] **TMPL-10**: Environment variable validation on startup
+- [x] **TMPL-07**: Loading/error states for all pages
+- [x] **TMPL-08**: Sample CRUD page (users or posts) as reference implementation
+- [x] **TMPL-09**: Input validation via Zod in `lib/validate.ts`
+- [x] **TMPL-10**: Environment variable validation on startup
 
 ### CMS App
 
@@ -59,11 +59,11 @@
 
 ### Deployment & DevOps
 
-- [ ] **DEPL-01**: Each project has own GitHub repo
-- [ ] **DEPL-02**: Each project auto-deploys to Vercel on git push
-- [ ] **DEPL-03**: Neon database per project (0.5 GB each)
+- [x] **DEPL-01**: Each project has own GitHub repo
+- [x] **DEPL-02**: Each project auto-deploys to Vercel on git push
+- [x] **DEPL-03**: Neon database per project (0.5 GB each)
 - [x] **DEPL-04**: Environment variables set in Vercel dashboard
-- [ ] **DEPL-05**: README with demo credentials and mock service docs
+- [x] **DEPL-05**: README with demo credentials and mock service docs
 
 ## v2 Requirements
 
@@ -114,15 +114,15 @@
 | Requirement | Phase | Status |
 |-------------|-------|--------|
 | TMPL-01 | Phase 0 | Complete |
-| TMPL-02 | Phase 0 | Pending |
-| TMPL-03 | Phase 0 | Pending |
-| TMPL-04 | Phase 0 | Pending |
-| TMPL-05 | Phase 0 | Pending |
+| TMPL-02 | Phase 0 | Complete |
+| TMPL-03 | Phase 0 | Complete |
+| TMPL-04 | Phase 0 | Complete |
+| TMPL-05 | Phase 0 | Complete |
 | TMPL-06 | Phase 0 | Complete |
-| TMPL-07 | Phase 0 | Pending |
-| TMPL-08 | Phase 0 | Pending |
-| TMPL-09 | Phase 0 | Pending |
-| TMPL-10 | Phase 0 | Pending |
+| TMPL-07 | Phase 0 | Complete |
+| TMPL-08 | Phase 0 | Complete |
+| TMPL-09 | Phase 0 | Complete |
+| TMPL-10 | Phase 0 | Complete |
 | CMS-01 | Phase 1 | Pending |
 | CMS-02 | Phase 1 | Pending |
 | CMS-03 | Phase 1 | Pending |
@@ -150,11 +150,11 @@
 | PORT-02 | Phase 4 | Pending |
 | PORT-03 | Phase 4 | Pending |
 | PORT-04 | Phase 4 | Pending |
-| DEPL-01 | Phase 0 | Pending |
-| DEPL-02 | Phase 0 | Pending |
-| DEPL-03 | Phase 0 | Pending |
+| DEPL-01 | Phase 0 | Complete |
+| DEPL-02 | Phase 0 | Complete |
+| DEPL-03 | Phase 0 | Complete |
 | DEPL-04 | Phase 0 | Complete |
-| DEPL-05 | Phase 0 | Pending |
+| DEPL-05 | Phase 0 | Complete |
 
 **Coverage:**
 

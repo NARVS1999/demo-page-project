@@ -27,12 +27,12 @@ Build 10–30 fully deployed fullstack demo apps at $0/month. The foundation is 
   4. Environment variables are validated on startup via Zod — missing vars produce clear errors, not cryptic crashes
   5. Template has `.env.example`, dark/light theme toggle, loading/error states, and a sample CRUD page as reference implementation
 
-**Plans**: 1/2 plans executed
+**Plans**: 2/2 plans executed
 
 Plans:
 
 - [x] 00-01-PLAN.md
-- [ ] 00-02-PLAN.md
+- [x] 00-02-PLAN.md
 - [x] 00-01: Project scaffolding — Next.js 16 + TypeScript + Tailwind v4 + shadcn/ui + Neon driver + Zod validation
 - [ ] 00-02: Core infrastructure — auth system (login/register/logout), DB pool, mock services layer, seed script, env validation, dark/light theme
 
@@ -167,7 +167,7 @@ Plans:
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 0. Template Foundation | 1/2 | In Progress|  |
+| 0. Template Foundation | 2/2 | In Progress|  |
 | 1. CMS App | 0/2 | Not started | - |
 | 2. Booking App | 0/2 | Not started | - |
 | 3. Ecommerce App | 0/2 | Not started | - |
