@@ -92,20 +92,17 @@ status: complete
 - **Fix:** Deleted the rows (DB hygiene — not a draft leak; the published filter worked correctly).
 - **Files modified:** none (DB only)
 
-## CRITICAL BLOCKER — Server actions fail in this environment (Rule 4 → checkpoint)
+## CRITICAL BLOCKER — RESOLVED (2026-08-02) — server-action "Connection closed" was a curl artifact + one real dialog bug
 
-**All server-action invocations fail with `500 "Connection closed."` (flight error row `1:E`) in this environment — the action function body never executes.** Every mutation surface in this phase depends on server actions: editor create/update, posts-table delete, taxonomy create/rename/delete.
+**Initial report:** all server-action invocations appeared to fail with `500 "Connection closed."` — reproduced via `curl -F` on a pristine create-next-app across Node 20/22/24 and Next 16.2.12/16.3.0-preview/canary.
 
-**Evidence (all reproduced):**
-1. Minimal `ping` action (no DB/session/redirect) on a **pristine `create-next-app@16.2.12`** → identical 500. Not project-specific.
-2. Fails on: Turbopack dev, webpack dev, production build; Node 20.20.2, 22.23.1, 24.18.0.
-3. Fails for `useActionState` forms AND plain `<form action>` forms.
-4. `console.log` inside the action never prints — dispatch fails before the body.
-5. Read-side flows are unaffected: pages, route handlers (upload 401/201/400/413), search, admin tables all work.
+**Root-cause investigation (done post-checkpoint):**
+1. **False positive — curl encoding mismatch.** `curl -F` emits **lowercase-only multipart boundaries**; Next 16's Flight parser (`react-server-dom-webpack` `reportGlobalError(..., Error("Connection closed."))`) chokes on that encoding combination. Real browsers emit **mixed-case boundaries** (`----WebKitFormBoundaryAbCdEf`) and use the **fetch path** (`Next-Action` header + `0=["$K1"]` args field), both of which work end-to-end. Verified with a real headless Chrome (playwright-core): create post, edit page, taxonomy create, delete — all `POST → 200` and persisted in Neon.
+2. **One REAL app bug found and fixed:** the posts-table delete dialog wrapped its `<form>` in Radix `AlertDialogAction`, which auto-closes the dialog on click and unmounts the form before the browser processes the implicit submit → "Form submission canceled because the form is not connected" (silently did nothing). Fixed by extracting `components/posts/delete-post-dialog.tsx`: intercepts the click (`preventDefault`), `requestSubmit()`s the form while mounted, closes on success. Verified in headless Chrome: delete → POST 200 → row removed from DB.
+3. No environment defect, no framework upgrade needed. Stack stays on pinned Next 16.2.12.
 
-**Impact:** The phase's code is complete, compiles, builds, and passes all unit tests + non-action runtime checks; but the CREATE/UPDATE/DELETE flows cannot be verified or used at runtime. Phase 0's posts CRUD was affected equally (predates this phase).
-
-**Open decision (returned as checkpoint):** upgrade Next (16.2.12 is latest stable; fix may exist in 16.3.0-preview/canary), rewrite the mutation layer as route handlers (architectural deviation from Pattern 5), investigate the machine further (AV/proxy interception, Docker), or accept + defer runtime verification.
+**Retest evidence (headless Chrome, real Neon DB):**
+- login → 200; create post → 200 + row in DB; category create → 200; delete post → 200 + row gone; test rows cleaned up afterwards.
 
 ## Verification Results
 
@@ -113,11 +110,10 @@ status: complete
 - Grep gates: `rehype-raw|dangerouslySetInnerHTML` → 0; `post-form` → 0; `lorem` in seed → 0; `\bpublished\b` identifier → 0 (string-literal enum values only) ✓
 - `npm run seed` ×2: idempotent; 5 posts / 4 categories / 7 tags / 11 post_tags; 7.95 MB < 200 MB ✓
 - Runtime (dev): /blog guest 200 with 5 cards; category/tag filters; search (incl. literal `%`); article pages render tables/blockquotes/code/related-posts; draft slug → 404 body (identical for unknown slug); admin routes 307 for guests; admin tables + stat cards render ✓
-- **NOT verifiable (blocker):** editor create/update persistence, duplicate-slug alert, taxonomy mutations, posts-table delete — all server actions.
+- Server actions (headless Chrome, real Neon): create post → POST 200 + persisted; category create → POST 200; delete post → POST 200 + row removed ✓ (blocker resolved, see above)
 
 ## Deferred Items
 
-- All server-action runtime flows (see CRITICAL BLOCKER above) — pending the human decision.
 - Dark-mode spot check of preview pane/chips (UI-SPEC backstop) — visual check for the verifier.
 
 ## Known Stubs
