@@ -14,9 +14,13 @@ export default async function PostsPage() {
   const user = await getCurrentUser();
   if (!user) redirect("/login?next=/posts");
 
+  // Public list: published posts from everyone + the current user's own drafts.
+  // Other users' unpublished drafts stay invisible (IN-03) — drafts are only
+  // visible to their owner here and in /admin.
   const rows = await sql`
     SELECT posts.id, posts.title, posts.published, posts.created_at, users.name AS author_name
     FROM posts JOIN users ON users.id = posts.author_id
+    WHERE posts.published = true OR posts.author_id = ${user.id}
     ORDER BY posts.created_at DESC`;
 
   const posts = (rows as {
