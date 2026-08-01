@@ -2,7 +2,9 @@
 // is just an async function, trivially mockable). No live DB in unit tests.
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
-const { mockSql } = vi.hoisted(() => ({ mockSql: vi.fn(async () => []) }));
+const { mockSql } = vi.hoisted(() => ({
+  mockSql: vi.fn(async (..._args: unknown[]) => [] as unknown[]),
+}));
 
 vi.mock("@/lib/db", () => ({ sql: mockSql }));
 
@@ -11,8 +13,13 @@ vi.mock("@/lib/db", () => ({ sql: mockSql }));
 /** Extract the full SQL text from a tagged-template call to the stubbed sql. */
 function sqlText(callIndex = 0): string {
   const call = mockSql.mock.calls[callIndex];
-  const parts = call[0] as TemplateStringsArray;
+  const parts = call[0] as unknown as TemplateStringsArray;
   return Array.from(parts).join("");
+}
+
+/** Extract the parameterized values of a tagged-template call (neon parameterizes ${} interpolations). */
+function sqlArgs(callIndex = 0): unknown[] {
+  return mockSql.mock.calls[callIndex].slice(1);
 }
 
 // Tests -----------------------------------------------------------------
@@ -27,7 +34,8 @@ describe("mock payment", () => {
     expect(result.id).toBeTruthy();
     expect(mockSql).toHaveBeenCalledTimes(1);
     expect(sqlText()).toContain("INSERT INTO mock_payments");
-    expect(sqlText()).toContain("succeeded");
+    expect(sqlArgs()).toContain("succeeded");
+    expect(sqlArgs()).toContain(4999);
   });
 
   it("createPayment with fail:true returns failed and persists the failure", async () => {
@@ -36,7 +44,7 @@ describe("mock payment", () => {
     expect(result).toMatchObject({ status: "failed", amount: 100, currency: "usd" });
     expect(mockSql).toHaveBeenCalledTimes(1);
     expect(sqlText()).toContain("INSERT INTO mock_payments");
-    expect(sqlText()).toContain("failed");
+    expect(sqlArgs()).toContain("failed");
   });
 });
 
@@ -54,7 +62,7 @@ describe("mock email", () => {
     expect(result.id).toBeTruthy();
     expect(mockSql).toHaveBeenCalledTimes(1);
     expect(sqlText()).toContain("INSERT INTO mock_emails");
-    expect(sqlText()).toContain("a@example.com");
+    expect(sqlArgs()).toContain("a@example.com");
   });
 });
 
@@ -68,7 +76,7 @@ describe("mock sms", () => {
     expect(result.id).toBeTruthy();
     expect(mockSql).toHaveBeenCalledTimes(1);
     expect(sqlText()).toContain("INSERT INTO mock_sms");
-    expect(sqlText()).toContain("+15551234567");
+    expect(sqlArgs()).toContain("+15551234567");
   });
 });
 
@@ -120,8 +128,8 @@ describe("mock storage", () => {
     expect(mockSql).toHaveBeenCalledTimes(1);
     const sql = sqlText();
     expect(sql).toContain("INSERT INTO mock_uploads");
-    expect(sql).toContain("avatar.png");
-    expect(sql).not.toContain("fakeimagebytes"); // blob never persisted
+    expect(sqlArgs()).toContain("avatar.png");
+    expect(sqlArgs()).not.toContain("fakeimagebytes"); // blob never persisted
   });
 
   it("getUrl(id) returns the stored url", async () => {
