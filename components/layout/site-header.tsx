@@ -29,10 +29,10 @@ export async function SiteHeader() {
       <div className="mx-auto flex h-16 w-full max-w-5xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <div className="flex items-center gap-6">
           <Link href="/" className="flex items-center gap-2">
-            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-r from-indigo-600 to-indigo-500">
-              <Blocks className="h-4 w-4 text-white" aria-hidden="true" />
+            <span className="flex h-8 w-8 items-center justify-center rounded-sm bg-primary">
+              <Blocks className="h-4 w-4 text-primary-foreground" aria-hidden="true" />
             </span>
-            <span className="text-base font-semibold tracking-tight">
+            <span className="font-mono text-sm font-bold uppercase tracking-[0.18em]">
               {SITE.name}
             </span>
           </Link>
