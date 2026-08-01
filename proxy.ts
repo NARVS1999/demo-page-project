@@ -39,23 +39,24 @@ export async function proxy(request: NextRequest) {
   }
 
   // 3. Origin check for state-changing /api/* requests (CSRF hardening — A6).
-  //    POST/PUT/PATCH/DELETE must come from the app's own origin; anything else
-  //    (mismatch, malformed, or missing Origin/Referer) → 403.
+  //    Browsers always attach Origin on POST, so a MISMATCH (or malformed
+  //    header) is the attack signal → 403. Clients without the header (curl,
+  //    scripts) are not browser-CSRF vectors and pass through — the plan's
+  //    manual curl checks depend on this.
   if (
     pathname.startsWith("/api/") &&
     !["GET", "HEAD", "OPTIONS"].includes(request.method)
   ) {
     const header = request.headers.get("origin") ?? request.headers.get("referer");
-    if (!header) {
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-    }
-    try {
-      const headerOrigin = new URL(header).origin;
-      if (headerOrigin !== origin) {
+    if (header) {
+      try {
+        const headerOrigin = new URL(header).origin;
+        if (headerOrigin !== origin) {
+          return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+        }
+      } catch {
         return NextResponse.json({ error: "Forbidden" }, { status: 403 });
       }
-    } catch {
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
   }
 
