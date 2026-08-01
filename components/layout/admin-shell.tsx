@@ -5,7 +5,14 @@
 // (page title + theme-toggle + user menu) + max-w-6xl content.
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Blocks, Inbox, LayoutDashboard, MessageSquare } from "lucide-react";
+import {
+  Blocks,
+  FolderOpen,
+  Hash,
+  Inbox,
+  LayoutDashboard,
+  MessageSquare,
+} from "lucide-react";
 import {
   SidebarProvider,
   Sidebar,
@@ -48,6 +55,21 @@ const adminNav = [
         label: "SMS log",
         href: "/admin/sms",
         icon: <MessageSquare className="h-4 w-4" aria-hidden="true" />,
+      },
+    ],
+  },
+  {
+    group: "Content",
+    items: [
+      {
+        label: "Categories",
+        href: "/admin/categories",
+        icon: <FolderOpen className="h-4 w-4" aria-hidden="true" />,
+      },
+      {
+        label: "Tags",
+        href: "/admin/tags",
+        icon: <Hash className="h-4 w-4" aria-hidden="true" />,
       },
     ],
   },

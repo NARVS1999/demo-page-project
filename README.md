@@ -98,3 +98,28 @@ npm run test
 ```
 
 Unit-tested with vitest (no live DB — `lib/db` is stubbed): env/input Zod schemas (`__tests__/validate.test.ts`), JWT sign/verify round-trip + tamper/expiry (`__tests__/session.test.ts`), and all six mock service contracts (`__tests__/mock.test.ts`). Async Server Components are **not** unit-tested — vitest can't render them; their logic is kept thin and delegated to the tested modules. Full flows are verified manually in `npm run dev` (see the phase plan's manual checklist).
+
+## Demo Guide (CMS phase)
+
+The seeded demo account gives you the full CMS experience out of the box:
+
+- **Demo credentials:** `demo@example.com` / `demo1234`
+
+### Walkthrough
+
+1. **Create a post** — sign in, open **Posts → New post**. Write in markdown; the preview pane on the right renders exactly what readers will see (both share one component map and one `.article-body` style set). The slug auto-derives from the title. Add a category, up to 8 tags, and a cover image.
+2. **Save draft vs Publish** — drafts are visible only to you (in /posts); published posts appear on the public blog. Re-publishing is a single click.
+3. **Browse the blog** — open **Blog** in the header (works logged out): Features grid, article pages with a drop cap, category kickers, tag chips, and related coverage. Filter by **category** and **tag** pages, and use **search** — title, body, category, and tag names match with ILIKE.
+4. **Manage taxonomy** — under **Admin → Content**, create/rename/delete categories and tags. Deleting a category leaves its posts uncategorized; deleting a tag removes it from every post.
+5. **Upload a cover** — the editor's cover upload posts to `/api/uploads` and stores a URL (max 3 MB, images only).
+
+### Honest mocks
+
+Upload URLs are **simulated**: `https://mock.storage/…` URLs never resolve — the editor shows a "Mock cover — URL only" placeholder, and public cards hide broken covers. Seeded posts use `picsum.photos` seeded URLs so the demo renders real photos immediately.
+
+### Run it
+
+```bash
+npm run seed   # migrations + 5 posts, 4 categories, 7 tags (idempotent)
+npm run dev
+```
