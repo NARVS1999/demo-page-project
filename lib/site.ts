@@ -11,6 +11,7 @@ export const SITE = {
   githubUrl: "https://github.com/NARVS1999/nextjs-starter",
   defaultNav: [
     { label: "Home", href: "/" },
+    { label: "Blog", href: "/blog" },
     { label: "Posts", href: "/posts" },
     { label: "Admin", href: "/admin" },
   ],

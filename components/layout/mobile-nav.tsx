@@ -20,12 +20,14 @@ export function MobileNav({
   const links = user
     ? [
         { label: "Home", href: "/" },
+        { label: "Blog", href: "/blog" },
         { label: "Dashboard", href: "/dashboard" },
         { label: "Posts", href: "/posts" },
         { label: "Admin", href: "/admin" },
       ]
     : [
         { label: "Home", href: "/" },
+        { label: "Blog", href: "/blog" },
         { label: "Sign in", href: "/login" },
       ];
 

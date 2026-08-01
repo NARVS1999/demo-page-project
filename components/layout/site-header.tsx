@@ -19,10 +19,14 @@ export async function SiteHeader() {
   const desktopNav = user
     ? [
         { label: "Home", href: "/" },
+        { label: "Blog", href: "/blog" },
         { label: "Posts", href: "/posts" },
         { label: "Admin", href: "/admin" },
       ]
-    : [{ label: "Home", href: "/" }];
+    : [
+        { label: "Home", href: "/" },
+        { label: "Blog", href: "/blog" },
+      ];
 
   return (
     <header className="sticky top-0 z-40 border-b bg-background/80 backdrop-blur">
