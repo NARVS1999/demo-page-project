@@ -4,7 +4,7 @@
 // round-trip without storing payloads.
 import { randomUUID } from "node:crypto";
 import { sql } from "@/lib/db";
-import { env } from "@/lib/validate";
+import { env } from "@/lib/env";
 
 function assertMockMode() {
   if (env.MOCK_STORAGE === "real") {

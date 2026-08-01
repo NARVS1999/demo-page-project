@@ -1,45 +1,9 @@
 import { z } from "zod";
 
-// ─── Environment schema (TMPL-10) ────────────────────────────────────────────
-// Fail-fast at module load: imported by lib/db.ts, lib/session.ts, lib/mock/*.
-// Validates exactly the 9 canonical vars from .env.example.
-
-export const envSchema = z.object({
-  DATABASE_URL: z.url(),
-  DATABASE_URL_DIRECT: z.url(),
-  SESSION_SECRET: z.string().min(32, "SESSION_SECRET must be at least 32 characters"),
-  MOCK_PAYMENT: z.enum(["mock", "real"]).default("mock"),
-  MOCK_EMAIL: z.enum(["mock", "real"]).default("mock"),
-  MOCK_SMS: z.enum(["mock", "real"]).default("mock"),
-  MOCK_OAUTH: z.enum(["mock", "real"]).default("mock"),
-  MOCK_MAPS: z.enum(["mock", "real"]).default("mock"),
-  MOCK_STORAGE: z.enum(["mock", "real"]).default("mock"),
-});
-
-export function formatEnvErrors(
-  fieldErrors: Record<string, string[] | undefined>,
-): string {
-  const lines: string[] = [];
-  for (const [key, messages] of Object.entries(fieldErrors)) {
-    for (const message of messages ?? []) {
-      lines.push(`- ${key}: ${message}`);
-    }
-  }
-  return lines.join("\n");
-}
-
-const parsed = envSchema.safeParse(process.env);
-if (!parsed.success) {
-  console.error(
-    "Invalid environment variables:\n" +
-      formatEnvErrors(parsed.error.flatten().fieldErrors),
-  );
-  process.exit(1);
-}
-
-export const env = parsed.data;
-
 // ─── Input schemas (TMPL-09; UI-SPEC copy contract) ──────────────────────────
+// Client-safe on purpose (CR-01): NO env parsing, NO process.exit, NO module
+// side effects — the login/register pages bundle this module into the browser.
+// Environment validation lives in lib/env.ts (server-only, fail-fast at load).
 
 export const registerSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters."),

@@ -2,7 +2,7 @@ import "server-only";
 import { SignJWT, jwtVerify } from "jose";
 import { cache } from "react";
 import { cookies } from "next/headers";
-import { env } from "@/lib/validate";
+import { env } from "@/lib/env";
 
 const secret = new TextEncoder().encode(env.SESSION_SECRET);
 

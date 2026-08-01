@@ -2,7 +2,7 @@
 // getAuthUrl()/exchangeCode() signatures. Stateless by design: exchangeCode
 // auto-logs-in the demo user (locked decision) and returns an opaque token —
 // no DB persistence.
-import { env } from "@/lib/validate";
+import { env } from "@/lib/env";
 
 function assertMockMode() {
   if (env.MOCK_OAUTH === "real") {

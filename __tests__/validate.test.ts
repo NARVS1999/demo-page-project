@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
+// envSchema moved to lib/env.ts (server-only) with the CR-01 split; input
+// schemas stay in lib/validate.ts (client-safe).
+import { envSchema } from "@/lib/env";
 import {
-  envSchema,
   loginSchema,
   postSchema,
   registerSchema,

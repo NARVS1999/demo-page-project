@@ -8,12 +8,13 @@
 
 import "server-only";
 import { neon } from "@neondatabase/serverless";
+import { env } from "@/lib/env";
 
 /** One-shot queries over HTTP (pooled connection). Module-safe. */
-export const sql = neon(process.env.DATABASE_URL!);
+export const sql = neon(env.DATABASE_URL);
 
 /** Migrations/seed only — direct connection (no -pooler). Never for app reads. */
-export const sqlDirect = neon(process.env.DATABASE_URL_DIRECT!);
+export const sqlDirect = neon(env.DATABASE_URL_DIRECT);
 
 /**
  * Interactive transaction (BEGIN/COMMIT/ROLLBACK) over a per-request WebSocket
@@ -23,7 +24,7 @@ export async function withPool<T>(
   fn: (client: import("@neondatabase/serverless").PoolClient) => Promise<T>,
 ): Promise<T> {
   const { Pool } = await import("@neondatabase/serverless");
-  const pool = new Pool({ connectionString: process.env.DATABASE_URL! });
+  const pool = new Pool({ connectionString: env.DATABASE_URL });
   try {
     const client = await pool.connect();
     try {

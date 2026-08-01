@@ -20,7 +20,7 @@ vi.mock("next/headers", () => ({
 
 import { createSession, verifySession } from "@/lib/session";
 
-const { env } = await import("@/lib/validate");
+const { env } = await import("@/lib/env");
 
 function signWith(secret: string, claims: Record<string, string>) {
   return new SignJWT({ ...claims })

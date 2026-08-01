@@ -1,7 +1,7 @@
 // MOCK: Replace with real Maps. Interface must match Google-Maps-like
 // geocode()/getStaticMapUrl() signatures. Stateless: deterministic pseudo
 // coordinates per address — no network calls, no API keys (no SSRF surface).
-import { env } from "@/lib/validate";
+import { env } from "@/lib/env";
 
 function assertMockMode() {
   if (env.MOCK_MAPS === "real") {

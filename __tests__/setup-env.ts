@@ -1,4 +1,4 @@
-// Sets the 9 canonical env vars BEFORE any test module imports lib/validate
+// Sets the 9 canonical env vars BEFORE any test module imports lib/env
 // (which fails fast at module load) or lib/session (which reads SESSION_SECRET).
 // Test placeholders only — valid https-style URLs satisfy z.url().
 process.env.DATABASE_URL =
