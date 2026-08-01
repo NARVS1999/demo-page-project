@@ -1,0 +1,166 @@
+# Requirements: Free Fullstack Showcase
+
+**Defined:** 2026-08-01
+**Core Value:** Every project deploys and works end-to-end at zero cost — if it costs money, it doesn't ship.
+
+## v1 Requirements
+
+### Template Foundation
+
+- [ ] **TMPL-01**: `nextjs-starter` template with App Router, TypeScript, Tailwind v4
+- [ ] **TMPL-02**: Auth system — login/register/logout with credentials, session in Postgres via jose JWT
+- [ ] **TMPL-03**: Database pool — `@neondatabase/serverless` with neon() for queries, Pool for transactions
+- [ ] **TMPL-04**: Mock services layer — `lib/mock/*` with interfaces matching real APIs (payment, email, SMS, OAuth, maps, storage)
+- [ ] **TMPL-05**: Seed script — `npm run seed` populates demo data
+- [ ] **TMPL-06**: Dark/light theme toggle
+- [ ] **TMPL-07**: Loading/error states for all pages
+- [ ] **TMPL-08**: Sample CRUD page (users or posts) as reference implementation
+- [ ] **TMPL-09**: Input validation via Zod in `lib/validate.ts`
+- [ ] **TMPL-10**: Environment variable validation on startup
+
+### CMS App
+
+- [ ] **CMS-01**: Admin CRUD for posts with markdown editor
+- [ ] **CMS-02**: Draft/publish workflow
+- [ ] **CMS-03**: Category and tag management
+- [ ] **CMS-04**: Image upload via mock storage
+- [ ] **CMS-05**: Search posts via ILIKE
+- [ ] **CMS-06**: Public blog list page
+- [ ] **CMS-07**: Public single post page
+- [ ] **CMS-08**: Public category/tag filter pages
+
+### Booking App
+
+- [ ] **BOOK-01**: Service listing page
+- [ ] **BOOK-02**: Slot calendar showing available/taken slots
+- [ ] **BOOK-03**: Booking flow — user selects slot and confirms
+- [ ] **BOOK-04**: Double-booking prevention (atomic slot reservation)
+- [ ] **BOOK-05**: Admin confirm/cancel bookings
+- [ ] **BOOK-06**: Mock email confirmation (saved to DB, viewable in admin)
+- [ ] **BOOK-07**: Mock SMS reminder (logged to table)
+- [ ] **BOOK-08**: Optional mock payment deposit
+
+### Ecommerce App
+
+- [ ] **SHOP-01**: Product catalog with category/price filters
+- [ ] **SHOP-02**: Shopping cart (persistent across sessions)
+- [ ] **SHOP-03**: Checkout flow with mock payment (success/fail toggle)
+- [ ] **SHOP-04**: Order confirmation page
+- [ ] **SHOP-05**: Admin orders dashboard
+- [ ] **SHOP-06**: Inventory deduction on order
+- [ ] **SHOP-07**: Mock receipt email
+
+### Portfolio Shell
+
+- [ ] **PORT-01**: Grid of all projects with live link, GitHub link, tech badges
+- [ ] **PORT-02**: Demo credentials display per project
+- [ ] **PORT-03**: "Uses simulated X" note per card
+- [ ] **PORT-04**: Responsive design
+
+### Deployment & DevOps
+
+- [ ] **DEPL-01**: Each project has own GitHub repo
+- [ ] **DEPL-02**: Each project auto-deploys to Vercel on git push
+- [ ] **DEPL-03**: Neon database per project (0.5 GB each)
+- [ ] **DEPL-04**: Environment variables set in Vercel dashboard
+- [ ] **DEPL-05**: README with demo credentials and mock service docs
+
+## v2 Requirements
+
+### Batch Projects (7-27 additional apps)
+
+- **BATCH-01**: Task manager
+- **BATCH-02**: Inventory tracker
+- **BATCH-03**: Expense tracker
+- **BATCH-04**: Notes with tags
+- **BATCH-05**: Library system
+- **BATCH-06**: Job board
+- **BATCH-07**: Event ticketing
+- **BATCH-08**: Restaurant ordering
+- **BATCH-09**: Food delivery sim
+- **BATCH-10**: Parking reservation
+- **BATCH-11**: Quiz app
+- **BATCH-12**: Polls app
+- **BATCH-13**: Forum
+- **BATCH-14**: Ticket/feedback system
+- **BATCH-15**: URL shortener
+- **BATCH-16**: Invoice generator
+- **BATCH-17**: Budget planner
+- **BATCH-18**: Recipe manager
+- **BATCH-19**: Password manager (demo)
+- **BATCH-20**: Fitness logger
+- **BATCH-21**: Weather app (mock API)
+- **BATCH-22**: News reader
+- **BATCH-23**: Catalog app
+- **BATCH-24**: Calculator suite
+- **BATCH-25**: Portfolio builder
+
+## Out of Scope
+
+| Feature | Reason |
+|---------|--------|
+| Real payments | Portfolio scale only, mock payment flow suffices |
+| Real emails/SMS | Simulated via DB tables and admin views |
+| Real OAuth (Google/GitHub) | Fake login via mock, no real provider integration |
+| Rich text WYSIWYG editor | Markdown editor sufficient for demo |
+| Real-time WebSockets | Not needed for portfolio demos |
+| MySQL/Laravel | Retired — $0 hosting requires Postgres + Vercel |
+| Mobile apps | Web-first, mobile later |
+| Monorepo | Separate repos for Vercel deployment isolation |
+| Custom domains | `.vercel.app` subdomains sufficient for portfolio |
+
+## Traceability
+
+| Requirement | Phase | Status |
+|-------------|-------|--------|
+| TMPL-01 | Phase 0 | Pending |
+| TMPL-02 | Phase 0 | Pending |
+| TMPL-03 | Phase 0 | Pending |
+| TMPL-04 | Phase 0 | Pending |
+| TMPL-05 | Phase 0 | Pending |
+| TMPL-06 | Phase 0 | Pending |
+| TMPL-07 | Phase 0 | Pending |
+| TMPL-08 | Phase 0 | Pending |
+| TMPL-09 | Phase 0 | Pending |
+| TMPL-10 | Phase 0 | Pending |
+| CMS-01 | Phase 1 | Pending |
+| CMS-02 | Phase 1 | Pending |
+| CMS-03 | Phase 1 | Pending |
+| CMS-04 | Phase 1 | Pending |
+| CMS-05 | Phase 1 | Pending |
+| CMS-06 | Phase 1 | Pending |
+| CMS-07 | Phase 1 | Pending |
+| CMS-08 | Phase 1 | Pending |
+| BOOK-01 | Phase 2 | Pending |
+| BOOK-02 | Phase 2 | Pending |
+| BOOK-03 | Phase 2 | Pending |
+| BOOK-04 | Phase 2 | Pending |
+| BOOK-05 | Phase 2 | Pending |
+| BOOK-06 | Phase 2 | Pending |
+| BOOK-07 | Phase 2 | Pending |
+| BOOK-08 | Phase 2 | Pending |
+| SHOP-01 | Phase 3 | Pending |
+| SHOP-02 | Phase 3 | Pending |
+| SHOP-03 | Phase 3 | Pending |
+| SHOP-04 | Phase 3 | Pending |
+| SHOP-05 | Phase 3 | Pending |
+| SHOP-06 | Phase 3 | Pending |
+| SHOP-07 | Phase 3 | Pending |
+| PORT-01 | Phase 4 | Pending |
+| PORT-02 | Phase 4 | Pending |
+| PORT-03 | Phase 4 | Pending |
+| PORT-04 | Phase 4 | Pending |
+| DEPL-01 | Phase 0 | Pending |
+| DEPL-02 | Phase 0 | Pending |
+| DEPL-03 | Phase 0 | Pending |
+| DEPL-04 | Phase 0 | Pending |
+| DEPL-05 | Phase 0 | Pending |
+
+**Coverage:**
+- v1 requirements: 41 total
+- Mapped to phases: 41
+- Unmapped: 0 ✓
+
+---
+*Requirements defined: 2026-08-01*
+*Last updated: 2026-08-01 after initial definition*
