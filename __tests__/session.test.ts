@@ -1,3 +1,6 @@
+// @vitest-environment node
+// jose's instanceof Uint8Array checks fail under the jsdom window realm;
+// session logic is DOM-free (next/headers is mocked), so node env is correct.
 import { SignJWT } from "jose";
 import { describe, expect, it, vi } from "vitest";
 
@@ -82,8 +85,8 @@ describe("createSession / verifySession", () => {
     const token = await new SignJWT({ email: "demo@example.com", name: "Demo User" })
       .setProtectedHeader({ alg: "HS256" })
       .setSubject("user-123")
-      .setIssuedAt(Math.floor(Date.now() / 1000) - 60 * 60 * 24 * 31)
-      .setExpirationTime("30d")
+      .setIssuedAt(Math.floor(Date.now() / 1000) - 60 * 60)
+      .setExpirationTime(Math.floor(Date.now() / 1000) - 60)
       .sign(new TextEncoder().encode(env.SESSION_SECRET));
     expect(await verifySession(token)).toBeNull();
   });
