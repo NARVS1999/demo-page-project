@@ -123,3 +123,45 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* ─── .article-body: shared markdown typography (RESEARCH Pattern 4) ──────────
+   Token-based article styles consumed by markdown-content (server) AND
+   markdown-preview (client) — the single source preventing visual drift.
+   EVERY rule is scoped under .article-body (Pitfall 5 — never style bare
+   p/h2/table globally). No @tailwindcss/typography plugin. */
+.article-body {
+  font-family: var(--font-newsreader), Georgia, serif;
+  font-size: 16px;
+  line-height: 1.75;
+  color: var(--foreground);
+}
+
+.article-body p {
+  @apply mb-4 text-foreground;
+  font-size: 16px;
+  line-height: 1.75;
+}
+
+/* Drop cap — UI-SPEC backstop: applies only when the first element is a
+   paragraph (first-child selector), never to lists/blockquotes/images. */
+.article-body > p:first-child::first-letter {
+  @apply float-left mr-2 font-serif font-bold text-primary text-5xl;
+  line-height: 0.8;
+}
+
+.article-body ul,
+.article-body ol {
+  @apply mb-4 pl-5;
+}
+
+/* Nested lists keep indenting (the components map's pl-5 repeats per depth). */
+.article-body ul ul,
+.article-body ul ol,
+.article-body ol ul,
+.article-body ol ol {
+  @apply pl-5;
+}
+
+.article-body li::marker {
+  color: var(--muted-foreground);
+}
