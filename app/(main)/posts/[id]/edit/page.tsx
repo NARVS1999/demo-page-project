@@ -36,7 +36,7 @@ export default async function EditPostPage({
     <div className="flex flex-col gap-8">
       <PageHeader title="Edit post" />
       <div className="max-w-2xl rounded-xl border p-6">
-        <PostForm mode="edit" post={{ id: post.id, title: post.title, content: post.content, status: post.status }} />
+        <PostForm mode="edit" post={{ id: post.id, title: post.title, content: post.content, status: post.status, tags: [] }} />
       </div>
     </div>
   );
