@@ -233,7 +233,7 @@ async function seedDemoData() {
     await sqlDirect`
       INSERT INTO tags (id, slug, name)
       VALUES (${tag.id}, ${tag.slug}, ${tag.name})
-      ON CONFLICT (id) DO NOTHING`;
+      ON CONFLICT (slug) DO NOTHING`;
   }
 
   for (const post of POSTS) {
