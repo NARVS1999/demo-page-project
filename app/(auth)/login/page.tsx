@@ -49,7 +49,11 @@ export default function LoginPage() {
         router.refresh();
         return;
       }
-      if (res.status === 401) {
+      // 401 (bad credentials) and 400 (client-side validation bypassed / schema
+      // drift) both get the same generic details copy; anything else really is
+      // a server/network failure (IN-05 — a 400 used to show the misleading
+      // "Couldn't reach the server" message).
+      if (res.status === 401 || res.status === 400) {
         setServerError("Check your details and try again.");
         return;
       }
