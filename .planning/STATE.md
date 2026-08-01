@@ -6,14 +6,14 @@ current_phase: 1
 current_phase_name: CMS App
 status: planning
 stopped_at: Completed 00-02-PLAN.md
-last_updated: "2026-08-01T19:47:34.223Z"
+last_updated: "2026-08-01T22:01:15.090Z"
 last_activity: 2026-08-02
 last_activity_desc: Phase 0 complete, transitioned to Phase 1
 progress:
-  total_phases: 1
-  completed_phases: 1
-  total_plans: 2
-  completed_plans: 2
+  total_phases: 2
+  completed_phases: 2
+  total_plans: 4
+  completed_plans: 4
 ---
 
 # Project State
@@ -82,6 +82,7 @@ Recent decisions affecting current work:
 - [Phase ?]: Server actions return {ok:true}; client navigates + toasts (redirect() would discard return values and lose UI-SPEC toasts)
 - [Phase ?]: Seed migration runner splits multi-statement DDL on ';\n' — semicolons inside single-line comments are safe
 - [Phase ?]: neon timestamptz rows arrive as JS Date — compare with getTime(), not localeCompare
+- [Phase ?]: Server actions broken in this environment (Next 16.2.12 + Windows): verified framework-level, not project code — surfaced as blocking checkpoint for human decision.
 
 ### Pending Todos
 
@@ -89,7 +90,9 @@ None yet.
 
 ### Blockers/Concerns
 
-None yet.
+yet.
+
+- ENVIRONMENT DEFECT: Next.js 16.2.12 server actions fail with 'Connection closed.' on this Windows machine — reproduced on a pristine create-next-app, all Node versions (20/22/24), dev (Turbopack+webpack) and prod. Action bodies never execute. Blocks ALL Phase 1 mutation flows (editor create/update, delete, taxonomy) and Phase 0 posts CRUD. Decision needed: upgrade Next, rewrite mutations as route handlers, or investigate machine.
 
 ## Deferred Items
 
