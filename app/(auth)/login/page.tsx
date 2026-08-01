@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { AuthCard } from "@/components/auth/auth-card";
+import { safeNextUrl } from "@/lib/utils";
 import { loginSchema, type LoginInput } from "@/lib/validate";
 
 export default function LoginPage() {
@@ -42,7 +43,9 @@ export default function LoginPage() {
         body: JSON.stringify(data),
       });
       if (res.ok) {
-        router.push(next ?? "/dashboard");
+        // ?next= is attacker-controlled — only same-origin absolute paths
+        // (WR-01: open redirect via https://evil.com or //evil.com).
+        router.push(safeNextUrl(next));
         router.refresh();
         return;
       }
