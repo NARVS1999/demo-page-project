@@ -39,6 +39,8 @@ export type PostRow = {
   status: string;
   authorName: string;
   createdAt: string; // ISO — formatted client-side per RESEARCH don't-hand-roll
+  categoryName: string | null;
+  tagNames: string[];
 };
 
 const dateFmt = new Intl.DateTimeFormat("en-US", { dateStyle: "medium" });
@@ -93,6 +95,8 @@ export function PostsTable({
           <tr className="border-b">
             <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Title</th>
             <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Status</th>
+            <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Category</th>
+            <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Tags</th>
             <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Author</th>
             <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Created</th>
             <th className="px-4 py-3 text-right text-sm font-medium text-muted-foreground">
@@ -116,6 +120,27 @@ export function PostsTable({
                 <Badge variant={post.status === "published" ? "default" : "secondary"}>
                   {post.status === "published" ? "Published" : "Draft"}
                 </Badge>
+              </td>
+              <td className="px-4 py-3 text-sm text-muted-foreground">
+                {post.categoryName ?? <span className="text-muted-foreground/60">—</span>}
+              </td>
+              <td className="px-4 py-3">
+                {post.tagNames.length > 0 ? (
+                  <div className="flex max-w-[220px] items-center gap-1 overflow-hidden">
+                    {post.tagNames.slice(0, 2).map((tag) => (
+                      <Badge key={tag} variant="outline" className="rounded-none">
+                        {tag}
+                      </Badge>
+                    ))}
+                    {post.tagNames.length > 2 && (
+                      <span className="truncate text-sm text-muted-foreground">
+                        +{post.tagNames.length - 2}
+                      </span>
+                    )}
+                  </div>
+                ) : (
+                  <span className="text-muted-foreground/60">—</span>
+                )}
               </td>
               <td className="px-4 py-3 text-sm text-muted-foreground">
                 {post.authorName}

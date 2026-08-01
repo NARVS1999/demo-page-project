@@ -1,4 +1,5 @@
-// Styled 404 (UI-SPEC copy contract).
+// Styled 404 (UI-SPEC copy contract). Blog routes (unknown/draft slug,
+// unknown category/tag) land here too — identical 404, no enumeration.
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
@@ -11,9 +12,14 @@ export default function NotFound() {
           The page you&apos;re looking for doesn&apos;t exist.
         </p>
       </div>
-      <Button asChild>
-        <Link href="/">Back to home</Link>
-      </Button>
+      <div className="flex flex-wrap items-center justify-center gap-3">
+        <Button asChild>
+          <Link href="/blog">Back to blog</Link>
+        </Button>
+        <Button variant="ghost" asChild>
+          <Link href="/">Back to home</Link>
+        </Button>
+      </div>
     </div>
   );
 }
