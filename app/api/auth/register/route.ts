@@ -3,6 +3,7 @@
 
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
+import { flattenError } from "zod";
 import { sql } from "@/lib/db";
 import { createSession } from "@/lib/session";
 import { registerSchema } from "@/lib/validate";
@@ -20,7 +21,7 @@ export async function POST(request: Request) {
   const parsed = registerSchema.safeParse(body);
   if (!parsed.success) {
     return NextResponse.json(
-      { error: "Invalid registration.", fields: parsed.error.flattenError().fieldErrors },
+      { error: "Invalid registration.", fields: flattenError(parsed.error).fieldErrors },
       { status: 400 },
     );
   }

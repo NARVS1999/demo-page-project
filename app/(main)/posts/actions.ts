@@ -11,6 +11,7 @@
 
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
+import { flattenError } from "zod";
 import { sql } from "@/lib/db";
 import { getCurrentUser } from "@/lib/session";
 import { isUuid } from "@/lib/utils";
@@ -39,7 +40,7 @@ export async function createPost(
 
   const parsed = parsePost(formData);
   if (!parsed.success) {
-    return { errors: parsed.error.flattenError().fieldErrors };
+    return { errors: flattenError(parsed.error).fieldErrors };
   }
 
   const { title, content, published } = parsed.data;
@@ -65,7 +66,7 @@ export async function updatePost(
 
   const parsed = parsePost(formData);
   if (!parsed.success) {
-    return { errors: parsed.error.flattenError().fieldErrors };
+    return { errors: flattenError(parsed.error).fieldErrors };
   }
 
   const { title, content, published } = parsed.data;

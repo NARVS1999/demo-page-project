@@ -6,6 +6,7 @@
 
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
+import { flattenError } from "zod";
 import { sql } from "@/lib/db";
 import { createSession } from "@/lib/session";
 import { loginSchema } from "@/lib/validate";
@@ -23,7 +24,7 @@ export async function POST(request: Request) {
   const parsed = loginSchema.safeParse(body);
   if (!parsed.success) {
     return NextResponse.json(
-      { error: "Invalid email or password.", fields: parsed.error.flattenError().fieldErrors },
+      { error: "Invalid email or password.", fields: flattenError(parsed.error).fieldErrors },
       { status: 400 },
     );
   }

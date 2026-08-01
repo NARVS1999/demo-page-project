@@ -1,5 +1,5 @@
 import "server-only";
-import { z } from "zod";
+import { z, flattenError } from "zod";
 
 // ─── Environment schema (TMPL-10) ────────────────────────────────────────────
 // Fail-fast at module load: imported by lib/db.ts, lib/session.ts, lib/mock/*.
@@ -38,7 +38,7 @@ const parsed = envSchema.safeParse(process.env);
 if (!parsed.success) {
   console.error(
     "Invalid environment variables:\n" +
-      formatEnvErrors(parsed.error.flattenError().fieldErrors),
+      formatEnvErrors(flattenError(parsed.error).fieldErrors),
   );
   process.exit(1);
 }
