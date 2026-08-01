@@ -43,6 +43,72 @@ export type CategoryRow = {
 
 const dateFmt = new Intl.DateTimeFormat("en-US", { dateStyle: "medium" });
 
+// Delete-category confirm dialog (client). Radix AlertDialogAction auto-closes
+// on click, unmounting the portal content before the browser can process an
+// implicit form submission ("form submission canceled because the form is not
+// connected"). Fix: intercept the click (preventDefault), requestSubmit() the
+// form while the dialog is still mounted, and close the dialog only after the
+// delete action reports success. Owns its own useActionState per row.
+
+function DeleteCategoryDialog({
+  categoryId,
+  children,
+}: {
+  categoryId: string;
+  children: React.ReactNode;
+}) {
+  const router = useRouter();
+  const [state, formAction, pending] = useActionState(deleteCategory, null);
+  const [open, setOpen] = React.useState(false);
+  const formRef = React.useRef<HTMLFormElement>(null);
+
+  React.useEffect(() => {
+    if (state?.ok) {
+      toast.success("Category deleted.");
+      router.refresh();
+      const timer = setTimeout(() => setOpen(false), 0);
+      return () => clearTimeout(timer);
+    }
+  }, [state, router]);
+
+  return (
+    <AlertDialog open={open} onOpenChange={setOpen}>
+      <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Delete category?</AlertDialogTitle>
+          <AlertDialogDescription>
+            Posts in this category will become uncategorized. This action cannot be
+            undone.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel disabled={pending}>Cancel</AlertDialogCancel>
+          <form
+            ref={formRef}
+            action={formAction}
+            className="inline-flex"
+            aria-label="Delete category"
+          >
+            <input type="hidden" name="id" value={categoryId} />
+            <AlertDialogAction
+              type="submit"
+              disabled={pending}
+              onClick={(event) => {
+                event.preventDefault();
+                formRef.current?.requestSubmit();
+              }}
+              className="bg-destructive text-white hover:bg-destructive/90"
+            >
+              {pending ? "Deleting…" : "Delete"}
+            </AlertDialogAction>
+          </form>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+}
+
 export function CmsCategoryTable({
   categories,
   loading = false,
@@ -50,16 +116,6 @@ export function CmsCategoryTable({
   categories: CategoryRow[];
   loading?: boolean;
 }) {
-  const router = useRouter();
-  const [state, formAction, pending] = useActionState(deleteCategory, null);
-
-  React.useEffect(() => {
-    if (state?.ok) {
-      toast.success("Category deleted.");
-      router.refresh();
-    }
-  }, [state, router]);
-
   if (loading) {
     return (
       <div className="flex flex-col" aria-label="Loading categories">
@@ -150,39 +206,15 @@ export function CmsCategoryTable({
                       }
                     />
                     <DropdownMenuSeparator />
-                    <AlertDialog>
-                      <AlertDialogTrigger asChild>
-                        <DropdownMenuItem
-                          variant="destructive"
-                          onSelect={(event) => event.preventDefault()}
-                        >
-                          <Trash2 className="mr-2 h-4 w-4" aria-hidden="true" />
-                          Delete
-                        </DropdownMenuItem>
-                      </AlertDialogTrigger>
-                      <AlertDialogContent>
-                        <AlertDialogHeader>
-                          <AlertDialogTitle>Delete category?</AlertDialogTitle>
-                          <AlertDialogDescription>
-                            Posts in this category will become uncategorized. This action cannot be
-                            undone.
-                          </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                          <AlertDialogCancel>Cancel</AlertDialogCancel>
-                          <form action={formAction}>
-                            <input type="hidden" name="id" value={category.id} />
-                            <AlertDialogAction
-                              type="submit"
-                              disabled={pending}
-                              className="bg-destructive text-white hover:bg-destructive/90"
-                            >
-                              {pending ? "Deleting…" : "Delete"}
-                            </AlertDialogAction>
-                          </form>
-                        </AlertDialogFooter>
-                      </AlertDialogContent>
-                    </AlertDialog>
+                    <DeleteCategoryDialog categoryId={category.id}>
+                      <DropdownMenuItem
+                        variant="destructive"
+                        onSelect={(event) => event.preventDefault()}
+                      >
+                        <Trash2 className="mr-2 h-4 w-4" aria-hidden="true" />
+                        Delete
+                      </DropdownMenuItem>
+                    </DeleteCategoryDialog>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </td>

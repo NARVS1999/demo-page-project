@@ -43,6 +43,71 @@ export type TagRow = {
 
 const dateFmt = new Intl.DateTimeFormat("en-US", { dateStyle: "medium" });
 
+// Delete-tag confirm dialog (client). Radix AlertDialogAction auto-closes on
+// click, unmounting the portal content before the browser can process an
+// implicit form submission ("form submission canceled because the form is not
+// connected"). Fix: intercept the click (preventDefault), requestSubmit() the
+// form while the dialog is still mounted, and close the dialog only after the
+// delete action reports success. Owns its own useActionState per row.
+
+function DeleteTagDialog({
+  tagId,
+  children,
+}: {
+  tagId: string;
+  children: React.ReactNode;
+}) {
+  const router = useRouter();
+  const [state, formAction, pending] = useActionState(deleteTag, null);
+  const [open, setOpen] = React.useState(false);
+  const formRef = React.useRef<HTMLFormElement>(null);
+
+  React.useEffect(() => {
+    if (state?.ok) {
+      toast.success("Tag deleted.");
+      router.refresh();
+      const timer = setTimeout(() => setOpen(false), 0);
+      return () => clearTimeout(timer);
+    }
+  }, [state, router]);
+
+  return (
+    <AlertDialog open={open} onOpenChange={setOpen}>
+      <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Delete tag?</AlertDialogTitle>
+          <AlertDialogDescription>
+            The tag will be removed from all posts. This action cannot be undone.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel disabled={pending}>Cancel</AlertDialogCancel>
+          <form
+            ref={formRef}
+            action={formAction}
+            className="inline-flex"
+            aria-label="Delete tag"
+          >
+            <input type="hidden" name="id" value={tagId} />
+            <AlertDialogAction
+              type="submit"
+              disabled={pending}
+              onClick={(event) => {
+                event.preventDefault();
+                formRef.current?.requestSubmit();
+              }}
+              className="bg-destructive text-white hover:bg-destructive/90"
+            >
+              {pending ? "Deleting…" : "Delete"}
+            </AlertDialogAction>
+          </form>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+}
+
 export function CmsTagTable({
   tags,
   loading = false,
@@ -50,16 +115,6 @@ export function CmsTagTable({
   tags: TagRow[];
   loading?: boolean;
 }) {
-  const router = useRouter();
-  const [state, formAction, pending] = useActionState(deleteTag, null);
-
-  React.useEffect(() => {
-    if (state?.ok) {
-      toast.success("Tag deleted.");
-      router.refresh();
-    }
-  }, [state, router]);
-
   if (loading) {
     return (
       <div className="flex flex-col" aria-label="Loading tags">
@@ -145,38 +200,15 @@ export function CmsTagTable({
                       }
                     />
                     <DropdownMenuSeparator />
-                    <AlertDialog>
-                      <AlertDialogTrigger asChild>
-                        <DropdownMenuItem
-                          variant="destructive"
-                          onSelect={(event) => event.preventDefault()}
-                        >
-                          <Trash2 className="mr-2 h-4 w-4" aria-hidden="true" />
-                          Delete
-                        </DropdownMenuItem>
-                      </AlertDialogTrigger>
-                      <AlertDialogContent>
-                        <AlertDialogHeader>
-                          <AlertDialogTitle>Delete tag?</AlertDialogTitle>
-                          <AlertDialogDescription>
-                            The tag will be removed from all posts. This action cannot be undone.
-                          </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                          <AlertDialogCancel>Cancel</AlertDialogCancel>
-                          <form action={formAction}>
-                            <input type="hidden" name="id" value={tag.id} />
-                            <AlertDialogAction
-                              type="submit"
-                              disabled={pending}
-                              className="bg-destructive text-white hover:bg-destructive/90"
-                            >
-                              {pending ? "Deleting…" : "Delete"}
-                            </AlertDialogAction>
-                          </form>
-                        </AlertDialogFooter>
-                      </AlertDialogContent>
-                    </AlertDialog>
+                    <DeleteTagDialog tagId={tag.id}>
+                      <DropdownMenuItem
+                        variant="destructive"
+                        onSelect={(event) => event.preventDefault()}
+                      >
+                        <Trash2 className="mr-2 h-4 w-4" aria-hidden="true" />
+                        Delete
+                      </DropdownMenuItem>
+                    </DeleteTagDialog>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </td>
