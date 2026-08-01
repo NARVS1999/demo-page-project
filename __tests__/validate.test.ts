@@ -22,7 +22,7 @@ describe("envSchema", () => {
     const result = envSchema.safeParse(withoutDb);
     expect(result.success).toBe(false);
     if (!result.success) {
-      const fieldErrors = result.error.flattenError().fieldErrors;
+      const fieldErrors = result.error.flatten().fieldErrors;
       expect(fieldErrors.DATABASE_URL).toBeDefined();
       expect(fieldErrors.DATABASE_URL![0]).toBeTruthy();
     }
@@ -36,7 +36,7 @@ describe("envSchema", () => {
     });
     expect(result.success).toBe(false);
     if (!result.success) {
-      const fieldErrors = result.error.flattenError().fieldErrors;
+      const fieldErrors = result.error.flatten().fieldErrors;
       expect(fieldErrors.SESSION_SECRET).toBeDefined();
       expect(fieldErrors.SESSION_SECRET![0]).toContain("32 characters");
     }
@@ -69,7 +69,7 @@ describe("registerSchema", () => {
     });
     expect(result.success).toBe(false);
     if (!result.success) {
-      const fieldErrors = result.error.flattenError().fieldErrors;
+      const fieldErrors = result.error.flatten().fieldErrors;
       expect(fieldErrors.password![0]).toContain("at least 8");
     }
   });
@@ -91,7 +91,7 @@ describe("registerSchema", () => {
     });
     expect(result.success).toBe(false);
     if (!result.success) {
-      const fieldErrors = result.error.flattenError().fieldErrors;
+      const fieldErrors = result.error.flatten().fieldErrors;
       expect(fieldErrors.name![0]).toContain("at least 2");
     }
   });
@@ -122,7 +122,7 @@ describe("loginSchema", () => {
     });
     expect(result.success).toBe(false);
     if (!result.success) {
-      const fieldErrors = result.error.flattenError().fieldErrors;
+      const fieldErrors = result.error.flatten().fieldErrors;
       expect(fieldErrors.email).toBeDefined();
     }
   });
@@ -136,7 +136,7 @@ describe("postSchema", () => {
     });
     expect(result.success).toBe(false);
     if (!result.success) {
-      const fieldErrors = result.error.flattenError().fieldErrors;
+      const fieldErrors = result.error.flatten().fieldErrors;
       expect(fieldErrors.title![0]).toContain("at least 3");
     }
   });
@@ -148,7 +148,7 @@ describe("postSchema", () => {
     });
     expect(result.success).toBe(false);
     if (!result.success) {
-      const fieldErrors = result.error.flattenError().fieldErrors;
+      const fieldErrors = result.error.flatten().fieldErrors;
       expect(fieldErrors.content![0]).toBeTruthy();
     }
   });
