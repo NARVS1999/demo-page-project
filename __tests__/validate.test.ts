@@ -3,9 +3,11 @@ import { describe, expect, it } from "vitest";
 // schemas stay in lib/validate.ts (client-safe).
 import { envSchema } from "@/lib/env";
 import {
+  categorySchema,
   loginSchema,
   postSchema,
   registerSchema,
+  tagSchema,
 } from "@/lib/validate";
 
 describe("envSchema", () => {
@@ -164,5 +166,166 @@ describe("postSchema", () => {
     if (result.success) {
       expect(result.data.status).toBe("draft");
     }
+  });
+
+  it("rejects an unknown status value", () => {
+    const result = postSchema.safeParse({
+      title: "A valid title",
+      content: "Some content",
+      status: "live",
+    });
+    expect(result.success).toBe(false);
+  });
+
+  it("rejects a slug with spaces", () => {
+    const result = postSchema.safeParse({
+      title: "A valid title",
+      content: "Some content",
+      slug: "Hello World",
+    });
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      const fieldErrors = result.error.flatten().fieldErrors;
+      expect(fieldErrors.slug).toBeDefined();
+    }
+  });
+
+  it("rejects an uppercase slug", () => {
+    const result = postSchema.safeParse({
+      title: "A valid title",
+      content: "Some content",
+      slug: "UPPER",
+    });
+    expect(result.success).toBe(false);
+  });
+
+  it("accepts a kebab-case slug", () => {
+    const result = postSchema.safeParse({
+      title: "A valid title",
+      content: "Some content",
+      slug: "hello-world",
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it("treats an empty slug as absent (parsed to undefined)", () => {
+    const result = postSchema.safeParse({
+      title: "A valid title",
+      content: "Some content",
+      slug: "",
+    });
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.slug).toBeUndefined();
+    }
+  });
+
+  it("accepts missing or null categoryId", () => {
+    const noCategory = postSchema.safeParse({
+      title: "A valid title",
+      content: "Some content",
+    });
+    expect(noCategory.success).toBe(true);
+
+    const nullCategory = postSchema.safeParse({
+      title: "A valid title",
+      content: "Some content",
+      categoryId: null,
+    });
+    expect(nullCategory.success).toBe(true);
+  });
+
+  it("treats the form's empty-string categoryId as null", () => {
+    const result = postSchema.safeParse({
+      title: "A valid title",
+      content: "Some content",
+      categoryId: "",
+    });
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.categoryId).toBeNull();
+    }
+  });
+
+  it("rejects a non-UUID categoryId", () => {
+    const result = postSchema.safeParse({
+      title: "A valid title",
+      content: "Some content",
+      categoryId: "not-a-uuid",
+    });
+    expect(result.success).toBe(false);
+  });
+
+  it("transforms a comma-joined tags string into an array capped at 8", () => {
+    const result = postSchema.safeParse({
+      title: "A valid title",
+      content: "Some content",
+      tags: "a, b, c, d, e, f, g, h, i, j",
+    });
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.tags).toHaveLength(8);
+      expect(result.data.tags[0]).toBe("a");
+    }
+  });
+
+  it("accepts a valid https coverImage URL", () => {
+    const result = postSchema.safeParse({
+      title: "A valid title",
+      content: "Some content",
+      coverImage: "https://picsum.photos/seed/test/800/533",
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it("rejects a garbage coverImage URL", () => {
+    const result = postSchema.safeParse({
+      title: "A valid title",
+      content: "Some content",
+      coverImage: "not a url",
+    });
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      const fieldErrors = result.error.flatten().fieldErrors;
+      expect(fieldErrors.coverImage).toBeDefined();
+    }
+  });
+});
+
+describe("categorySchema", () => {
+  it("rejects a 1-character name", () => {
+    const result = categorySchema.safeParse({ name: "T", slug: "t" });
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      const fieldErrors = result.error.flatten().fieldErrors;
+      expect(fieldErrors.name![0]).toContain("at least 2");
+    }
+  });
+
+  it("rejects an uppercase slug", () => {
+    const result = categorySchema.safeParse({ name: "Testing", slug: "UPPER" });
+    expect(result.success).toBe(false);
+  });
+
+  it("accepts a valid {name, slug}", () => {
+    const result = categorySchema.safeParse({ name: "Testing", slug: "testing" });
+    expect(result.success).toBe(true);
+  });
+});
+
+describe("tagSchema", () => {
+  it("rejects a 1-character name", () => {
+    const result = tagSchema.safeParse({ name: "T", slug: "t" });
+    expect(result.success).toBe(false);
+  });
+
+  it("rejects an uppercase slug", () => {
+    const result = tagSchema.safeParse({ name: "Testing", slug: "UPPER" });
+    expect(result.success).toBe(false);
+  });
+
+  it("accepts a valid {name, slug}", () => {
+    const result = tagSchema.safeParse({ name: "Testing", slug: "testing" });
+    expect(result.success).toBe(true);
   });
 });
