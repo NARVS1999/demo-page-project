@@ -9,7 +9,6 @@ import { excerpt, readingTime } from "@/lib/blog";
 import { BlogCard, type BlogPostCard } from "@/components/blog/blog-card";
 import { BlogSearch } from "@/components/blog/blog-search";
 import { EmptyState } from "@/components/ui/empty-state";
-import { Button } from "@/components/ui/button";
 
 export const dynamic = "force-dynamic";
 
