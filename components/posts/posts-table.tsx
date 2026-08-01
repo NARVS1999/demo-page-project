@@ -36,7 +36,7 @@ import { deletePost } from "@/app/(main)/posts/actions";
 export type PostRow = {
   id: string;
   title: string;
-  published: boolean;
+  status: string;
   authorName: string;
   createdAt: string; // ISO — formatted client-side per RESEARCH don't-hand-roll
 };
@@ -113,8 +113,8 @@ export function PostsTable({
                 </Link>
               </td>
               <td className="px-4 py-3">
-                <Badge variant="secondary">
-                  {post.published ? "Published" : "Draft"}
+                <Badge variant={post.status === "published" ? "default" : "secondary"}>
+                  {post.status === "published" ? "Published" : "Draft"}
                 </Badge>
               </td>
               <td className="px-4 py-3 text-sm text-muted-foreground">

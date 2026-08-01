@@ -22,16 +22,21 @@ export default async function EditPostPage({
   // Non-UUID ids would throw in Postgres → 500; treat them as not found (IN-01).
   if (!isUuid(id)) notFound();
 
-  const rows = await sql`SELECT id, title, content, published
+  const rows = await sql`SELECT id, title, content, status
     FROM posts WHERE id = ${id} AND author_id = ${user.id}`;
   if (rows.length === 0) notFound();
-  const post = rows[0] as { id: string; title: string; content: string; published: boolean };
+  const post = rows[0] as {
+    id: string;
+    title: string;
+    content: string;
+    status: "draft" | "published";
+  };
 
   return (
     <div className="flex flex-col gap-8">
       <PageHeader title="Edit post" />
       <div className="max-w-2xl rounded-xl border p-6">
-        <PostForm mode="edit" post={{ id: post.id, title: post.title, content: post.content, published: post.published }} />
+        <PostForm mode="edit" post={{ id: post.id, title: post.title, content: post.content, status: post.status }} />
       </div>
     </div>
   );

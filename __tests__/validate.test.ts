@@ -155,14 +155,14 @@ describe("postSchema", () => {
     }
   });
 
-  it("accepts a valid post with published defaulting to false", () => {
+  it("accepts a valid post with status defaulting to 'draft'", () => {
     const result = postSchema.safeParse({
       title: "A valid title",
       content: "Some content",
     });
     expect(result.success).toBe(true);
     if (result.success) {
-      expect(result.data.published).toBe(false);
+      expect(result.data.status).toBe("draft");
     }
   });
 });

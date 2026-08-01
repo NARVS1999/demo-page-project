@@ -98,17 +98,17 @@ export function PostForm({
         )}
       </div>
 
-      <div className="flex items-center gap-2">
-        <input
-          id="published"
-          name="published"
-          type="checkbox"
-          defaultChecked={post?.published ?? false}
-          className="size-4 accent-primary"
-        />
-        <Label htmlFor="published" className="font-medium">
-          Published
-        </Label>
+      <div className="flex flex-col gap-2">
+        <Label htmlFor="status">Status</Label>
+        <select
+          id="status"
+          name="status"
+          defaultValue={post?.status ?? "draft"}
+          className="w-full rounded-md border bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
+          <option value="draft">draft</option>
+          <option value="published">published</option>
+        </select>
       </div>
 
       <Button type="submit" disabled={pending} className="w-full sm:w-auto">

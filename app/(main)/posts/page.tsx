@@ -18,21 +18,21 @@ export default async function PostsPage() {
   // Other users' unpublished drafts stay invisible (IN-03) — drafts are only
   // visible to their owner here and in /admin.
   const rows = await sql`
-    SELECT posts.id, posts.title, posts.published, posts.created_at, users.name AS author_name
+    SELECT posts.id, posts.title, posts.status, posts.created_at, users.name AS author_name
     FROM posts JOIN users ON users.id = posts.author_id
-    WHERE posts.published = true OR posts.author_id = ${user.id}
+    WHERE posts.status = 'published' OR posts.author_id = ${user.id}
     ORDER BY posts.created_at DESC`;
 
   const posts = (rows as {
     id: string;
     title: string;
-    published: boolean;
+    status: string;
     created_at: string;
     author_name: string;
   }[]).map((row) => ({
     id: row.id,
     title: row.title,
-    published: row.published,
+    status: row.status,
     createdAt: row.created_at,
     authorName: row.author_name,
   }));

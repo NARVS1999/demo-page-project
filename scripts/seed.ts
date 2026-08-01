@@ -101,21 +101,21 @@ const POSTS = [
     title: "Template Guide — build your next app in minutes",
     content:
       "This template ships the fullstack essentials: email/password auth with a signed JWT in an httpOnly cookie, raw-SQL data access against Neon, six pluggable mock services, and a reference Posts CRUD.\n\nTo fork it for your own demo: copy the repo, bump TEMPLATE_VERSION in lib/site.ts, then run npm run seed and npm run dev. Everything — auth, mocks, admin views — works against the seeded demo account.\n\nStick to the conventions in AGENTS.md: proxy.ts (not middleware.ts), force-dynamic on every DB-reading page, and bcrypt only inside route handlers.",
-    published: true,
+    status: "published",
   },
   {
     id: "22222222-2222-4222-8222-222222222222",
     title: "Mock Services — how the demo layer works",
     content:
       "Every demo needs third-party services (payments, email, SMS, OAuth, maps, storage) — none of which should be called for real in a template. Each mock mirrors the real provider's interface and persists its events to a mock_* table you can inspect under /admin.\n\nSet MOCK_PAYMENT=mock (default) to use the in-process simulation. createPayment supports a fail:true option so you can demo failure paths on demand. The \"real\" value is reserved for future apps that wire actual providers — the import surface (@/lib/mock) never changes.",
-    published: true,
+    status: "published",
   },
   {
     id: "33333333-3333-4333-8333-333333333333",
     title: "Deploy Walkthrough — Vercel + Neon at $0",
     content:
       "The template is built to stay on free tiers: Vercel Hobby (1M function invocations/month, account-wide) and Neon (0.5 GB per project). The seed enforces a hard size gate at 200 MB so demo data can never eat the budget.\n\nDeploy: push to GitHub, import the repo in Vercel, paste the 9 env vars from .env.example (both Neon URLs from the Connect modal — pooled for the app, direct for migrations), and push to main. The first visit may take a few seconds while Neon wakes from cold storage.",
-    published: true,
+    status: "published",
   },
 ];
 
@@ -171,12 +171,12 @@ async function seedDemoData() {
 
   for (const post of POSTS) {
     await sqlDirect`
-      INSERT INTO posts (id, title, content, published, author_id)
-      VALUES (${post.id}, ${post.title}, ${post.content}, ${post.published},
+      INSERT INTO posts (id, title, content, status, author_id)
+      VALUES (${post.id}, ${post.title}, ${post.content}, ${post.status},
         (SELECT id FROM users WHERE email = 'demo@example.com'))
       ON CONFLICT (id) DO UPDATE
         SET title = EXCLUDED.title, content = EXCLUDED.content,
-            published = EXCLUDED.published, updated_at = now()`;
+            status = EXCLUDED.status, updated_at = now()`;
   }
 
   for (const email of MOCK_EMAILS) {
@@ -206,6 +206,9 @@ const TABLES = [
   "schema_migrations",
   "users",
   "posts",
+  "categories",
+  "tags",
+  "post_tags",
   "mock_payments",
   "mock_emails",
   "mock_sms",

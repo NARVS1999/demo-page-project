@@ -27,7 +27,7 @@ function parsePost(formData: FormData) {
   return postSchema.safeParse({
     title: formData.get("title"),
     content: formData.get("content"),
-    published: formData.get("published") === "on",
+    status: formData.get("status"),
   });
 }
 
@@ -43,9 +43,9 @@ export async function createPost(
     return { errors: flattenError(parsed.error).fieldErrors };
   }
 
-  const { title, content, published } = parsed.data;
-  await sql`INSERT INTO posts (title, content, published, author_id)
-    VALUES (${title}, ${content}, ${published}, ${user.id})`;
+  const { title, content, status } = parsed.data;
+  await sql`INSERT INTO posts (title, content, status, author_id)
+    VALUES (${title}, ${content}, ${status}, ${user.id})`;
 
   revalidatePath("/posts");
   return { ok: true };
@@ -69,9 +69,9 @@ export async function updatePost(
     return { errors: flattenError(parsed.error).fieldErrors };
   }
 
-  const { title, content, published } = parsed.data;
+  const { title, content, status } = parsed.data;
   const rows = await sql`UPDATE posts
-    SET title = ${title}, content = ${content}, published = ${published}, updated_at = now()
+    SET title = ${title}, content = ${content}, status = ${status}, updated_at = now()
     WHERE id = ${id} AND author_id = ${user.id}
     RETURNING id`;
   if (rows.length === 0) {
