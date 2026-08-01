@@ -1,0 +1,195 @@
+"use client";
+
+// Posts table (client): Title (truncate), Status badge, Author, Created, and a
+// row Actions dropdown (Edit / Delete with alert-dialog confirm). Skeleton row
+// variant for loading. Delete submits the server action, blocks while pending,
+// and toasts "Post deleted." on success.
+
+import * as React from "react";
+import Link from "next/link";
+import { useActionState } from "react";
+import { useRouter } from "next/navigation";
+import { Ellipsis, FileText, Pencil, Plus, Trash2 } from "lucide-react";
+import { toast } from "sonner";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { deletePost } from "@/app/(main)/posts/actions";
+
+export type PostRow = {
+  id: string;
+  title: string;
+  published: boolean;
+  authorName: string;
+  createdAt: string; // ISO — formatted client-side per RESEARCH don't-hand-roll
+};
+
+const dateFmt = new Intl.DateTimeFormat("en-US", { dateStyle: "medium" });
+
+export function PostsTable({
+  posts,
+  showEmptyAction = false,
+}: {
+  posts: PostRow[];
+  showEmptyAction?: boolean;
+}) {
+  const router = useRouter();
+  const [state, formAction, pending] = useActionState(deletePost, null);
+
+  React.useEffect(() => {
+    if (state?.ok) {
+      toast.success("Post deleted.");
+      router.refresh();
+    }
+  }, [state, router]);
+
+  if (posts.length === 0) {
+    return (
+      <div className="flex flex-col items-center gap-4 px-6 py-12 text-center">
+        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-muted">
+          <span className="text-muted-foreground">
+            <FileText className="h-5 w-5" aria-hidden="true" />
+          </span>
+        </div>
+        <div className="flex flex-col gap-1">
+          <h3 className="text-xl font-semibold tracking-tight">No posts yet</h3>
+          <p className="text-base text-muted-foreground">
+            Create your first post to see it here.
+          </p>
+        </div>
+        {showEmptyAction && (
+          <Button asChild>
+            <Link href="/posts/new">
+              <Plus className="mr-2 h-4 w-4" />
+              New post
+            </Link>
+          </Button>
+        )}
+      </div>
+    );
+  }
+
+  return (
+    <div className="overflow-x-auto">
+      <table className="min-w-[640px] w-full">
+        <thead>
+          <tr className="border-b">
+            <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Title</th>
+            <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Status</th>
+            <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Author</th>
+            <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Created</th>
+            <th className="px-4 py-3 text-right text-sm font-medium text-muted-foreground">
+              <span className="sr-only">Actions</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {posts.map((post) => (
+            <tr key={post.id} className="border-b transition-colors hover:bg-muted/50">
+              <td className="px-4 py-3">
+                <Link
+                  href={`/posts/${post.id}/edit`}
+                  className="block max-w-[280px] truncate text-sm font-medium hover:text-foreground/80"
+                  title={post.title}
+                >
+                  {post.title}
+                </Link>
+              </td>
+              <td className="px-4 py-3">
+                <Badge variant="secondary">
+                  {post.published ? "Published" : "Draft"}
+                </Badge>
+              </td>
+              <td className="px-4 py-3 text-sm text-muted-foreground">
+                {post.authorName}
+              </td>
+              <td className="px-4 py-3 text-sm text-muted-foreground">
+                {dateFmt.format(new Date(post.createdAt))}
+              </td>
+              <td className="px-4 py-3 text-right">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="icon" aria-label={`Actions for ${post.title}`}>
+                      <Ellipsis className="h-4 w-4" aria-hidden="true" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-44">
+                    <DropdownMenuItem onSelect={() => router.push(`/posts/${post.id}/edit`)}>
+                      <Pencil className="mr-2 h-4 w-4" />
+                      Edit
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <DropdownMenuItem
+                          variant="destructive"
+                          onSelect={(event) => event.preventDefault()}
+                        >
+                          <Trash2 className="mr-2 h-4 w-4" />
+                          Delete
+                        </DropdownMenuItem>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Delete post?</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            This will permanently delete the post. This action cannot be undone.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <form action={formAction}>
+                            <input type="hidden" name="id" value={post.id} />
+                            <AlertDialogAction
+                              type="submit"
+                              disabled={pending}
+                              className="bg-destructive text-white hover:bg-destructive/90"
+                            >
+                              {pending ? "Deleting…" : "Delete"}
+                            </AlertDialogAction>
+                          </form>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+export function PostsTableSkeleton() {
+  return (
+    <div className="flex flex-col" aria-label="Loading posts">
+      {Array.from({ length: 5 }).map((_, i) => (
+        <div key={i} className="flex h-12 items-center gap-4 border-b px-4">
+          <div className="h-4 w-1/3 animate-pulse rounded-md bg-muted" />
+          <div className="h-4 w-16 animate-pulse rounded-md bg-muted" />
+          <div className="h-4 w-20 animate-pulse rounded-md bg-muted" />
+          <div className="ml-auto h-4 w-24 animate-pulse rounded-md bg-muted" />
+        </div>
+      ))}
+    </div>
+  );
+}
