@@ -1,12 +1,19 @@
 ---
-gsd_state_version: '1.0'
-status: planning
+gsd_state_version: 1.0
+milestone: v1.0
+milestone_name: milestone
+current_phase: 0
+current_phase_name: Template Foundation
+status: executing
+stopped_at: Completed 00-01-PLAN.md; starting 00-02 tasks 1-2
+last_updated: "2026-08-01T17:21:35.625Z"
+last_activity: 2026-08-01
+last_activity_desc: Roadmap created
 progress:
-  total_phases: 5
+  total_phases: 1
   completed_phases: 0
-  total_plans: 9
-  completed_plans: 0
-  percent: 0
+  total_plans: 2
+  completed_plans: 1
 ---
 
 # Project State
@@ -21,15 +28,16 @@ See: .planning/PROJECT.md (updated 2026-08-01)
 ## Current Position
 
 Phase: 0 of 5 (Template Foundation)
-Plan: 0 of 2 in current phase
-Status: Ready to plan
+Plan: 1 of 2 in current phase
+Status: Ready to execute
 Last activity: 2026-08-01 — Roadmap created
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [█████░░░░░] 50%
 
 ## Performance Metrics
 
 **Velocity:**
+
 - Total plans completed: 0
 - Average duration: -
 - Total execution time: 0 hours
@@ -41,10 +49,16 @@ Progress: [░░░░░░░░░░] 0%
 | - | - | - | - |
 
 **Recent Trend:**
+
 - Last 5 plans: -
 - Trend: -
 
 *Updated after each plan completion*
+**Per-Plan Metrics:**
+
+| Plan | Duration | Tasks | Files |
+|------|----------|-------|-------|
+| Phase 00 P00-01 | 40 | 3 tasks | 40 files |
 
 ## Accumulated Context
 
@@ -58,6 +72,9 @@ Recent decisions affecting current work:
 - Separate repo per project — each gets own Vercel deployment
 - Hand-rolled auth with jose + bcryptjs — no NextAuth, no Prisma, no Redis
 - Neon cloud DB for local dev — no local Postgres install needed
+- [Phase ?]: shadcn 4.16.1 uses preset flow (radix-nova) — no base-color prompt; baseColor zinc enforced manually per Token authority clause
+- [Phase ?]: npm 11.18 EALLOWSCRIPTS blocks CLI-internal installs (CNA/shadcn) — manual dep installs then CLI re-run is the working pattern
+- [Phase ?]: create-next-app refuses non-empty dirs with --yes — temp-dir scaffold + copy is the reliable path
 
 ### Pending Todos
 
@@ -75,6 +92,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-08-01
-Stopped at: Roadmap created, ready to plan Phase 0
+Last session: 2026-08-01T17:21:35.600Z
+Stopped at: Completed 00-01-PLAN.md; starting 00-02 tasks 1-2
 Resume file: None
