@@ -4,34 +4,6 @@
 **Domain:** Next.js 16 fullstack template foundation (App Router, Tailwind v4, shadcn/ui, Neon Postgres, jose/bcryptjs auth, mock services, seed tooling)
 **Confidence:** HIGH (package versions verified against npm registry; setup patterns from official docs of Next.js 16.2.12, shadcn 4.16.1, Neon 1.1.0, jose 6.2.6, zod 4.4.3)
 
-## Summary
-
-Phase 0 scaffolds the `nextjs-starter` template from an empty repo: Next.js 16.2.12 (App Router, TypeScript, Tailwind v4.3.3, shadcn/ui 4.16.1) with hand-rolled auth (jose 6.2.6 JWT in httpOnly cookie + bcryptjs 3.0.3), raw-SQL data layer on `@neondatabase/serverless` 1.1.0, 6 DB-backed mock services, an idempotent seed script with a <200 MB storage report, Zod 4 env validation, next-themes 0.4.6 dark mode, and a Posts CRUD reference. All locked decisions in CONTEXT.md were verified as current and executable with the following deltas found during research:
-
-1. **Next.js 16 renamed `middleware.ts` → `proxy.ts`** (v16.0.0, deprecated with codemod). The auth guard must be `proxy.ts` exporting `proxy()`, which now **defaults to the Node.js runtime** — jose still works everywhere, but bcryptjs is now technically runnable in proxy yet must stay out of it for CPU reasons.
-2. **No `ws` package needed** — Node 24.18.0 (installed) has a global WebSocket; prior research's `neonConfig.webSocketConstructor = ws` pattern is only needed on Node < 22.
-3. **Two DB connection strings required**: pooled `-pooler` URL for runtime, direct URL for seed/migrations (Neon PgBouncer transaction mode; migrations must use direct per Neon docs).
-4. **DB-reading pages are statically prerendered at build time** unless marked `export const dynamic = 'force-dynamic'` — without this, the Posts CRUD and dashboard break at build/deploy.
-5. **shadcn 4.x init adds `@import "tw-animate-css"` and `@import "shadcn/tailwind.css"`** to globals.css beyond the UI-SPEC's listed scaffold — executor must accept these CLI additions while preserving the UI-SPEC's canonical token values.
-6. **next-themes is 0.4.6** — there is no "next-themes v4"; the shadcn-documented pattern (`attribute="class"`, `defaultTheme="system"`, `enableSystem`, `disableTransitionOnChange`, `suppressHydrationWarning`) is unchanged.
-
-**Primary recommendation:** Follow the exact command sequences and file conventions in Topics 1–7 below. The plan should split scaffolding (plan 00-01) from infrastructure/UI (plan 00-02) as ROADMAP prescribes, with the proxy.ts rename, force-dynamic rule, and dual DATABASE_URL strategy treated as hard conventions — every one of the ~30 future apps inherits them.
-
-## Architectural Responsibility Map
-
-| Capability | Primary Tier | Secondary Tier | Rationale |
-|------------|-------------|----------------|-----------|
-| Session issuance/verification (JWT sign/verify) | API / Backend (route handlers + server actions, Node runtime) | Proxy (edge-of-app guard) | bcrypt compare + JWT creation need Node runtime and DB access; proxy only verifies signatures (jose is runtime-agnostic) |
-| Route guarding (/admin, /api/*) | Proxy | API / Backend (in-handler auth checks) | Single enforcement point per locked decision; but every handler re-verifies (Next.js data security guide) |
-| Data access (raw SQL) | Database / Storage | API / Backend (DAL in `lib/`) | neon() HTTP queries executed from server components/route handlers/actions; server-only boundary |
-| Transactions (BEGIN/COMMIT) | API / Backend (Pool per request) | — | Pool over WebSockets, created and closed inside the request/action |
-| Mock services | API / Backend (`lib/mock/*`, server-only) | Database / Storage (event persistence tables) | Services are server-side modules; DB-backed simulation tables viewable in admin |
-| Seed / migrations | CLI / script tier (`scripts/seed.ts` via tsx) | Database / Storage | Standalone Node script, direct connection, upsert idempotency |
-| Input validation | API / Backend (zod in `lib/validate.ts`, re-validated server-side) | Browser / Client (react-hook-form + zodResolver for inline errors) | Client validation is UX; server validation is security |
-| Env validation | API / Backend (startup, `lib/validate.ts` env schema) | — | Fail-fast at module load; clear errors per TMPL-10 |
-| Theme state (dark/light) | Browser / Client | — | next-themes + localStorage + system default; server only needs `suppressHydrationWarning` |
-| Forms (auth, posts) | Browser / Client (RHF + shadcn form) | API / Backend (server action re-validation) | UI-SPEC interaction contract |
-
 <user_constraints>
 ## User Constraints (from CONTEXT.md)
 
@@ -60,6 +32,34 @@ Phase 0 scaffolds the `nextjs-starter` template from an empty repo: Next.js 16.2
 ### Deferred Ideas (OUT OF SCOPE)
 - None — discussion stayed within phase scope
 </user_constraints>
+
+## Summary
+
+Phase 0 scaffolds the `nextjs-starter` template from an empty repo: Next.js 16.2.12 (App Router, TypeScript, Tailwind v4.3.3, shadcn/ui 4.16.1) with hand-rolled auth (jose 6.2.6 JWT in httpOnly cookie + bcryptjs 3.0.3), raw-SQL data layer on `@neondatabase/serverless` 1.1.0, 6 DB-backed mock services, an idempotent seed script with a <200 MB storage report, Zod 4 env validation, next-themes 0.4.6 dark mode, and a Posts CRUD reference. All locked decisions in CONTEXT.md were verified as current and executable with the following deltas found during research:
+
+1. **Next.js 16 renamed `middleware.ts` → `proxy.ts`** (v16.0.0, deprecated with codemod). The auth guard must be `proxy.ts` exporting `proxy()`, which now **defaults to the Node.js runtime** — jose still works everywhere, but bcryptjs is now technically runnable in proxy yet must stay out of it for CPU reasons.
+2. **No `ws` package needed** — Node 24.18.0 (installed) has a global WebSocket; prior research's `neonConfig.webSocketConstructor = ws` pattern is only needed on Node < 22.
+3. **Two DB connection strings required**: pooled `-pooler` URL for runtime, direct URL for seed/migrations (Neon PgBouncer transaction mode; migrations must use direct per Neon docs).
+4. **DB-reading pages are statically prerendered at build time** unless marked `export const dynamic = 'force-dynamic'` — without this, the Posts CRUD and dashboard break at build/deploy.
+5. **shadcn 4.x init adds `@import "tw-animate-css"` and `@import "shadcn/tailwind.css"`** to globals.css beyond the UI-SPEC's listed scaffold — executor must accept these CLI additions while preserving the UI-SPEC's canonical token values.
+6. **next-themes is 0.4.6** — there is no "next-themes v4"; the shadcn-documented pattern (`attribute="class"`, `defaultTheme="system"`, `enableSystem`, `disableTransitionOnChange`, `suppressHydrationWarning`) is unchanged.
+
+**Primary recommendation:** Follow the exact command sequences and file conventions in Topics 1–7 below. The plan should split scaffolding (plan 00-01) from infrastructure/UI (plan 00-02) as ROADMAP prescribes, with the proxy.ts rename, force-dynamic rule, and dual DATABASE_URL strategy treated as hard conventions — every one of the ~30 future apps inherits them.
+
+## Architectural Responsibility Map
+
+| Capability | Primary Tier | Secondary Tier | Rationale |
+|------------|-------------|----------------|-----------|
+| Session issuance/verification (JWT sign/verify) | API / Backend (route handlers + server actions, Node runtime) | Proxy (edge-of-app guard) | bcrypt compare + JWT creation need Node runtime and DB access; proxy only verifies signatures (jose is runtime-agnostic) |
+| Route guarding (/admin, /api/*) | Proxy | API / Backend (in-handler auth checks) | Single enforcement point per locked decision; but every handler re-verifies (Next.js data security guide) |
+| Data access (raw SQL) | Database / Storage | API / Backend (DAL in `lib/`) | neon() HTTP queries executed from server components/route handlers/actions; server-only boundary |
+| Transactions (BEGIN/COMMIT) | API / Backend (Pool per request) | — | Pool over WebSockets, created and closed inside the request/action |
+| Mock services | API / Backend (`lib/mock/*`, server-only) | Database / Storage (event persistence tables) | Services are server-side modules; DB-backed simulation tables viewable in admin |
+| Seed / migrations | CLI / script tier (`scripts/seed.ts` via tsx) | Database / Storage | Standalone Node script, direct connection, upsert idempotency |
+| Input validation | API / Backend (zod in `lib/validate.ts`, re-validated server-side) | Browser / Client (react-hook-form + zodResolver for inline errors) | Client validation is UX; server validation is security |
+| Env validation | API / Backend (startup, `lib/validate.ts` env schema) | — | Fail-fast at module load; clear errors per TMPL-10 |
+| Theme state (dark/light) | Browser / Client | — | next-themes + localStorage + system default; server only needs `suppressHydrationWarning` |
+| Forms (auth, posts) | Browser / Client (RHF + shadcn form) | API / Backend (server action re-validation) | UI-SPEC interaction contract |
 
 <phase_requirements>
 ## Phase Requirements
