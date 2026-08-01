@@ -10,6 +10,7 @@
 import * as React from "react";
 import { useActionState } from "react";
 import { toast } from "sonner";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -55,6 +56,11 @@ export function DeletePostDialog({
             cannot be undone.
           </AlertDialogDescription>
         </AlertDialogHeader>
+        {state?.message && (
+          <Alert variant="destructive">
+            <AlertDescription>{state.message}</AlertDescription>
+          </Alert>
+        )}
         <AlertDialogFooter>
           <AlertDialogCancel disabled={pending}>Cancel</AlertDialogCancel>
           <form
