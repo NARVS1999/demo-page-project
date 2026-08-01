@@ -68,7 +68,9 @@ export async function createPost(
   }
 
   const { title, content, status, slug, categoryId, tags, coverImage } = parsed.data;
-  const finalSlug = slug || slugify(title);
+  // IN-02: slugify("!!!") → "" — never store an empty slug (unreachable at any
+  // /blog URL and it claims the unique '' slot). Fall back to a constant.
+  const finalSlug = slug || slugify(title) || "post";
   try {
     const rows = await sql`INSERT INTO posts
       (title, content, status, slug, category_id, cover_image, author_id, published_at)
@@ -106,7 +108,9 @@ export async function updatePost(
   }
 
   const { title, content, status, slug, categoryId, tags, coverImage } = parsed.data;
-  const finalSlug = slug || slugify(title);
+  // IN-02: slugify("!!!") → "" — never store an empty slug (unreachable at any
+  // /blog URL and it claims the unique '' slot). Fall back to a constant.
+  const finalSlug = slug || slugify(title) || "post";
   try {
     const rows = await sql`UPDATE posts
       SET title = ${title}, content = ${content}, status = ${status},
