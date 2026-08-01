@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_phase: 0
-current_phase_name: Template Foundation
-status: verifying
-stopped_at: Verification in progress (human browser checks pending)
-last_updated: "2026-08-02T03:10:00.000Z"
+current_phase: 1
+current_phase_name: CMS App
+status: planning
+stopped_at: Completed 00-02-PLAN.md
+last_updated: "2026-08-01T19:47:34.223Z"
 last_activity: 2026-08-02
-last_activity_desc: Phase 0 execution complete — both plans done; verification written, awaiting human browser checks
+last_activity_desc: Phase 0 complete, transitioned to Phase 1
 progress:
-  total_phases: 5
+  total_phases: 1
   completed_phases: 1
   total_plans: 2
   completed_plans: 2
@@ -27,10 +27,10 @@ See: .planning/PROJECT.md (updated 2026-08-01)
 
 ## Current Position
 
-Phase: 0 of 5 (Template Foundation) — EXECUTION COMPLETE, VERIFICATION PENDING
-Plan: 2 of 2 in current phase
-Status: Phase 0 executed; machine checks passed (31/31 tests, tsc clean, lint 0 errors, build green); browser-only items routed to human verification
-Last activity: 2026-08-02 — Phase 0 verification written
+Phase: 1 of 5 (CMS App)
+Plan: Not started
+Status: Ready to plan
+Last activity: 2026-08-02 — Phase 0 complete, transitioned to Phase 1
 
 Progress: [██████████] 100%
 
@@ -38,7 +38,7 @@ Progress: [██████████] 100%
 
 **Velocity:**
 
-- Total plans completed: 2
+- Total plans completed: 4
 - Average duration: ~1h (40min + ~1h25m)
 - Total execution time: ~2h 5m
 
@@ -47,6 +47,7 @@ Progress: [██████████] 100%
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 00-template-foundation | 2 | ~2h 5m | ~1h |
+| 0 | 2 | - | - |
 
 **Recent Trend:**
 
