@@ -20,14 +20,14 @@
 
 ### CMS App
 
-- [ ] **CMS-01**: Admin CRUD for posts with markdown editor
-- [ ] **CMS-02**: Draft/publish workflow
-- [ ] **CMS-03**: Category and tag management
-- [ ] **CMS-04**: Image upload via mock storage
-- [ ] **CMS-05**: Search posts via ILIKE
-- [ ] **CMS-06**: Public blog list page
-- [ ] **CMS-07**: Public single post page
-- [ ] **CMS-08**: Public category/tag filter pages
+- [x] **CMS-01**: Admin CRUD for posts with markdown editor
+- [x] **CMS-02**: Draft/publish workflow
+- [x] **CMS-03**: Category and tag management
+- [x] **CMS-04**: Image upload via mock storage
+- [x] **CMS-05**: Search posts via ILIKE
+- [x] **CMS-06**: Public blog list page
+- [x] **CMS-07**: Public single post page
+- [x] **CMS-08**: Public category/tag filter pages
 
 ### Booking App
 
@@ -123,14 +123,14 @@
 | TMPL-08 | Phase 0 | Complete |
 | TMPL-09 | Phase 0 | Complete |
 | TMPL-10 | Phase 0 | Complete |
-| CMS-01 | Phase 1 | Pending |
-| CMS-02 | Phase 1 | Pending |
-| CMS-03 | Phase 1 | Pending |
-| CMS-04 | Phase 1 | Pending |
-| CMS-05 | Phase 1 | Pending |
-| CMS-06 | Phase 1 | Pending |
-| CMS-07 | Phase 1 | Pending |
-| CMS-08 | Phase 1 | Pending |
+| CMS-01 | Phase 1 | Complete |
+| CMS-02 | Phase 1 | Complete |
+| CMS-03 | Phase 1 | Complete |
+| CMS-04 | Phase 1 | Complete |
+| CMS-05 | Phase 1 | Complete |
+| CMS-06 | Phase 1 | Complete |
+| CMS-07 | Phase 1 | Complete |
+| CMS-08 | Phase 1 | Complete |
 | BOOK-01 | Phase 2 | Pending |
 | BOOK-02 | Phase 2 | Pending |
 | BOOK-03 | Phase 2 | Pending |

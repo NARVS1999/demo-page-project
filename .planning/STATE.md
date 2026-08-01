@@ -2,13 +2,13 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_phase: 1
-current_phase_name: CMS App
+current_phase: 2
+current_phase_name: Booking App
 status: planning
-stopped_at: Completed 00-02-PLAN.md
-last_updated: "2026-08-01T22:01:15.090Z"
+stopped_at: Phase 1 (CMS App) complete and verified
+last_updated: "2026-08-01T23:38:22.180Z"
 last_activity: 2026-08-02
-last_activity_desc: Phase 0 complete, transitioned to Phase 1
+last_activity_desc: Phase 1 complete, transitioned to Phase 2
 progress:
   total_phases: 2
   completed_phases: 2
@@ -23,14 +23,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-08-01)
 
 **Core value:** Every project deploys and works end-to-end at zero cost — if it costs money, it doesn't ship.
-**Current focus:** Phase 0 — Template Foundation
+**Current focus:** Phase 2 — Booking App (Phase 1 CMS App complete 2026-08-02)
 
 ## Current Position
 
-Phase: 1 of 5 (CMS App)
+Phase: 2 of 5 (Booking App)
 Plan: Not started
 Status: Ready to plan
-Last activity: 2026-08-02 — Phase 0 complete, transitioned to Phase 1
+Last activity: 2026-08-02 — Phase 1 complete, transitioned to Phase 2
 
 Progress: [██████████] 100%
 
@@ -38,7 +38,7 @@ Progress: [██████████] 100%
 
 **Velocity:**
 
-- Total plans completed: 4
+- Total plans completed: 6
 - Average duration: ~1h (40min + ~1h25m)
 - Total execution time: ~2h 5m
 
@@ -47,7 +47,8 @@ Progress: [██████████] 100%
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 00-template-foundation | 2 | ~2h 5m | ~1h |
-| 0 | 2 | - | - |
+| 01-cms-app | 2 | ~4h 52m | ~2h 26m |
+| 1 | 2 | - | - |
 
 **Recent Trend:**
 
@@ -61,6 +62,8 @@ Progress: [██████████] 100%
 |------|----------|-------|-------|
 | Phase 00 P00-01 | 40 | 3 tasks | 40 files |
 | Phase 00-template-foundation P00-02 | 85 | 10 tasks | 62 files |
+| Phase 01-cms-app P01-01 | 72 | 4 tasks | 13 files |
+| Phase 01-cms-app P01-02 | 220 | 4 tasks | 36 files |
 
 ## Accumulated Context
 
@@ -83,6 +86,7 @@ Recent decisions affecting current work:
 - [Phase ?]: Seed migration runner splits multi-statement DDL on ';\n' — semicolons inside single-line comments are safe
 - [Phase ?]: neon timestamptz rows arrive as JS Date — compare with getTime(), not localeCompare
 - [Phase ?]: Server actions broken in this environment (Next 16.2.12 + Windows): verified framework-level, not project code — surfaced as blocking checkpoint for human decision.
+- [Phase 1] RESOLVED 2026-08-02: the server-action "Connection closed." defect was a **curl artifact, not an environment defect** — `curl -F` emits lowercase-only multipart boundaries that Next 16's Flight parser rejects; real browsers (mixed-case boundaries, fetch path) work end-to-end, proven with a real headless Chrome against the live Neon DB (create post, edit page, taxonomy create, delete — all POST 200 and persisted). One real app bug found and fixed (Radix AlertDialogAction unmounting forms before submit → `delete-post-dialog.tsx` requestSubmit intercept; later propagated to category/tag tables per REVIEW CR-01). Stack stays on pinned Next 16.2.12. See `.planning/phases/01-cms-app/01-02-SUMMARY.md`.
 
 ### Pending Todos
 
@@ -90,9 +94,7 @@ None yet.
 
 ### Blockers/Concerns
 
-yet.
-
-- ENVIRONMENT DEFECT: Next.js 16.2.12 server actions fail with 'Connection closed.' on this Windows machine — reproduced on a pristine create-next-app, all Node versions (20/22/24), dev (Turbopack+webpack) and prod. Action bodies never execute. Blocks ALL Phase 1 mutation flows (editor create/update, delete, taxonomy) and Phase 0 posts CRUD. Decision needed: upgrade Next, rewrite mutations as route handlers, or investigate machine.
+None — all Phase 1 blockers resolved (see decision log above).
 
 ## Deferred Items
 
@@ -102,6 +104,6 @@ yet.
 
 ## Session Continuity
 
-Last session: 2026-08-01T18:32:08.928Z
-Stopped at: Completed 00-02-PLAN.md
+Last session: 2026-08-02T07:30:00.000Z
+Stopped at: Phase 1 (CMS App) complete and verified
 Resume file: None

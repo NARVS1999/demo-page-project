@@ -7,7 +7,7 @@ Build 10–30 fully deployed fullstack demo apps at $0/month. The foundation is 
 ## Phases
 
 - [x] **Phase 0: Template Foundation** - Reusable nextjs-starter with auth, DB, mocks, seed script, and deployment infra (completed 2026-08-02)
-- [ ] **Phase 1: CMS App** - Blog/content management with post CRUD, markdown editor, categories, admin dashboard
+- [x] **Phase 1: CMS App** - Blog/content management with post CRUD, markdown editor, categories, admin dashboard (completed 2026-08-02)
 - [ ] **Phase 2: Booking App** - Service scheduling with slot calendar, booking flow, double-booking prevention, mock email/SMS
 - [ ] **Phase 3: Ecommerce App** - Online shop with catalog, cart, checkout, mock payment, order management
 - [ ] **Phase 4: Portfolio Shell** - Project showcase grid with live links, tech badges, demo credentials
@@ -53,8 +53,8 @@ Plans:
 
 Plans:
 
-- [ ] 01-01: Schema + API routes — posts, categories, tags tables; CRUD route handlers; search endpoint
-- [ ] 01-02: UI pages — public blog list, single post, category/tag filters, admin dashboard, markdown editor
+- [x] 01-01: Schema + API routes — posts, categories, tags tables; CRUD route handlers; search endpoint
+- [x] 01-02: UI pages — public blog list, single post, category/tag filters, admin dashboard, markdown editor
 
 ### Phase 2: Booking App
 
@@ -168,7 +168,7 @@ Plans:
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 0. Template Foundation | 2/2 | Complete    | 2026-08-02 |
-| 1. CMS App | 0/2 | Not started | - |
+| 1. CMS App | 2/2 | Complete    | 2026-08-02 |
 | 2. Booking App | 0/2 | Not started | - |
 | 3. Ecommerce App | 0/2 | Not started | - |
 | 4. Portfolio Shell | 0/1 | Not started | - |
