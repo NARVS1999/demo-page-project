@@ -290,6 +290,37 @@ describe("postSchema", () => {
       expect(fieldErrors.coverImage).toBeDefined();
     }
   });
+
+  it("rejects a javascript: coverImage URL (MD-03)", () => {
+    const result = postSchema.safeParse({
+      title: "A valid title",
+      content: "Some content",
+      coverImage: "javascript:alert(1)",
+    });
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      const fieldErrors = result.error.flatten().fieldErrors;
+      expect(fieldErrors.coverImage).toBeDefined();
+    }
+  });
+
+  it("rejects a data: coverImage URL (MD-03)", () => {
+    const result = postSchema.safeParse({
+      title: "A valid title",
+      content: "Some content",
+      coverImage: "data:text/html,<script>alert(1)</script>",
+    });
+    expect(result.success).toBe(false);
+  });
+
+  it("accepts an http:// coverImage URL (MD-03)", () => {
+    const result = postSchema.safeParse({
+      title: "A valid title",
+      content: "Some content",
+      coverImage: "http://example.com/cover.jpg",
+    });
+    expect(result.success).toBe(true);
+  });
 });
 
 describe("categorySchema", () => {

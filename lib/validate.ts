@@ -29,6 +29,14 @@ export const loginSchema = z.object({
     .max(72, "Password must be at most 72 characters."),
 });
 
+// coverImage URL contract: http(s) only (MD-03). z.string().url() parses any
+// scheme (javascript:, data: pass) — restrict to http(s) so a stored cover can
+// never reach a raw HTML attribute as an executable scheme.
+const httpUrl = z
+  .string()
+  .url("Enter a valid URL.")
+  .refine((v) => /^https?:\/\//i.test(v), "Enter a valid URL.");
+
 export const postSchema = z.object({
   title: z.string().min(3, "Title must be at least 3 characters.").max(200),
   content: z.string().min(1, "Content is required."),
@@ -40,7 +48,7 @@ export const postSchema = z.object({
   categoryId: z.preprocess((v) => (v === "" || v == null ? null : v), z.uuid().nullable().optional()),
   // Comma-joined string from tags-input → array (deduped, capped at 8)
   tags: z.preprocess((v) => parseTags(String(v ?? "")), z.array(z.string().min(1)).max(8)).default([]),
-  coverImage: z.union([z.string().url("Enter a valid URL."), z.literal("")]).optional(),
+  coverImage: z.union([httpUrl, z.literal("")]).optional(),
 });
 
 export const categorySchema = z.object({
