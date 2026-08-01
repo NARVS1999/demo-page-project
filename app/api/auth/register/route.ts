@@ -20,7 +20,7 @@ export async function POST(request: Request) {
   const parsed = registerSchema.safeParse(body);
   if (!parsed.success) {
     return NextResponse.json(
-      { error: "Invalid registration.", fields: parsed.error.flatten().fieldErrors },
+      { error: "Invalid registration.", fields: parsed.error.flattenError().fieldErrors },
       { status: 400 },
     );
   }

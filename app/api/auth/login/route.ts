@@ -23,7 +23,7 @@ export async function POST(request: Request) {
   const parsed = loginSchema.safeParse(body);
   if (!parsed.success) {
     return NextResponse.json(
-      { error: "Invalid email or password.", fields: parsed.error.flatten().fieldErrors },
+      { error: "Invalid email or password.", fields: parsed.error.flattenError().fieldErrors },
       { status: 400 },
     );
   }

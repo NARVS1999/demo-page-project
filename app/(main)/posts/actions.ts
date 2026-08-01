@@ -39,7 +39,7 @@ export async function createPost(
 
   const parsed = parsePost(formData);
   if (!parsed.success) {
-    return { errors: parsed.error.flatten().fieldErrors };
+    return { errors: parsed.error.flattenError().fieldErrors };
   }
 
   const { title, content, published } = parsed.data;
@@ -65,7 +65,7 @@ export async function updatePost(
 
   const parsed = parsePost(formData);
   if (!parsed.success) {
-    return { errors: parsed.error.flatten().fieldErrors };
+    return { errors: parsed.error.flattenError().fieldErrors };
   }
 
   const { title, content, published } = parsed.data;
