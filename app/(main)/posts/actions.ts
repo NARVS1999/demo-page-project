@@ -13,6 +13,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { sql } from "@/lib/db";
 import { getCurrentUser } from "@/lib/session";
+import { isUuid } from "@/lib/utils";
 import { postSchema } from "@/lib/validate";
 
 type FormState = {
@@ -58,6 +59,9 @@ export async function updatePost(
 
   const id = formData.get("id");
   if (typeof id !== "string") return { message: "Missing post id." };
+  // Non-UUID ids would throw in Postgres ("invalid input syntax for type uuid")
+  // → 500. Treat them like a post that no longer exists (IN-01).
+  if (!isUuid(id)) return { message: "This post no longer exists." };
 
   const parsed = parsePost(formData);
   if (!parsed.success) {
@@ -86,6 +90,9 @@ export async function deletePost(
 
   const id = formData.get("id");
   if (typeof id !== "string") return { message: "Missing post id." };
+  // Non-UUID ids would throw in Postgres → 500. Treat them like a post that no
+  // longer exists (IN-01).
+  if (!isUuid(id)) return { message: "This post no longer exists." };
 
   const rows = await sql`DELETE FROM posts WHERE id = ${id} AND author_id = ${user.id} RETURNING id`;
   if (rows.length === 0) {

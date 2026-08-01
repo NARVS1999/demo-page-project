@@ -3,6 +3,7 @@
 import { notFound, redirect } from "next/navigation";
 import { sql } from "@/lib/db";
 import { getCurrentUser } from "@/lib/session";
+import { isUuid } from "@/lib/utils";
 import { PageHeader } from "@/components/ui/page-header";
 import { PostForm } from "@/components/posts/post-form";
 
@@ -17,6 +18,9 @@ export default async function EditPostPage({
   if (!user) redirect("/login?next=/posts");
 
   const { id } = await params;
+
+  // Non-UUID ids would throw in Postgres → 500; treat them as not found (IN-01).
+  if (!isUuid(id)) notFound();
 
   const rows = await sql`SELECT id, title, content, published
     FROM posts WHERE id = ${id} AND author_id = ${user.id}`;
