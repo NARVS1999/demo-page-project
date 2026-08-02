@@ -1,3 +1,5 @@
+import "server-only";
+
 // MOCK: Replace with real Email. Interface must match SendGrid-like
 // sendEmail() signature. Persists to mock_emails (viewable in /admin/emails).
 // Optional `bookingId` links the notice to a booking (BOOK-06), while optional

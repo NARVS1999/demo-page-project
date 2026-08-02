@@ -1,3 +1,5 @@
+import "server-only";
+
 // Single import surface for all mock services (locked pattern):
 //   import { payment, email, sms, oauth, maps, storage } from "@/lib/mock";
 // Swapping a service to a real provider replaces the file, never call sites.

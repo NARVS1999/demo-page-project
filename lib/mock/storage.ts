@@ -1,3 +1,5 @@
+import "server-only";
+
 // MOCK: Replace with real Storage. Interface must match S3/Vercel-Blob-like
 // upload()/getUrl() signatures. Metadata-only persistence (name, url, size) —
 // NEVER the blob itself (Pitfall 9): the url encodes the id so getUrl() can

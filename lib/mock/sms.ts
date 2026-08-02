@@ -1,3 +1,5 @@
+import "server-only";
+
 // MOCK: Replace with real SMS. Interface must match Twilio-like sendSms()
 // signature. Persists to mock_sms (viewable in /admin/sms).
 // Optional `bookingId` links the notice to a booking (BOOK-07) — the nullable

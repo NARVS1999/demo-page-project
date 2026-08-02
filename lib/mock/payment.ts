@@ -1,3 +1,5 @@
+import "server-only";
+
 // MOCK: Replace with real Payment. Interface must match Stripe-like
 // createPayment() signature. fail:true forces a "failed" status (locked — failed
 // events are persisted too so /admin shows real demo data).

@@ -69,3 +69,13 @@ Fix:         `lib/db.ts`, `lib/session.ts`, `lib/mock/*` must start with
 Found in:    nextjs-starter
 Status:      active
 Date:        2026-08-02
+
+### 004 — self-referential fake client type annotation
+Signature:   `typeof client` in a callback parameter that creates the same `client`
+Symptom:     TypeScript reports TS2502 and the test suite cannot type-check.
+Evidence:    `TS2502: 'client' is referenced directly or indirectly in its own type annotation.`
+Root cause:  A Vitest transaction-double callback used the local fake client's inferred type before that value's declaration had completed.
+Fix:         Type the mock callback boundary with an independent client shape (or `unknown`) and pass the fake client as the mock implementation value.
+Found in:    nextjs-starter
+Status:      active
+Date:        2026-08-02

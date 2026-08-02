@@ -1,3 +1,5 @@
+import "server-only";
+
 // MOCK: Replace with real OAuth. Interface must match Google-OAuth-like
 // getAuthUrl()/exchangeCode() signatures. Stateless by design: exchangeCode
 // auto-logs-in the demo user (locked decision) and returns an opaque token —

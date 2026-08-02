@@ -70,7 +70,7 @@ describe("checkout", () => {
       email: "demo@example.com",
       name: "Demo User",
     });
-    mockWithPool.mockImplementation(async (callback: (client: typeof client) => Promise<unknown>) =>
+    mockWithPool.mockImplementation(async (callback: (client: unknown) => Promise<unknown>) =>
       callback(client),
     );
     mockCreatePayment.mockResolvedValue({
