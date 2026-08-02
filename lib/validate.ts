@@ -70,9 +70,26 @@ export const bookingSchema = z.object({
   deposit: z.preprocess((v) => v === "on", z.boolean()).default(false),
 });
 
+// Shop mutations receive strings from FormData. Normalize at the schema
+// boundary so every action works with the same positive-integer contract.
+export const cartQuantitySchema = z.preprocess(
+  (value) => (typeof value === "string" && value.trim() !== "" ? Number(value) : value),
+  z.number().int("Quantity must be a whole number.").positive("Quantity must be at least 1."),
+);
+
+export const checkoutSchema = z.object({
+  // Checked native checkboxes submit "on"; unchecked checkboxes are absent.
+  simulateFailure: z.preprocess((value) => value === "on" || value === true, z.boolean()).default(false),
+});
+
+export const orderStatusSchema = z.enum(["paid", "preparing", "ready", "cancelled"]);
+
 export type RegisterInput = z.infer<typeof registerSchema>;
 export type LoginInput = z.infer<typeof loginSchema>;
 export type PostInput = z.infer<typeof postSchema>;
 export type CategoryInput = z.infer<typeof categorySchema>;
 export type TagInput = z.infer<typeof tagSchema>;
 export type BookingInput = z.infer<typeof bookingSchema>;
+export type CartQuantityInput = z.infer<typeof cartQuantitySchema>;
+export type CheckoutInput = z.infer<typeof checkoutSchema>;
+export type OrderStatusInput = z.infer<typeof orderStatusSchema>;
