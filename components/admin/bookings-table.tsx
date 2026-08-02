@@ -174,7 +174,6 @@ export function BookingsTable({
   rows,
 }: {
   rows: BookingRow[];
-  current: { status: string; service: string };
 }) {
   return (
     <div className="overflow-x-auto">

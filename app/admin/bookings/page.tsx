@@ -120,7 +120,7 @@ export default async function AdminBookingsPage({
             />
           )
         ) : (
-          <BookingsTable rows={bookings} current={{ status, service }} />
+          <BookingsTable rows={bookings} />
         )}
       </div>
     </div>
