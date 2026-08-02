@@ -51,16 +51,16 @@ Deferred to future release.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| CURL-01 | Phase 1 | Pending |
-| CURL-02 | Phase 1 | Pending |
-| CURL-03 | Phase 1 | Pending |
-| CURL-04 | Phase 1 | Pending |
-| CURL-05 | Phase 1 | Pending |
-| CURL-06 | Phase 1 | Pending |
-| IMG-01 | Phase 1 | Pending |
-| IMG-02 | Phase 1 | Pending |
-| IMG-03 | Phase 1 | Pending |
-| IMG-04 | Phase 1 | Pending |
+| CURL-01 | Phase 1 | Complete |
+| CURL-02 | Phase 1 | Complete |
+| CURL-03 | Phase 1 | Complete |
+| CURL-04 | Phase 1 | Complete |
+| CURL-05 | Phase 1 | Complete |
+| CURL-06 | Phase 1 | Complete |
+| IMG-01 | Phase 1 | Complete |
+| IMG-02 | Phase 1 | Complete |
+| IMG-03 | Phase 1 | Complete |
+| IMG-04 | Phase 1 | Complete |
 
 **Coverage:**
 - v1 requirements: 10 total
