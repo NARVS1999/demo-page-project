@@ -1,3 +1,5 @@
+import "server-only";
+
 // lib/db.ts — server-only data layer (TMPL-03)
 // Importing this module from a client component is a build error ("server-only").
 // Template-wide rules:
@@ -6,7 +8,6 @@
 //     handler — never at module scope (serverless rule).
 //   - Node 24 global WebSocket: neonConfig.webSocketConstructor is NOT needed.
 
-import "server-only";
 import { neon } from "@neondatabase/serverless";
 import { env } from "@/lib/env";
 
