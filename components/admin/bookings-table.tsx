@@ -65,6 +65,7 @@ function ConfirmBookingDialog({ row }: { row: BookingRow }) {
   const router = useRouter();
   const [state, formAction, pending] = useActionState(confirmBooking, null);
   const [open, setOpen] = React.useState(false);
+  const canConfirm = row.status === "pending";
 
   React.useEffect(() => {
     if (state?.ok) {
@@ -77,11 +78,13 @@ function ConfirmBookingDialog({ row }: { row: BookingRow }) {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button variant="secondary" size="sm">
-          Confirm booking
-        </Button>
-      </DialogTrigger>
+      {canConfirm && (
+        <DialogTrigger asChild>
+          <Button variant="secondary" size="sm">
+            Confirm booking
+          </Button>
+        </DialogTrigger>
+      )}
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Confirm booking?</DialogTitle>
@@ -111,6 +114,7 @@ function CancelBookingDialog({ row }: { row: BookingRow }) {
   const [state, formAction, pending] = useActionState(cancelBookingAdmin, null);
   const [open, setOpen] = React.useState(false);
   const formRef = React.useRef<HTMLFormElement>(null);
+  const canCancel = row.status === "pending" || row.status === "confirmed";
 
   React.useEffect(() => {
     if (state?.ok) {
@@ -124,15 +128,17 @@ function CancelBookingDialog({ row }: { row: BookingRow }) {
 
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
-      <AlertDialogTrigger asChild>
-        <Button
-          variant="ghost"
-          size="sm"
-          className="text-destructive hover:bg-destructive/10 hover:text-destructive"
-        >
-          Cancel booking
-        </Button>
-      </AlertDialogTrigger>
+      {canCancel && (
+        <AlertDialogTrigger asChild>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="text-destructive hover:bg-destructive/10 hover:text-destructive"
+          >
+            Cancel booking
+          </Button>
+        </AlertDialogTrigger>
+      )}
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Cancel booking?</AlertDialogTitle>
@@ -227,10 +233,8 @@ export function BookingsTable({
               </td>
               <td className="px-4 py-3 text-right">
                 <div className="flex justify-end gap-2">
-                  {row.status === "pending" && <ConfirmBookingDialog row={row} />}
-                  {(row.status === "pending" || row.status === "confirmed") && (
-                    <CancelBookingDialog row={row} />
-                  )}
+                  <ConfirmBookingDialog row={row} />
+                  <CancelBookingDialog row={row} />
                 </div>
               </td>
             </tr>

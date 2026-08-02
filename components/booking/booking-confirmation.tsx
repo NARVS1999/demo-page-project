@@ -90,8 +90,10 @@ export type BookingNotices = {
 
 function CancelBookingDialog({
   booking,
+  canCancel,
 }: {
   booking: BookingSummary;
+  canCancel: boolean;
 }) {
   const router = useRouter();
   const [state, formAction, pending] = useActionState(cancelBooking, null);
@@ -110,11 +112,13 @@ function CancelBookingDialog({
 
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
-      <AlertDialogTrigger asChild>
-        <Button variant="ghost" className="text-destructive hover:bg-destructive/10 hover:text-destructive">
-          Cancel booking
-        </Button>
-      </AlertDialogTrigger>
+      {canCancel && (
+        <AlertDialogTrigger asChild>
+          <Button variant="ghost" className="text-destructive hover:bg-destructive/10 hover:text-destructive">
+            Cancel booking
+          </Button>
+        </AlertDialogTrigger>
+      )}
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Cancel booking?</AlertDialogTitle>
@@ -279,7 +283,7 @@ export function BookingConfirmation({
           </section>
         )}
 
-        {isOwner && canCancel && (
+        {isOwner && (
           <div className="flex flex-wrap items-center gap-3">
             <Button asChild variant="secondary">
               <Link href="/book">Book another</Link>
@@ -287,7 +291,7 @@ export function BookingConfirmation({
             <Button asChild variant="ghost">
               <Link href="/bookings">My bookings</Link>
             </Button>
-            <CancelBookingDialog booking={booking} />
+            <CancelBookingDialog booking={booking} canCancel={canCancel} />
           </div>
         )}
       </div>

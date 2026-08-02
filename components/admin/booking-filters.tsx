@@ -34,7 +34,7 @@ export function BookingFilters({
           name="status"
           defaultValue={current.status}
           onChange={(event) => event.currentTarget.form?.submit()}
-          className="w-full rounded-md border border-input bg-transparent px-3 py-1.5 text-sm sm:w-auto"
+          className="w-full rounded-md border border-input bg-transparent px-3 py-1.5 text-sm dark:[color-scheme:dark] sm:w-auto"
         >
           <option value="all">All statuses</option>
           <option value="pending">Pending</option>
@@ -50,7 +50,7 @@ export function BookingFilters({
           name="service"
           defaultValue={current.service}
           onChange={(event) => event.currentTarget.form?.submit()}
-          className="w-full rounded-md border border-input bg-transparent px-3 py-1.5 text-sm sm:w-auto"
+          className="w-full rounded-md border border-input bg-transparent px-3 py-1.5 text-sm dark:[color-scheme:dark] sm:w-auto"
         >
           <option value="all">All services</option>
           {services.map((service) => (
