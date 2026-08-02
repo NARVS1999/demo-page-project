@@ -47,7 +47,7 @@ All six import from `@/lib/mock` and mirror their real-provider API shapes. Swap
 | SMS | `sendSms({to, message})` | `MOCK_SMS` | `mock_sms` | status `delivered` |
 | OAuth | `getAuthUrl()`, `exchangeCode(code)` | `MOCK_OAUTH` | — (stateless) | auto-logs-in the demo user |
 | Maps | `geocode(address)`, `getStaticMapUrl({lat, lng})` | `MOCK_MAPS` | — (stateless) | deterministic pseudo-coords; no API keys |
-| Storage | `upload({name, data})`, `getUrl(id)` | `MOCK_STORAGE` | `mock_uploads` | metadata only — never stores the blob |
+| Storage | `upload({name, data})`, `getUrl(id)` | `MOCK_STORAGE` | `mock_uploads` | `mock` = metadata only (never the blob); `real` = uploads bytes to Vercel Blob |
 
 ## Deploy (GitHub → Vercel → Neon, $0)
 
@@ -71,7 +71,7 @@ git push -u origin main
 ### 3. Vercel
 
 1. Import the repo in the Vercel dashboard (Hobby plan, no CLI needed).
-2. Add the **9 environment variables** from `.env.example` (both Neon URLs, `SESSION_SECRET`, six `MOCK_*` switches). Never commit `.env.local`.
+2. Add the **9 environment variables** from `.env.example` (both Neon URLs, `SESSION_SECRET`, six `MOCK_*` switches). Never commit `.env.local`. For real image uploads, also set `MOCK_STORAGE=real` + `BLOB_READ_WRITE_TOKEN` (Vercel Blob store).
 3. Push to `main` → auto-deploy. Done.
 
 ## Operations notes
@@ -115,7 +115,9 @@ The seeded demo account gives you the full CMS experience out of the box:
 
 ### Honest mocks
 
-Upload URLs are **simulated**: `https://mock.storage/…` URLs never resolve — the editor shows a "Mock cover — URL only" placeholder, and public cards hide broken covers. Seeded posts use `picsum.photos` seeded URLs so the demo renders real photos immediately.
+Upload URLs are **simulated** by default: `https://mock.storage/…` URLs never resolve — the editor shows a "Mock cover — URL only" placeholder, and public cards hide broken covers. Seeded posts use `picsum.photos` seeded URLs so the demo renders real photos immediately.
+
+**Real uploads:** set `MOCK_STORAGE=real` and add a `BLOB_READ_WRITE_TOKEN` (Vercel Blob store) and the "Upload cover" button stores the actual image bytes and returns a real public URL that renders on the blog. You can also paste any image URL directly in the editor.
 
 ### Run it
 

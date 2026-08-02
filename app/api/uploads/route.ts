@@ -29,7 +29,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "File too large." }, { status: 413 });
   }
 
-  const data = Buffer.from(await file.arrayBuffer()).toString("base64");
+  const data = Buffer.from(await file.arrayBuffer());
   const { url, size } = await storage.upload({ name: file.name, data });
   return NextResponse.json({ url, size }, { status: 201 });
 }

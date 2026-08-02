@@ -20,6 +20,8 @@ export const envSchema = z.object({
   MOCK_OAUTH: z.enum(["mock", "real"]).default("mock"),
   MOCK_MAPS: z.enum(["mock", "real"]).default("mock"),
   MOCK_STORAGE: z.enum(["mock", "real"]).default("mock"),
+  // Required only when MOCK_STORAGE=real — Vercel Blob store token.
+  BLOB_READ_WRITE_TOKEN: z.string().optional(),
 });
 
 export function formatEnvErrors(

@@ -11,6 +11,7 @@ import * as React from "react";
 import { ImageIcon, ImagePlus, Loader2, X } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 
 const MAX_BYTES = 3 * 1024 * 1024; // mirrors app/api/uploads/route.ts
 
@@ -18,6 +19,7 @@ export function CoverUpload({ defaultValue }: { defaultValue?: string }) {
   const [url, setUrl] = React.useState<string>(defaultValue ?? "");
   const [pending, setPending] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
+  const [draftUrl, setDraftUrl] = React.useState("");
   const inputRef = React.useRef<HTMLInputElement>(null);
 
   const isMockUrl = url.startsWith("https://mock.storage/");
@@ -88,7 +90,7 @@ export function CoverUpload({ defaultValue }: { defaultValue?: string }) {
           </Button>
         </div>
       ) : (
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-3">
           <Button
             type="button"
             variant="outline"
@@ -112,6 +114,41 @@ export function CoverUpload({ defaultValue }: { defaultValue?: string }) {
             aria-label="Upload cover image"
             onChange={(event) => handleFile(event.target.files?.[0])}
           />
+
+          <div className="flex w-full max-w-xs flex-col gap-1.5">
+            <Label className="text-xs text-muted-foreground" htmlFor="cover-url">
+              or paste an image URL
+            </Label>
+            <div className="flex gap-2">
+              <input
+                id="cover-url"
+                type="url"
+                placeholder="https://…/image.jpg"
+                value={draftUrl}
+                className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                aria-label="Image URL"
+                onChange={(event) => setDraftUrl(event.target.value)}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter") {
+                    event.preventDefault();
+                    setUrl(draftUrl.trim());
+                  }
+                }}
+              />
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="shrink-0"
+                onClick={() => setUrl(draftUrl.trim())}
+              >
+                Use
+              </Button>
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Uses the image as a real cover — e.g. a picsum, Unsplash, or any hosted image link.
+            </p>
+          </div>
         </div>
       )}
 
