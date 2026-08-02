@@ -12,6 +12,7 @@ export const SITE = {
   defaultNav: [
     { label: "Home", href: "/" },
     { label: "Blog", href: "/blog" },
+    { label: "Services", href: "/services" },
     { label: "Posts", href: "/posts" },
     { label: "Admin", href: "/admin" },
   ],
