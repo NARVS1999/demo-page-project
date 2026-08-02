@@ -68,6 +68,7 @@ export function BookingFlow({
               selected={selectedService?.id === service.id}
               onSelect={() => handleServiceSelect(service)}
               index={index}
+              hasSelection={selectedService !== null}
             />
           ))}
         </div>

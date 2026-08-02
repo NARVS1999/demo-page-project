@@ -27,13 +27,24 @@ export function ServiceCard(props: {
   selected: boolean;
   onSelect?: () => void;
   index?: number;
+  /** Group-level: whether any radio in the group is currently selected. When
+   *  nothing is selected the FIRST card is the tab stop so the group stays
+   *  keyboard-reachable (WR-06 — roving tabindex needs an entry point). */
+  hasSelection?: boolean;
 }) {
-  const { service, selected, onSelect } = props;
+  const { service, selected, onSelect, index = 0, hasSelection = false } = props;
   const selectable = typeof onSelect === "function";
 
   // Arrow-key navigation (UI-SPEC a11y 1): move focus through sibling radios
   // (Phase 1 segmented-control pattern); Tab moves into/out of the group only.
+  // Enter/Space select the focused card (WR-06 — a role="radio" div does not
+  // fire click on keyboard activation).
   function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      onSelect?.();
+      return;
+    }
     if (!["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(event.key)) return;
     const radios = Array.from(
       event.currentTarget.parentElement?.querySelectorAll<HTMLElement>(
@@ -52,7 +63,7 @@ export function ServiceCard(props: {
     <div
       role={selectable ? "radio" : undefined}
       aria-checked={selectable ? selected : undefined}
-      tabIndex={selectable ? (selected ? 0 : -1) : undefined}
+      tabIndex={selectable ? (selected || (index === 0 && !hasSelection) ? 0 : -1) : undefined}
       aria-label={selectable ? service.name : undefined}
       onClick={selectable ? () => onSelect() : undefined}
       onKeyDown={selectable ? handleKeyDown : undefined}
