@@ -43,7 +43,7 @@ Phase 2 usage notes (all within the declared scale):
 
 | Element | Value |
 |---------|-------|
-| Slot pill padding | `px-3 py-1.5` (12px vertical — within scale, matches 8+4 rhythm), pill-to-pill gap `gap-2` |
+| Slot pill padding | `px-3 py-2 min-h-10` (12px horizontal + 8px per vertical side — both multiples of 4, in scale; `min-h-10` enforces the 40px touch target), pill-to-pill gap `gap-2` |
 | Date group stack | `space-y-2` per day; day sections `space-y-6` apart; booking flow sections `space-y-8` |
 | Confirm dialog | `max-w-md` (448px — same as auth card width, inherited exception) |
 | Booking flow container | `max-w-5xl` (inherited app-shell width) — the 14-day list stays single column, never a 3-col grid |
@@ -121,8 +121,8 @@ Phase 0 and Phase 1 rows all remain in force. Phase 2 additions:
 | Confirmation — stale/unknown id | `not-found()` — "Page not found" + primary "Back to services" (→ `/services`) + ghost "Back to home" |
 | Admin bookings page | page-header "Bookings" / "Manage appointments — N bookings · soonest first." (N = filtered count, pluralized: "1 booking") |
 | Admin — filters | Label "Status": options All statuses / Pending / Confirmed / Cancelled · Label "Service": options All services / Haircut / Beard Trim / Haircut + Beard · "Clear filters" ghost link (visible only when a filter is active) |
-| Admin — confirm action | "Confirm" (secondary button, per-row, pending rows only) — confirm dialog copy: "Confirm booking?" / "The customer will receive a confirmation notice." / Button "Confirm booking" (primary) |
-| Admin — cancel action | "Cancel" (ghost destructive, per-row, pending/confirmed rows) — alert-dialog copy: "Cancel booking?" / "The slot reopens for others. This action cannot be undone." / Button "Cancel booking" (destructive) |
+| Admin — confirm action | "Confirm booking" (secondary button, per-row, pending rows only — verb + noun, matches the dialog button label) — confirm dialog copy: "Confirm booking?" / "The customer will receive a confirmation notice." / Button "Confirm booking" (primary) |
+| Admin — cancel action | "Cancel booking" (ghost destructive, per-row, pending/confirmed rows — verb + noun, matches the alert-dialog button label) — alert-dialog copy: "Cancel booking?" / "The slot reopens for others. This action cannot be undone." / Button "Cancel booking" (destructive) |
 | Empty — services list | Heading: "No services yet" / Body: "The barbershop hasn't added any services yet." / no CTA |
 | Empty — no slots (all 14 days) | Heading: "No slots available" / Body: "No open times in the next 14 days for this service." / CTA: "Browse services" (→ `/services`) |
 | Empty — admin bookings (no filters) | Heading: "No bookings yet" / Body: "Bookings will appear here when customers reserve slots." / no CTA |
@@ -148,7 +148,7 @@ All Phase 0 shadcn + Phase 0/1 custom components. `checkbox` is the ONLY new sha
 | `booking-dialog` | `components/booking/booking-dialog.tsx` | client | `{ open, onOpenChange, service, slot, price }` — shadcn `dialog` (max-w-md): title "Confirm your booking"; summary rows (Service / Date & time / Price — label + mono value, `divide-y divide-border`); deposit `checkbox` + Label (25% amount computed); footer: "Not yet" (secondary) + "Confirm booking" (primary). Submits via server action (`useActionState`); pending → disabled + `Loader2`; conflict → destructive Alert (per contract) then closes + parent refreshes slot state; payment failure → destructive Alert; success → toast + `router.push("/booking/{id}")`. |
 | `booking-confirmation` | `components/booking/booking-confirmation.tsx` | server | `{ booking, notices, isOwner, canCancel }` — confirmation page body: status badge next to H1; summary card (Service, Date & time, Price, Deposit paid/—, Status — hairline rows); "Notices sent" section (label + hairline + honesty note; email row + SMS row with Mail/MessageSquare icons; section **omitted** when zero notices); action row: "Book another" (secondary) + "Cancel booking" (ghost destructive, only when `isOwner && canCancel`) → `alert-dialog`. |
 | `booking-filters` | `components/admin/booking-filters.tsx` | server | `{ current }` — `<form method="GET" action="/admin/bookings">`: two `select`s (Status, Service — options per contract, labels via `Label htmlFor`) + "Clear filters" ghost link (`Link` to `/admin/bookings`) when `status` or `service` is non-`all`. Submits on change via `onChange` → `form.submit()` (server-rendered results — no client fetch, same as Phase 1 search). |
-| `bookings-table` | `components/admin/bookings-table.tsx` | server | Table: Service (name + mono price suffix muted), Customer (name + email muted `truncate`), Date & time (mono), Status (badge mapping per Color), Actions (Confirm secondary button — pending rows only; Cancel ghost destructive — pending/confirmed rows). Row hover `bg-muted/50`; skeleton row variant; empty → `empty-state` per contract. Cancel → `alert-dialog`; confirm → `dialog` (non-destructive copy). After action: server action `{ok:true}` → toast + `router.refresh()`. |
+| `bookings-table` | `components/admin/bookings-table.tsx` | server | Table: Service (name + mono price suffix muted), Customer (name + email muted `truncate`), Date & time (mono), Status (badge mapping per Color), Actions ("Confirm booking" secondary button — pending rows only; "Cancel booking" ghost destructive — pending/confirmed rows). Row hover `bg-muted/50`; skeleton row variant; empty → `empty-state` per contract. Cancel → `alert-dialog`; confirm → `dialog` (non-destructive copy). After action: server action `{ok:true}` → toast + `router.refresh()`. |
 
 ### Supporting (no new files)
 
@@ -257,7 +257,7 @@ card:
 ## Responsive Behavior
 
 - **Service cards:** 1 col → `md:grid-cols-3`; cards keep `p-6` at all sizes; whole card is the radio target (40px+ padding protects touch).
-- **Slot pills:** `flex-wrap` — wrap naturally to 2–3 per row on mobile; pill height ≥ 40px (`py-1.5` + 14px mono text + border = ~40px, keep ≥ 40 total for touch); 14-day list scrolls with the page (never an internal scroll region).
+- **Slot pills:** `flex-wrap` — wrap naturally to 2–3 per row on mobile; pill height ≥ 40px enforced by `min-h-10` (`px-3 py-2` + 14px mono text + 1px borders ≈ 38px natural height — `min-h-10` raises it to the 40px touch target); 14-day list scrolls with the page (never an internal scroll region).
 - **Confirm bar:** sticky `bottom-0` on mobile (`bg-background/95 backdrop-blur border-t border-border p-4`, full-width button), inline in the flow on `md`+ (right-aligned, non-sticky).
 - **Admin table:** `overflow-x-auto` wrapper, `min-w-[720px]`; Customer column `max-w-[240px] truncate` (email truncates, name + `title` attr carries full string); Date & time `whitespace-nowrap`.
 - **Filters bar:** `flex flex-wrap gap-4` — selects `w-full sm:w-auto` on mobile.
@@ -275,7 +275,7 @@ All Phase 0/1 rules inherited (focus rings, contrast ≥ 4.5:1, one H1 per page,
 4. **Confirm dialog:** Radix dialog (focus trap, `aria-modal`, ESC dismiss, overlay click dismiss — inherited); focus lands on the first summary row; conflict/payment Alerts are `role="alert"` and focus follows the Alert inside the dialog.
 5. **Deposit checkbox:** `Label htmlFor` ("Pay 25% deposit ({amount})…"), checked state announced by the native checkbox (primary fill per Color).
 6. **Admin filters:** `Label htmlFor` on both selects; GET navigation means SR users land on the refreshed H1 ("Bookings") after submitting.
-7. **Status:** badge text is the full status word (pending/confirmed/cancelled) — never color-only; per-row action buttons have visible text ("Confirm" / "Cancel"), not icon-only.
+7. **Status:** badge text is the full status word (pending/confirmed/cancelled) — never color-only; per-row action buttons have visible text ("Confirm booking" / "Cancel booking"), not icon-only.
 8. **Cancel flows:** all cancels go through `alert-dialog` (Radix — focus trap, `aria-describedby` body copy); destructive button is the default focus target inside the dialog.
 9. **Contrast:** taken pills (muted-foreground on muted) and cancelled badges (muted on outline) both ≥ 4.5:1 on their surfaces — verified in Phase 0 token audit; re-verify at verify time.
 
