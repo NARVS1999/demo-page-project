@@ -21,6 +21,7 @@ export async function SiteHeader() {
         { label: "Home", href: "/" },
         { label: "Blog", href: "/blog" },
         { label: "Services", href: "/services" },
+        { label: "Bookings", href: "/bookings" },
         { label: "Posts", href: "/posts" },
         { label: "Admin", href: "/admin" },
       ]

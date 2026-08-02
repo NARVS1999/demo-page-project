@@ -284,6 +284,9 @@ export function BookingConfirmation({
             <Button asChild variant="secondary">
               <Link href="/book">Book another</Link>
             </Button>
+            <Button asChild variant="ghost">
+              <Link href="/bookings">My bookings</Link>
+            </Button>
             <CancelBookingDialog booking={booking} />
           </div>
         )}

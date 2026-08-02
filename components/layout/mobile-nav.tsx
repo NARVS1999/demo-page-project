@@ -22,6 +22,7 @@ export function MobileNav({
         { label: "Home", href: "/" },
         { label: "Blog", href: "/blog" },
         { label: "Services", href: "/services" },
+        { label: "Bookings", href: "/bookings" },
         { label: "Dashboard", href: "/dashboard" },
         { label: "Posts", href: "/posts" },
         { label: "Admin", href: "/admin" },
