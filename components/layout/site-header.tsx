@@ -20,12 +20,14 @@ export async function SiteHeader() {
     ? [
         { label: "Home", href: "/" },
         { label: "Blog", href: "/blog" },
+        { label: "Services", href: "/services" },
         { label: "Posts", href: "/posts" },
         { label: "Admin", href: "/admin" },
       ]
     : [
         { label: "Home", href: "/" },
         { label: "Blog", href: "/blog" },
+        { label: "Services", href: "/services" },
       ];
 
   return (
