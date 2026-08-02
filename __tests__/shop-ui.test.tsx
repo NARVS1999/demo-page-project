@@ -31,6 +31,17 @@ const product: CatalogProduct = {
   inventory: 4,
 };
 
+const cartRow = {
+  productId: product.id,
+  slug: product.slug,
+  name: product.name,
+  imageUrl: null,
+  unitPriceCents: 650,
+  quantity: 2,
+  inventory: 4,
+  lineTotalCents: 1300,
+};
+
 describe("Northstar catalog components", () => {
   it("links product cards to slug detail pages and formats server cents", () => {
     render(<ProductCard product={product} />);
@@ -99,5 +110,94 @@ describe("shop routes and navigation contract", () => {
     expect(readFileSync("app/(main)/shop/[slug]/page.tsx", "utf8")).toContain(
       'export const dynamic = "force-dynamic"',
     );
+  });
+});
+
+describe("cart, checkout, and order confirmation components", () => {
+  it("renders a persistent cart row with bound quantity and remove controls", async () => {
+    const { CartTable } = await import("@/components/shop/cart-table");
+    render(<CartTable rows={[cartRow]} />);
+
+    expect(screen.getByText("House Filter")).toBeTruthy();
+    expect((screen.getByLabelText("Quantity for House Filter") as HTMLInputElement).value).toBe("2");
+    expect(screen.getByRole("button", { name: "Update quantity for House Filter" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Remove House Filter" })).toBeTruthy();
+    expect(screen.getByText("$13")).toBeTruthy();
+  });
+
+  it("keeps payment failure visible and retryable on the counter-pickup checkout form", async () => {
+    const { CheckoutForm } = await import("@/components/shop/checkout-form");
+    render(
+      <CheckoutForm
+        user={{ name: "Demo User", email: "demo@example.com" }}
+        rows={[cartRow]}
+        totalCents={1300}
+        initialState={{
+          message: "Payment failed. No order was created. Your cart is unchanged. Try again.",
+        }}
+      />,
+    );
+
+    expect(screen.getByText("Demo User")).toBeTruthy();
+    expect(screen.getByText("Counter pickup")).toBeTruthy();
+    expect(screen.getByLabelText("Simulate payment failure")).toBeTruthy();
+    expect(screen.getByRole("alert").textContent).toContain("Your cart is unchanged");
+    expect(screen.getByRole("button", { name: "Place order" })).toBeTruthy();
+  });
+
+  it("renders owner confirmation snapshots and simulated receipt honesty", async () => {
+    const { OrderConfirmation } = await import("@/components/shop/order-confirmation");
+    render(
+      <OrderConfirmation
+        order={{
+          id: "3042abcd-1234-4111-8111-111111111111",
+          status: "paid",
+          totalCents: 1300,
+          paymentStatus: "succeeded",
+          createdAt: "2026-08-02T12:00:00.000Z",
+          items: [
+            {
+              id: "6042abcd-1234-4111-8111-111111111111",
+              productId: product.id,
+              productName: product.name,
+              quantity: 2,
+              unitPriceCents: 650,
+              lineTotalCents: 1300,
+            },
+          ],
+        }}
+        user={{ name: "Demo User", email: "demo@example.com" }}
+      />,
+    );
+
+    expect(screen.getByRole("heading", { name: "Thanks for your order" })).toBeTruthy();
+    expect(screen.getByText("House Filter")).toBeTruthy();
+    expect(screen.getByText("Simulated receipt — no real email was sent.")).toBeTruthy();
+    expect(screen.getByText("Counter pickup")).toBeTruthy();
+  });
+
+  it("protects cart, checkout, and order reads with route-level auth/ownership contracts", () => {
+    const routeFiles = [
+      "app/(main)/shop/cart/page.tsx",
+      "app/(main)/shop/cart/loading.tsx",
+      "app/(main)/shop/cart/error.tsx",
+      "app/(main)/shop/checkout/page.tsx",
+      "app/(main)/shop/checkout/loading.tsx",
+      "app/(main)/shop/checkout/error.tsx",
+      "app/(main)/orders/[id]/page.tsx",
+      "app/(main)/orders/[id]/loading.tsx",
+      "app/(main)/orders/[id]/error.tsx",
+      "app/(main)/orders/[id]/not-found.tsx",
+    ];
+    for (const route of routeFiles) expect(existsSync(route)).toBe(true);
+    const cartPage = readFileSync("app/(main)/shop/cart/page.tsx", "utf8");
+    const checkoutPage = readFileSync("app/(main)/shop/checkout/page.tsx", "utf8");
+    const orderPage = readFileSync("app/(main)/orders/[id]/page.tsx", "utf8");
+    expect(cartPage).toContain('export const dynamic = "force-dynamic"');
+    expect(cartPage).toContain("/login?next=/shop/cart");
+    expect(checkoutPage).toContain("simulateFailure");
+    expect(checkoutPage).toContain("/shop/cart");
+    expect(orderPage).toContain('export const dynamic = "force-dynamic"');
+    expect(orderPage).toContain("user_id");
   });
 });
