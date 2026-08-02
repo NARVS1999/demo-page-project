@@ -69,12 +69,15 @@ Plans:
   4. Booking flow sends mock email confirmation and mock SMS reminder (logged to DB tables, viewable in admin)
   5. Demo data includes a yoga studio with 3 services, realistic slot schedules, and sample bookings
 
-**Plans**: 2 plans
+**Plans**: 2/2 plans executed
 
 Plans:
 
+- [x] 02-01-PLAN.md
+- [x] 02-02-PLAN.md
+
 - [x] 02-01: Schema + API routes — services, slots, bookings tables; atomic booking with BEGIN/COMMIT transaction
-- [ ] 02-02: UI pages — service listing, slot calendar, booking confirmation, admin management, mock email/SMS views
+- [x] 02-02: UI pages — service listing, slot calendar, booking confirmation, admin management, mock email/SMS views
 
 ### Phase 3: Ecommerce App
 
@@ -169,6 +172,6 @@ Plans:
 |-------|----------------|--------|-----------|
 | 0. Template Foundation | 2/2 | Complete    | 2026-08-02 |
 | 1. CMS App | 2/2 | Complete    | 2026-08-02 |
-| 2. Booking App | 0/2 | Not started | - |
+| 2. Booking App | 2/2 | In Progress|  |
 | 3. Ecommerce App | 0/2 | Not started | - |
 | 4. Portfolio Shell | 0/1 | Not started | - |

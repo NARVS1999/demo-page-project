@@ -31,14 +31,14 @@
 
 ### Booking App
 
-- [ ] **BOOK-01**: Service listing page
-- [ ] **BOOK-02**: Slot calendar showing available/taken slots
-- [ ] **BOOK-03**: Booking flow — user selects slot and confirms
+- [x] **BOOK-01**: Service listing page
+- [x] **BOOK-02**: Slot calendar showing available/taken slots
+- [x] **BOOK-03**: Booking flow — user selects slot and confirms
 - [x] **BOOK-04**: Double-booking prevention (atomic slot reservation)
-- [ ] **BOOK-05**: Admin confirm/cancel bookings
-- [ ] **BOOK-06**: Mock email confirmation (saved to DB, viewable in admin)
-- [ ] **BOOK-07**: Mock SMS reminder (logged to table)
-- [ ] **BOOK-08**: Optional mock payment deposit
+- [x] **BOOK-05**: Admin confirm/cancel bookings
+- [x] **BOOK-06**: Mock email confirmation (saved to DB, viewable in admin)
+- [x] **BOOK-07**: Mock SMS reminder (logged to table)
+- [x] **BOOK-08**: Optional mock payment deposit
 
 ### Ecommerce App
 
@@ -131,14 +131,14 @@
 | CMS-06 | Phase 1 | Complete |
 | CMS-07 | Phase 1 | Complete |
 | CMS-08 | Phase 1 | Complete |
-| BOOK-01 | Phase 2 | Pending |
-| BOOK-02 | Phase 2 | Pending |
-| BOOK-03 | Phase 2 | Pending |
+| BOOK-01 | Phase 2 | Complete |
+| BOOK-02 | Phase 2 | Complete |
+| BOOK-03 | Phase 2 | Complete |
 | BOOK-04 | Phase 2 | Complete |
-| BOOK-05 | Phase 2 | Pending |
-| BOOK-06 | Phase 2 | Pending |
-| BOOK-07 | Phase 2 | Pending |
-| BOOK-08 | Phase 2 | Pending |
+| BOOK-05 | Phase 2 | Complete |
+| BOOK-06 | Phase 2 | Complete |
+| BOOK-07 | Phase 2 | Complete |
+| BOOK-08 | Phase 2 | Complete |
 | SHOP-01 | Phase 3 | Pending |
 | SHOP-02 | Phase 3 | Pending |
 | SHOP-03 | Phase 3 | Pending |

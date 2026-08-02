@@ -4,16 +4,16 @@ milestone: v1.0
 milestone_name: milestone
 current_phase: 2
 current_phase_name: Booking App
-status: planning
-stopped_at: Completed 02-01-PLAN.md
-last_updated: "2026-08-02T11:04:20.214Z"
+status: executing
+stopped_at: Completed 02-02-PLAN.md
+last_updated: "2026-08-02T11:33:55.257Z"
 last_activity: 2026-08-02
 last_activity_desc: "Plan 02-01 complete: booking schema + atomic transactions + rolling seed"
 progress:
   total_phases: 3
-  completed_phases: 2
+  completed_phases: 3
   total_plans: 6
-  completed_plans: 5
+  completed_plans: 6
 ---
 
 # Project State
@@ -28,11 +28,11 @@ See: .planning/PROJECT.md (updated 2026-08-01)
 ## Current Position
 
 Phase: 2 of 5 (Booking App)
-Plan: 1 of 2 complete (02-01 data layer) — 02-02 UI next
-Status: Executing
+Plan: 2 of 2 complete (02-01 data layer) — 02-02 UI next
+Status: Ready to execute
 Last activity: 2026-08-02 — Plan 02-01 complete: booking schema + atomic transactions + rolling seed
 
-Progress: [████████░░] 83%
+Progress: [██████████] 100%
 
 ## Performance Metrics
 
@@ -65,6 +65,7 @@ Progress: [████████░░] 83%
 | Phase 01-cms-app P01-01 | 72 | 4 tasks | 13 files |
 | Phase 01-cms-app P01-02 | 220 | 4 tasks | 36 files |
 | Phase 02-booking-app P01 | 16min | 3 tasks | 12 files |
+| Phase 02-booking-app P02 | 20 | 4 tasks | 17 files |
 
 ## Accumulated Context
 
@@ -91,6 +92,8 @@ Recent decisions affecting current work:
 - [Phase ?]: Sample booking dates resolve to the nth upcoming Tue-Sat template day (nthTemplateDay) instead of fixed +N offsets — fixed offsets drift onto Sunday/Monday where the locked Tue-Sat grid has no slots
 - [Phase ?]: depositCents() in lib/booking.ts is the single source of truth for the 25% deposit formula; createBooking and the seed deposit amounts share it
 - [Phase ?]: Booking deposit payments are upserted before sample bookings in the seed — bookings.deposit_payment_id FK requires referenced rows to exist first
+- [Phase ?]: booking-filters is a client component (onChange auto-submit requires it; PATTERNS.md classifies it client) — GET form still server-renders results
+- [Phase ?]: checkbox resolved via unified radix-ui package already in package.json — zero new runtime dependencies this phase
 
 ### Pending Todos
 
@@ -108,6 +111,6 @@ None — all Phase 1 blockers resolved (see decision log above).
 
 ## Session Continuity
 
-Last session: 2026-08-02T11:03:41.598Z
-Stopped at: Completed 02-01-PLAN.md
+Last session: 2026-08-02T11:33:55.225Z
+Stopped at: Completed 02-02-PLAN.md
 Resume file: None
