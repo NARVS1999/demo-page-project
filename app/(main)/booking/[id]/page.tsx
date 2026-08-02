@@ -81,6 +81,7 @@ export default async function BookingPage({
     priceCents: Number(row.price_cents),
     depositPaymentId: (row.deposit_payment_id as string) ?? null,
     paymentAmount: row.payment_amount == null ? null : Number(row.payment_amount),
+    paymentStatus: (row.payment_status as string) ?? null,
     slotDate,
     slotTime,
     serviceName: row.service_name as string,

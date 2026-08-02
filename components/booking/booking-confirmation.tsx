@@ -71,6 +71,7 @@ export type BookingSummary = {
   priceCents: number;
   depositPaymentId: string | null;
   paymentAmount: number | null;
+  paymentStatus: string | null;
   slotDate: string;
   slotTime: string;
   serviceName: string;
@@ -213,9 +214,11 @@ export function BookingConfirmation({
           <div className="flex items-center justify-between gap-4 px-4 py-3">
             <span className="text-sm text-muted-foreground">Deposit</span>
             <span className="font-mono text-sm">
-              {booking.depositPaymentId
-                ? `Paid ${formatUsd(booking.paymentAmount ?? 0)}`
-                : "—"}
+              {booking.paymentStatus === "refunded"
+                ? `Refunded ${formatUsd(booking.paymentAmount ?? 0)}`
+                : booking.depositPaymentId
+                  ? `Paid ${formatUsd(booking.paymentAmount ?? 0)}`
+                  : "—"}
             </span>
           </div>
           <div className="flex items-center justify-between gap-4 px-4 py-3">
