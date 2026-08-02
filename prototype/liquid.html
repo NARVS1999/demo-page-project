@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="red" data-mode="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>The Daily Showcase — Liquid Edition</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;700&family=Newsreader:ital,wght@1,500;1,700&display=swap" rel="stylesheet" />
+<style>
+:root {
+  --sans: "Inter", system-ui, sans-serif;
+  --display: "Space Grotesk", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, monospace;
+  --serif: "Newsreader", Georgia, serif;
+}
+:root[data-theme="red"] {
+  --accent: #ff3b5c;
+  --accent-2: #ff7847;
+  --glow: rgba(255, 59, 92, 0.45);
+  --orb-a: #ff3b5c;
+  --orb-b: #ff8f5e;
+  --orb-c: #4a2bd9;
+}
+:root[data-theme="orange"] {
+  --accent: #ff8a3d;
+  --accent-2: #ffc24d;
+  --glow: rgba(255, 138, 61, 0.45);
+  --orb-a: #ff8a3d;
+  --orb-b: #ffc24d;
+  --orb-c: #ff4d8d;
+}
+:root[data-theme="nature"] {
+  --accent: #34d399;
+  --accent-2: #a3e635;
+  --glow: rgba(52, 211, 153, 0.4);
+  --orb-a: #34d399;
+  --orb-b: #a3e635;
+  --orb-c: #2dd4bf;
+}
+:root[data-mode="dark"] {
+  --bg: #0a0b12;
+  --text: #f2f4f8;
+  --text-soft: #b8c0cf;
+  --text-faint: #7a8496;
+  --glass: rgba(255, 255, 255, 0.055);
+  --glass-strong: rgba(255, 255, 255, 0.09);
+  --glass-border: rgba(255, 255, 255, 0.12);
+  --glass-hi: rgba(255, 255, 255, 0.08);
+  --shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+  --orb-opacity: 0.55;
+  --grain-opacity: 0.05;
+}
+:root[data-mode="light"] {
+  --bg: #eef1f7;
+  --text: #171a21;
+  --text-soft: #454d5c;
+  --text-faint: #737d8f;
+  --glass: rgba(255, 255, 255, 0.6);
+  --glass-strong: rgba(255, 255, 255, 0.78);
+  --glass-border: rgba(23, 26, 33, 0.12);
+  --glass-hi: rgba(255, 255, 255, 0.9);
+  --shadow: 0 20px 50px rgba(23, 26, 33, 0.12);
+  --orb-opacity: 0.35;
+  --grain-opacity: 0.03;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 17px;
+  line-height: 1.6;
+  transition: background-color 0.4s ease, color 0.4s ease;
+  min-height: 100vh;
+}
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: var(--grain-opacity);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.orbits { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+  opacity: var(--orb-opacity);
+  transition: background 0.6s ease, opacity 0.4s ease;
+  animation: drift 26s ease-in-out infinite alternate;
+}
+.orb-a { width: 46vw; height: 46vw; top: -14vw; left: -10vw; background: radial-gradient(circle at 35% 35%, var(--orb-a), transparent 65%); }
+.orb-b { width: 40vw; height: 40vw; top: 32%; right: -14vw; background: radial-gradient(circle at 60% 40%, var(--orb-b), transparent 65%); animation-delay: -9s; animation-duration: 32s; }
+.orb-c { width: 44vw; height: 44vw; bottom: -18vw; left: 22vw; background: radial-gradient(circle at 50% 50%, var(--orb-c), transparent 65%); animation-delay: -17s; animation-duration: 38s; }
+@keyframes drift {
+  from { transform: translate3d(0, 0, 0) scale(1); }
+  to { transform: translate3d(6vw, -4vh, 0) scale(1.12); }
+}
+.page { position: relative; z-index: 2; max-width: 1000px; margin: 0 auto; padding: 22px 24px 56px; }
+.toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 18px; }
+.swatches { display: flex; align-items: center; gap: 10px; }
+.swatch-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text-faint); margin-right: 4px; }
+.swatch {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--text-soft); background: var(--glass); border: 1px solid var(--glass-border);
+  border-radius: 999px; padding: 6px 13px; cursor: pointer; transition: all 0.18s ease;
+  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+}
+.swatch .dot { width: 10px; height: 10px; border-radius: 50%; box-shadow: 0 0 10px var(--glow); }
+.swatch[data-swatch="red"] .dot { background: #ff3b5c; }
+.swatch[data-swatch="orange"] .dot { background: #ff8a3d; }
+.swatch[data-swatch="nature"] .dot { background: #34d399; }
+.swatch:hover { background: var(--glass-strong); border-color: var(--accent); color: var(--text); }
+.swatch.is-active { background: var(--accent); border-color: var(--accent); color: #fff; }
+.swatch:focus-visible, .theme-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.theme-toggle {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+  background: var(--glass); color: var(--text); border: 1px solid var(--glass-border);
+  border-radius: 999px; padding: 8px 16px; cursor: pointer; transition: all 0.18s ease;
+  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+}
+.theme-toggle:hover { background: var(--glass-strong); border-color: var(--accent); }
+.glass {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: 24px;
+  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  box-shadow: var(--shadow), inset 0 1px 0 var(--glass-hi);
+}
+.nav {
+  display: flex; align-items: center; justify-content: space-between; gap: 18px;
+  padding: 14px 22px; margin-bottom: 30px; position: sticky; top: 14px;
+}
+.brand { display: flex; flex-direction: column; gap: 1px; }
+.brand-name { font-family: var(--display); font-weight: 700; font-size: 19px; letter-spacing: 0.06em; text-transform: uppercase; line-height: 1; }
+.brand-name .amp { font-family: var(--serif); font-style: italic; font-weight: 700; color: var(--accent); font-size: 22px; }
+.brand-tag { font-family: var(--mono); font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--text-faint); }
+.nav-links { display: flex; align-items: center; gap: 22px; }
+.nav-links a {
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--text-soft); text-decoration: none; transition: color 0.15s ease;
+}
+.nav-links a:hover { color: var(--accent); }
+.nav-links .btn-nav {
+  background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #fff;
+  border: none; padding: 9px 18px; border-radius: 999px; font-weight: 700;
+  box-shadow: 0 6px 24px var(--glow);
+}
+.nav-links .btn-nav:hover { filter: brightness(1.1); color: #fff; }
+.hero { padding: 44px 40px 40px; position: relative; overflow: hidden; }
+.hero::before {
+  content: "";
+  position: absolute; top: -120px; right: -120px; width: 320px; height: 320px;
+  background: radial-gradient(circle, var(--glow), transparent 70%);
+  pointer-events: none;
+}
+.section-label {
+  display: inline-block;
+  font-family: var(--mono); font-size: 10px; font-weight: 700; letter-spacing: 0.28em;
+  text-transform: uppercase; color: var(--accent);
+  border: 1px solid var(--glass-border); border-radius: 999px;
+  padding: 6px 14px; background: var(--glass); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+}
+.hero-title {
+  font-family: var(--display); font-weight: 700;
+  font-size: clamp(38px, 7.5vw, 68px); line-height: 1.04; letter-spacing: -0.02em;
+  margin: 20px 0 16px; max-width: 760px;
+}
+.gradient-text {
+  background: linear-gradient(120deg, var(--accent), var(--accent-2));
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.hero-title em { font-family: var(--serif); font-style: italic; font-weight: 700; }
+.hero-deck { font-size: 20px; color: var(--text-soft); max-width: 580px; margin-bottom: 20px; }
+.hero-body { max-width: 640px; color: var(--text-soft); font-size: 16px; }
+.hero-body strong { color: var(--text); font-weight: 600; }
+.cta-row { display: flex; flex-wrap: wrap; gap: 14px; margin: 28px 0 8px; align-items: center; }
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: var(--mono); font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase;
+  text-decoration: none; padding: 14px 28px; border-radius: 999px; cursor: pointer;
+  transition: all 0.2s ease; border: 1px solid var(--glass-border);
+  background: var(--glass); color: var(--text);
+  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+}
+.btn:hover { background: var(--glass-strong); border-color: var(--accent); box-shadow: 0 8px 30px var(--glow); transform: translateY(-1px); }
+.btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.btn-primary {
+  background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #fff; font-weight: 700;
+  border: none; box-shadow: 0 10px 34px var(--glow);
+}
+.btn-primary:hover { filter: brightness(1.1); color: #fff; }
+.seal {
+  display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;
+  width: 74px; height: 74px; border-radius: 50%;
+  background: var(--glass); border: 1px solid var(--glass-border);
+  font-family: var(--mono); font-weight: 700; font-size: 10px; letter-spacing: 0.08em;
+  text-transform: uppercase; text-align: center; line-height: 1.25; color: var(--accent);
+  transform: rotate(-6deg);
+  box-shadow: var(--shadow), inset 0 1px 0 var(--glass-hi), 0 0 30px var(--glow);
+  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+}
+.layout { display: grid; grid-template-columns: 1fr 26px; gap: 24px; margin-top: 30px; }
+.vertical-strip {
+  writing-mode: vertical-rl; text-orientation: mixed;
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.34em; text-transform: uppercase;
+  color: var(--text-faint); border-right: 1px solid var(--glass-border);
+  padding-right: 12px; justify-self: end; align-self: stretch;
+}
+.section-head { display: flex; align-items: center; gap: 16px; margin: 52px 0 22px; }
+.section-head .line { flex: 1; border-top: 1px solid var(--glass-border); }
+.section-title { font-family: var(--display); font-size: 14px; font-weight: 600; letter-spacing: 0.24em; text-transform: uppercase; color: var(--text-soft); }
+.features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+.card { padding: 28px 26px; display: flex; flex-direction: column; gap: 12px; transition: all 0.25s ease; }
+.card:hover { transform: translateY(-4px); border-color: var(--accent); box-shadow: var(--shadow), inset 0 1px 0 var(--glass-hi), 0 12px 44px var(--glow); }
+.card-icon {
+  width: 46px; height: 46px; border-radius: 14px; display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #fff;
+  box-shadow: 0 8px 24px var(--glow);
+}
+.card-icon svg { width: 22px; height: 22px; }
+.card-kicker { font-family: var(--mono); font-size: 10px; font-weight: 700; letter-spacing: 0.24em; text-transform: uppercase; color: var(--accent); }
+.card-title { font-family: var(--display); font-size: 22px; font-weight: 700; line-height: 1.15; }
+.card-body { font-size: 14.5px; color: var(--text-soft); }
+.notice {
+  display: flex; gap: 18px; align-items: flex-start; padding: 22px 24px; margin-top: 34px;
+}
+.notice-tag {
+  font-family: var(--mono); font-size: 10px; font-weight: 700; letter-spacing: 0.24em;
+  text-transform: uppercase; color: var(--accent); flex-shrink: 0; padding-top: 3px;
+}
+.notice p { font-size: 14.5px; color: var(--text-soft); }
+.notice code {
+  font-family: var(--mono); font-size: 12.5px; background: var(--glass-strong);
+  border: 1px solid var(--glass-border); border-radius: 8px; padding: 2px 8px; color: var(--text);
+}
+footer { margin-top: 48px; }
+.footer-grid {
+  display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--text-faint); padding: 18px 24px;
+}
+.footer-grid .center { color: var(--text-soft); }
+.footer-grid .right { text-align: right; }
+@media (max-width: 760px) {
+  .page { padding: 16px 14px 44px; }
+  .nav-links { display: none; }
+  .hero { padding: 32px 24px 30px; }
+  .layout { grid-template-columns: 1fr; }
+  .vertical-strip { display: none; }
+  .features { grid-template-columns: 1fr; }
+  .notice { flex-direction: column; gap: 8px; }
+  .footer-grid { grid-template-columns: 1fr; gap: 8px; text-align: center; }
+  .footer-grid .right { text-align: center; }
+  .toolbar { justify-content: center; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .orb { animation: none; }
+  html { scroll-behavior: auto; }
+  .card, .btn { transition: none; }
+}
+</style>
+</head>
+<body>
+<div class="orbits" aria-hidden="true">
+  <div class="orb orb-a"></div>
+  <div class="orb orb-b"></div>
+  <div class="orb orb-c"></div>
+</div>
+
+<div class="page">
+  <div class="toolbar">
+    <div class="swatches" role="group" aria-label="Theme color">
+      <span class="swatch-label">Theme</span>
+      <button class="swatch is-active" data-swatch="red" type="button" aria-pressed="true"><span class="dot" aria-hidden="true"></span>Red</button>
+      <button class="swatch" data-swatch="orange" type="button" aria-pressed="false"><span class="dot" aria-hidden="true"></span>Orange</button>
+      <button class="swatch" data-swatch="nature" type="button" aria-pressed="false"><span class="dot" aria-hidden="true"></span>Nature</button>
+    </div>
+    <button class="theme-toggle" id="modeToggle" type="button">Light</button>
+  </div>
+
+  <nav class="nav glass" aria-label="Primary">
+    <div class="brand">
+      <span class="brand-name">The Daily <span class="amp">&amp;</span> Showcase</span>
+      <span class="brand-tag">Free Fullstack Projects, Printed Daily</span>
+    </div>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="/posts">Posts</a>
+      <a href="/blog">Blog</a>
+      <a class="btn btn-nav" href="/register">Get Started</a>
+    </div>
+  </nav>
+
+  <header class="hero glass">
+    <span class="section-label">Front Page &mdash; Evening Edition</span>
+    <h1 class="hero-title">Build fullstack demos. <em class="gradient-text">Ship for free.</em></h1>
+    <p class="hero-deck">A battle-tested starter with auth, mock services, and a sample CRUD app &mdash; ready to deploy on Vercel at $0.</p>
+    <div class="hero-body">
+      <p>
+        Every project ships <strong>end-to-end without spending a cent</strong>.
+        Authentication, a real database, simulated payment and messaging,
+        and a complete reference application &mdash; all bundled into one
+        reusable template that turns every new demo into a thirty-minute build.
+      </p>
+    </div>
+    <div class="cta-row">
+      <a class="btn btn-primary" href="/register">Get Started</a>
+      <a class="btn" href="/posts">Browse Posts</a>
+      <span class="seal" aria-hidden="true">Free<br />Forever</span>
+    </div>
+  </header>
+
+  <div class="layout">
+    <main>
+      <div class="section-head" id="features">
+        <span class="section-title">Features</span>
+        <div class="line"></div>
+      </div>
+
+      <section class="features">
+        <article class="card glass">
+          <div class="card-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6"/><path d="m15.5 7.5 3 3L22 7l-3-3"/></svg>
+          </div>
+          <span class="card-kicker">Feature One</span>
+          <h2 class="card-title">Auth included</h2>
+          <p class="card-body">Email and password sign-in with a signed JWT session cookie, guarded by a proxy &mdash; battle-tested, zero configuration.</p>
+        </article>
+        <article class="card glass">
+          <div class="card-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9-4 3 4 3"/><path d="m18 15 4-3-4-3"/><path d="m14 4-4 16"/></svg>
+          </div>
+          <span class="card-kicker">Feature Two</span>
+          <h2 class="card-title">Mock services</h2>
+          <p class="card-body">Payment, email, SMS, OAuth, maps, and storage simulations with database-backed event logs you can inspect.</p>
+        </article>
+        <article class="card glass">
+          <div class="card-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>
+          </div>
+          <span class="card-kicker">Feature Three</span>
+          <h2 class="card-title">CRUD reference</h2>
+          <p class="card-body">A complete posts app showing ownership checks, server actions, and toast notifications on every mutation.</p>
+        </article>
+      </section>
+
+      <div class="notice glass">
+        <span class="notice-tag">Correspondence</span>
+        <p>
+          Demo credentials: <code>demo@example.com</code> / <code>demo1234</code>.
+          All external services are simulated &mdash; no real payments, no real
+          emails, no credit cards required.
+        </p>
+      </div>
+    </main>
+
+    <aside class="vertical-strip" aria-hidden="true">Built Free &mdash; Shipped Free &mdash; Open to the Public</aside>
+  </div>
+
+  <footer>
+    <div class="footer-grid glass">
+      <span>&copy; 2026 The Daily Showcase</span>
+      <span class="center">All Systems Simulated</span>
+      <span class="right">Tomorrow: The CMS Edition</span>
+    </div>
+  </footer>
+</div>
+
+<script>
+(function () {
+  var root = document.documentElement;
+  var savedTheme = localStorage.getItem("liquid-theme");
+  var savedMode = localStorage.getItem("liquid-mode");
+  if (savedTheme) root.setAttribute("data-theme", savedTheme);
+  if (savedMode) {
+    root.setAttribute("data-mode", savedMode);
+  } else if (window.matchMedia("(prefers-color-scheme: light)").matches) {
+    root.setAttribute("data-mode", "light");
+  }
+
+  var swatches = Array.prototype.slice.call(document.querySelectorAll(".swatch[data-swatch]"));
+  var modeBtn = document.getElementById("modeToggle");
+
+  function syncSwatches() {
+    var current = root.getAttribute("data-theme");
+    swatches.forEach(function (s) {
+      var active = s.getAttribute("data-swatch") === current;
+      s.classList.toggle("is-active", active);
+      s.setAttribute("aria-pressed", active ? "true" : "false");
+    });
+  }
+  swatches.forEach(function (s) {
+    s.addEventListener("click", function () {
+      root.setAttribute("data-theme", s.getAttribute("data-swatch"));
+      localStorage.setItem("liquid-theme", s.getAttribute("data-swatch"));
+      syncSwatches();
+    });
+  });
+
+  function syncMode() {
+    modeBtn.textContent = root.getAttribute("data-mode") === "dark" ? "Light" : "Dark";
+  }
+  modeBtn.addEventListener("click", function () {
+    var next = root.getAttribute("data-mode") === "dark" ? "light" : "dark";
+    root.setAttribute("data-mode", next);
+    localStorage.setItem("liquid-mode", next);
+    syncMode();
+  });
+
+  syncSwatches();
+  syncMode();
+})();
+</script>
+</body>
+</html>
