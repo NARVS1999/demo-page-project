@@ -15,10 +15,10 @@ Every project deploys and works end-to-end at zero cost — if it costs money, i
 - ✓ Template (`nextjs-starter`) with auth, DB pool, mock services, seed script, dark/light theme — Phase 0
 - ✓ CMS app — admin CRUD posts, markdown editor, draft/publish, categories/tags, search — Phase 1
 - ✓ Booking app — service listing, slot calendar, book flow, admin confirm/cancel, mock email/SMS — Phase 2 (barber shop; atomic double-booking prevention via conditional UPDATE in Pool transaction; optional 25% mock deposit; rolling 14-day seed window)
+- ✓ Ecommerce app — Northstar Coffee catalog, persistent cart, mock checkout, atomic inventory, owner confirmation, admin orders, and linked receipt outbox — Phase 3
 
 ### Active
 
-- [ ] Ecommerce app — catalog, cart, checkout with mock payment, order confirmation, admin dashboard
 - [ ] Portfolio shell — grid of all projects with live links, GitHub links, tech badges, demo credentials
 - [ ] 7–27 batch projects (task manager, inventory, expense tracker, job board, quiz, forum, etc.)
 
@@ -59,6 +59,8 @@ Every project deploys and works end-to-end at zero cost — if it costs money, i
 | Neon cloud DB for local dev | No local Postgres install needed; same DB for local + prod | ✓ Decided |
 | No real payments/emails/SMS | Portfolio scale only, not production | ✓ Decided |
 | Atomic booking via conditional UPDATE in Pool transaction | rowCount-0 = conflict + partial unique index fallback; mock payment/email/SMS join the txn via optional client/bookingId params (Phase 2) | ✓ Decided |
+| Atomic ecommerce checkout via locked inventory updates | Mock payment failure commits only its failed event; successful payment, order snapshots, inventory deduction, and cart clear share one transaction | ✓ Decided |
+| User-scoped commerce boundaries | Persistent carts are authenticated and owner-scoped; malformed, unknown, and non-owned order ids converge on one not-found response | ✓ Decided |
 
 ## Evolution
 
@@ -78,4 +80,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-08-02 after Phase 2*
+*Last updated: 2026-08-03 after Phase 3*

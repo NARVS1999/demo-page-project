@@ -9,7 +9,7 @@ Build 10–30 fully deployed fullstack demo apps at $0/month. The foundation is 
 - [x] **Phase 0: Template Foundation** - Reusable nextjs-starter with auth, DB, mocks, seed script, and deployment infra (completed 2026-08-02)
 - [x] **Phase 1: CMS App** - Blog/content management with post CRUD, markdown editor, categories, admin dashboard (completed 2026-08-02)
 - [x] **Phase 2: Booking App** - Service scheduling with slot calendar, booking flow, double-booking prevention, mock email/SMS (completed 2026-08-02)
-- [ ] **Phase 3: Ecommerce App** - Online shop with catalog, cart, checkout, mock payment, order management
+- [x] **Phase 3: Ecommerce App** - Online shop with catalog, cart, checkout, mock payment, order management (completed 2026-08-03)
 - [ ] **Phase 4: Portfolio Shell** - Project showcase grid with live links, tech badges, demo credentials
 
 ## Phase Details
@@ -173,5 +173,5 @@ Plans:
 | 0. Template Foundation | 2/2 | Complete    | 2026-08-02 |
 | 1. CMS App | 2/2 | Complete    | 2026-08-02 |
 | 2. Booking App | 2/2 | Complete    | 2026-08-02 |
-| 3. Ecommerce App | 2/2 | In Progress|  |
+| 3. Ecommerce App | 2/2 | Complete    | 2026-08-03 |
 | 4. Portfolio Shell | 0/1 | Not started | - |
