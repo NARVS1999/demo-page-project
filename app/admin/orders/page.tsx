@@ -55,7 +55,7 @@ export default async function AdminOrdersPage({
     <div className="flex flex-col gap-8">
       <PageHeader title="Orders" description={`Northstar Coffee · newest first · ${count} ${count === 1 ? "order" : "orders"}.`} />
       <div className="border border-border">
-        <OrderFilters current={status} />
+        <OrderFilters current={status} order={orderId} />
         {orders.length === 0 ? (
           filtersActive ? (
             <EmptyState title="No orders match these filters." description="Adjust the filters, or clear them." icon={<ShoppingBag className="h-5 w-5" aria-hidden="true" />} />

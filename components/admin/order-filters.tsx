@@ -11,7 +11,7 @@ const statuses = [
   ["cancelled", "Cancelled"],
 ] as const;
 
-export function OrderFilters({ current }: { current: string }) {
+export function OrderFilters({ current, order }: { current: string; order?: string | null }) {
   return (
     <form
       method="GET"
@@ -31,7 +31,7 @@ export function OrderFilters({ current }: { current: string }) {
           {statuses.map(([value, label]) => <option key={value} value={value}>{label}</option>)}
         </select>
       </div>
-      {current !== "all" && (
+      {(current !== "all" || order) && (
         <Link href="/admin/orders" className="h-10 inline-flex items-center text-sm font-medium text-primary underline-offset-4 hover:underline">
           Clear filters
         </Link>
