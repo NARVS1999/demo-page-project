@@ -138,6 +138,13 @@
   color: var(--foreground);
 }
 
+/* Native select popups (Chrome/Edge/FF render the <option> list with these
+   colors even when the OS theme is light) — matches the card surface. */
+select option {
+  background-color: var(--card);
+  color: var(--card-foreground);
+}
+
 .article-body p {
   @apply mb-4 text-foreground;
   font-size: 16px;
