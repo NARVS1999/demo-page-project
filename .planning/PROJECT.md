@@ -16,11 +16,11 @@ Every project deploys and works end-to-end at zero cost — if it costs money, i
 - ✓ CMS app — admin CRUD posts, markdown editor, draft/publish, categories/tags, search — Phase 1
 - ✓ Booking app — service listing, slot calendar, book flow, admin confirm/cancel, mock email/SMS — Phase 2 (barber shop; atomic double-booking prevention via conditional UPDATE in Pool transaction; optional 25% mock deposit; rolling 14-day seed window)
 - ✓ Ecommerce app — Northstar Coffee catalog, persistent cart, mock checkout, atomic inventory, owner confirmation, admin orders, and linked receipt outbox — Phase 3
+- ✓ Portfolio shell — responsive grid of all projects with live links, GitHub links, tech badges, demo credentials — Phase 4
 
 ### Active
 
-- [ ] Portfolio shell — grid of all projects with live links, GitHub links, tech badges, demo credentials
-- [ ] 7–27 batch projects (task manager, inventory, expense tracker, job board, quiz, forum, etc.)
+- [ ] 7–27 batch projects (task manager, inventory, expense tracker, job board, quiz, forum, etc.) — v2.0 milestone
 
 ### Out of Scope
 
@@ -79,5 +79,19 @@ This document evolves at phase transitions and milestone boundaries.
 3. Audit Out of Scope — reasons still valid?
 4. Update Context with current state
 
+## Current State (v1.0 SHIPPED 2026-08-03)
+
+**Template:** `nextjs-starter` — Next.js 16, TypeScript, Tailwind v4, Neon Postgres, shadcn/ui  
+**Deployed:** 4 apps on Vercel (free tier), 4 Neon databases (free tier)  
+**Portfolio:** Live at `/` with project grid, links, badges, demo credentials  
+**Tested:** 9 test files, 120 tests passing  
+**Budget:** $0/month total — all services on free tiers  
+
+## Next Milestone (v2.0)
+
+**Goal:** Scale to 7-27 batch projects using the proven template pattern.  
+**Requirements:** BATCH-01 through BATCH-25 defined in v1.0 requirements archive.  
+**Start:** `/gsd-new-milestone`
+
 ---
-*Last updated: 2026-08-03 after Phase 3*
+*Last updated: 2026-08-03 after Milestone v1.0*
