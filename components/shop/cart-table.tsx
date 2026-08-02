@@ -10,6 +10,7 @@ import { removeFromCart, updateCartQuantity, type FormState } from "@/app/(main)
 import { formatShopPrice, type CartItemRow } from "@/lib/shop";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { CoverImage } from "@/components/blog/cover-image";
 
 function CartRow({ row }: { row: CartItemRow }) {
   const router = useRouter();
@@ -43,7 +44,7 @@ function CartRow({ row }: { row: CartItemRow }) {
       <td className="px-4 py-4">
         <div className="flex min-w-[190px] items-center gap-3">
           {row.imageUrl ? (
-            <img src={row.imageUrl} alt="" className="h-14 w-14 shrink-0 object-cover" />
+            <CoverImage src={row.imageUrl} alt={`Photo of ${row.name}`} className="h-14 w-14 shrink-0 object-cover" />
           ) : (
             <div className="flex h-14 w-14 shrink-0 items-center justify-center bg-muted text-muted-foreground" aria-hidden="true">
               <ShoppingBag className="h-5 w-5" />
