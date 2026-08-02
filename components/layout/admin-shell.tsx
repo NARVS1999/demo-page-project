@@ -13,6 +13,7 @@ import {
   Inbox,
   LayoutDashboard,
   MessageSquare,
+  ShoppingBag,
 } from "lucide-react";
 import {
   SidebarProvider,
@@ -81,6 +82,16 @@ const adminNav = [
         label: "Bookings",
         href: "/admin/bookings",
         icon: <CalendarCheck className="h-4 w-4" aria-hidden="true" />,
+      },
+    ],
+  },
+  {
+    group: "Shop",
+    items: [
+      {
+        label: "Orders",
+        href: "/admin/orders",
+        icon: <ShoppingBag className="h-4 w-4" aria-hidden="true" />,
       },
     ],
   },

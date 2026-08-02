@@ -7,6 +7,8 @@ import { getCurrentUser } from "@/lib/session";
 import { Badge } from "@/components/ui/badge";
 import { EmptyState } from "@/components/ui/empty-state";
 import { PageHeader } from "@/components/ui/page-header";
+import Link from "next/link";
+import { orderRef } from "@/lib/shop";
 
 export const dynamic = "force-dynamic";
 
@@ -17,14 +19,16 @@ export default async function AdminEmailsPage() {
   if (!user) redirect("/login?next=/admin/emails");
 
   const rows = await sql`
-    SELECT recipient, subject, status, created_at
+    SELECT id, recipient, subject, status, created_at, order_id
     FROM mock_emails ORDER BY created_at DESC`;
 
   const emails = rows as {
+    id: string;
     recipient: string;
     subject: string;
     status: string;
-    created_at: string;
+    created_at: string | Date;
+    order_id: string | null;
   }[];
 
   return (
@@ -50,7 +54,8 @@ export default async function AdminEmailsPage() {
                   <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">To</th>
                   <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Subject</th>
                   <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Status</th>
-                  <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Created</th>
+              <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Created</th>
+              <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Reference</th>
                 </tr>
               </thead>
               <tbody>
@@ -67,6 +72,18 @@ export default async function AdminEmailsPage() {
                     </td>
                     <td className="px-4 py-3 text-sm text-muted-foreground">
                       {dateFmt.format(new Date(email.created_at))}
+                    </td>
+                    <td className="px-4 py-3 text-sm">
+                      {email.order_id ? (
+                        <Link
+                          href={`/admin/orders?order=${email.order_id}`}
+                          className="font-mono text-primary underline-offset-4 hover:underline"
+                        >
+                          Receipt for {orderRef(email.order_id)}
+                        </Link>
+                      ) : (
+                        <span className="text-muted-foreground">—</span>
+                      )}
                     </td>
                   </tr>
                 ))}
