@@ -5,15 +5,15 @@ milestone_name: milestone
 current_phase: 3
 current_phase_name: Ecommerce App
 status: planning
-stopped_at: Phase 3 plans created
-last_updated: "2026-08-02T14:05:59.797Z"
+stopped_at: Completed 03-01-PLAN.md
+last_updated: "2026-08-02T14:37:35.061Z"
 last_activity: 2026-08-02
 last_activity_desc: Phase 3 plans created after research and UI contract review
 progress:
   total_phases: 4
   completed_phases: 3
   total_plans: 8
-  completed_plans: 6
+  completed_plans: 7
 ---
 
 # Project State
@@ -28,11 +28,11 @@ See: .planning/PROJECT.md (updated 2026-08-01)
 ## Current Position
 
 Phase: 3 of 5 (Ecommerce App)
-Plan: 03-01 and 03-02 ready
+Plan: 2 of 2
 Status: Ready to execute
 Last activity: 2026-08-02 — Phase 3 plans created after research and UI contract review
 
-Progress: [███████░░░] 75%
+Progress: [█████████░] 88%
 
 ## Performance Metrics
 
@@ -67,6 +67,7 @@ Progress: [███████░░░] 75%
 | Phase 01-cms-app P01-02 | 220 | 4 tasks | 36 files |
 | Phase 02-booking-app P01 | 16min | 3 tasks | 12 files |
 | Phase 02-booking-app P02 | 20 | 4 tasks | 17 files |
+| Phase 03 P01 | 18 | 3 tasks | 15 files |
 
 ## Accumulated Context
 
@@ -95,6 +96,8 @@ Recent decisions affecting current work:
 - [Phase ?]: Booking deposit payments are upserted before sample bookings in the seed — bookings.deposit_payment_id FK requires referenced rows to exist first
 - [Phase ?]: booking-filters is a client component (onChange auto-submit requires it; PATTERNS.md classifies it client) — GET form still server-renders results
 - [Phase ?]: checkbox resolved via unified radix-ui package already in package.json — zero new runtime dependencies this phase
+- [Phase ?]: Ecommerce taxonomy stays isolated in shop_categories; checkout uses locked integer-cent snapshots and commits failed payment events without order/cart/inventory writes.
+- [Phase ?]: Deterministic Northstar ids/slugs and upserts keep three categories, twelve products, mixed orders, and linked receipts idempotent under the size gate.
 
 ### Pending Todos
 
@@ -112,6 +115,6 @@ None — all Phase 1 blockers resolved (see decision log above).
 
 ## Session Continuity
 
-Last session: 2026-08-02T14:05:59.762Z
-Stopped at: Phase 3 plans created
-Resume file: .planning/phases/03-ecommerce-app/03-01-PLAN.md
+Last session: 2026-08-02T14:31:30.339Z
+Stopped at: Completed 03-01-PLAN.md
+Resume file: .planning/phases/03-ecommerce-app/03-02-PLAN.md
