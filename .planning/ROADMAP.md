@@ -96,8 +96,8 @@ Plans:
 
 Plans:
 
-- [ ] 03-01: Schema + API routes — products, categories, cart_items, orders, order_items tables; cart CRUD; checkout with mock payment
-- [ ] 03-02: UI pages — product catalog, product detail, cart, checkout, order confirmation, admin orders dashboard
+- [ ] 03-01-PLAN.md — Schema/API surface — shop categories, products, persistent cart, transactional checkout, order lifecycle, mock receipts, and seed
+- [ ] 03-02-PLAN.md — UI surfaces — product catalog/detail, cart, checkout, owner confirmation, admin orders dashboard, and receipt links
 
 ### Phase 4: Portfolio Shell
 
