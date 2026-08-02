@@ -92,12 +92,12 @@ Plans:
   4. Admin orders dashboard shows all orders with status management and mock receipt email viewing
   5. Demo data includes a coffee shop with 10-15 products, categories, and realistic seed data
 
-**Plans**: 1/2 plans executed
+**Plans**: 2/2 plans executed
 
 Plans:
 
 - [x] 03-01-PLAN.md — Schema/API surface — shop categories, products, persistent cart, transactional checkout, order lifecycle, mock receipts, and seed
-- [ ] 03-02-PLAN.md — UI surfaces — product catalog/detail, cart, checkout, owner confirmation, admin orders dashboard, and receipt links
+- [x] 03-02-PLAN.md — UI surfaces — product catalog/detail, cart, checkout, owner confirmation, admin orders dashboard, and receipt links
 
 ### Phase 4: Portfolio Shell
 
@@ -173,5 +173,5 @@ Plans:
 | 0. Template Foundation | 2/2 | Complete    | 2026-08-02 |
 | 1. CMS App | 2/2 | Complete    | 2026-08-02 |
 | 2. Booking App | 2/2 | Complete    | 2026-08-02 |
-| 3. Ecommerce App | 1/2 | In Progress|  |
+| 3. Ecommerce App | 2/2 | In Progress|  |
 | 4. Portfolio Shell | 0/1 | Not started | - |

@@ -42,10 +42,10 @@
 
 ### Ecommerce App
 
-- [ ] **SHOP-01**: Product catalog with category/price filters
+- [x] **SHOP-01**: Product catalog with category/price filters
 - [x] **SHOP-02**: Shopping cart (persistent across sessions)
 - [x] **SHOP-03**: Checkout flow with mock payment (success/fail toggle)
-- [ ] **SHOP-04**: Order confirmation page
+- [x] **SHOP-04**: Order confirmation page
 - [x] **SHOP-05**: Admin orders dashboard
 - [x] **SHOP-06**: Inventory deduction on order
 - [x] **SHOP-07**: Mock receipt email
@@ -139,10 +139,10 @@
 | BOOK-06 | Phase 2 | Complete |
 | BOOK-07 | Phase 2 | Complete |
 | BOOK-08 | Phase 2 | Complete |
-| SHOP-01 | Phase 3 | Pending |
+| SHOP-01 | Phase 3 | Complete |
 | SHOP-02 | Phase 3 | Complete |
 | SHOP-03 | Phase 3 | Complete |
-| SHOP-04 | Phase 3 | Pending |
+| SHOP-04 | Phase 3 | Complete |
 | SHOP-05 | Phase 3 | Complete |
 | SHOP-06 | Phase 3 | Complete |
 | SHOP-07 | Phase 3 | Complete |
