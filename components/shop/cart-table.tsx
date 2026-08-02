@@ -82,7 +82,7 @@ function CartRow({ row }: { row: CartItemRow }) {
               onChange={(event) => setQuantity(event.target.value)}
               disabled={updatePending || removePending}
               aria-invalid={stockMessage ? true : undefined}
-              aria-describedby={`cart-error-${row.productId}`}
+              aria-describedby={stockMessage ? `cart-error-${row.productId}` : undefined}
               className="w-16 text-center"
             />
             <Button

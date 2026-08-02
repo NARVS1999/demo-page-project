@@ -139,7 +139,9 @@ describe("cart, checkout, and order confirmation components", () => {
     render(<CartTable rows={[cartRow]} />);
 
     expect(screen.getByText("House Filter")).toBeTruthy();
-    expect((screen.getByLabelText("Quantity for House Filter") as HTMLInputElement).value).toBe("2");
+    const quantityInput = screen.getByLabelText("Quantity for House Filter") as HTMLInputElement;
+    expect(quantityInput.value).toBe("2");
+    expect(quantityInput.getAttribute("aria-describedby")).toBeNull();
     expect(screen.getByRole("button", { name: "Update quantity for House Filter" })).toBeTruthy();
     expect(screen.getByRole("button", { name: "Remove House Filter" })).toBeTruthy();
     expect(screen.getByText("$13")).toBeTruthy();
