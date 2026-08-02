@@ -10,8 +10,8 @@ import { flattenError } from "zod";
 import { withPool } from "@/lib/db";
 import { email, payment } from "@/lib/mock";
 import { getCurrentUser } from "@/lib/session";
-import { isUuid } from "@/lib/utils";
-import { checkoutSchema } from "@/lib/validate";
+import { isUuid, safeNextUrl } from "@/lib/utils";
+import { cartQuantitySchema, checkoutSchema } from "@/lib/validate";
 
 export type FormState = {
   errors?: Record<string, string[] | undefined>;
@@ -35,6 +35,161 @@ class ShopStockConflictError extends Error {}
 
 function stockMessage(inventory: number): string {
   return `Only ${inventory} left. Choose a smaller quantity.`;
+}
+
+function invalidProductState(): FormState {
+  return { message: "This product is no longer available." };
+}
+
+function invalidQuantityState(errors: Record<string, string[] | undefined>): FormState {
+  return { errors };
+}
+
+function stockState(inventory: number): FormState {
+  const message = stockMessage(inventory);
+  return { message, errors: { quantity: [message] } };
+}
+
+function parseCartInput(formData: FormData):
+  | { ok: true; productId: string; quantity: number }
+  | { ok: false; state: FormState } {
+  const productId = formData.get("productId");
+  if (typeof productId !== "string" || !isUuid(productId)) {
+    return { ok: false, state: invalidProductState() };
+  }
+
+  const quantity = cartQuantitySchema.safeParse(formData.get("quantity"));
+  if (!quantity.success) {
+    return {
+      ok: false,
+      state: invalidQuantityState({
+        quantity: [quantity.error.issues[0]?.message ?? "Enter a valid quantity."],
+      }),
+    };
+  }
+
+  return { ok: true, productId, quantity: quantity.data };
+}
+
+function loginTarget(formData: FormData, fallback: string): string {
+  const requested = formData.get("next");
+  return safeNextUrl(typeof requested === "string" ? requested : null, fallback);
+}
+
+async function getProductInventory(
+  client: import("@neondatabase/serverless").PoolClient,
+  userId: string,
+  productId: string,
+) {
+  const result = await client.query(
+    `SELECT inventory, ci.quantity AS cart_quantity
+       FROM products p
+       LEFT JOIN cart_items ci ON ci.product_id = p.id AND ci.user_id = $2
+      WHERE p.id = $1
+      FOR UPDATE OF p`,
+    [productId, userId],
+  );
+  if (result.rowCount === 0) return null;
+  return {
+    inventory: Number(result.rows[0].inventory),
+    cartQuantity: Number(result.rows[0].cart_quantity ?? 0),
+  };
+}
+
+export async function addToCart(
+  _prev: FormState | null,
+  formData: FormData,
+): Promise<FormState> {
+  const user = await getCurrentUser();
+  if (!user) redirect(`/login?next=${loginTarget(formData, "/shop")}`);
+
+  const parsed = parseCartInput(formData);
+  if (!parsed.ok) return parsed.state;
+
+  const result = await withPool(async (client) => {
+    const product = await getProductInventory(client, user.id, parsed.productId);
+    if (!product) return { kind: "missing" as const };
+    const available = product.inventory - product.cartQuantity;
+    if (parsed.quantity > available) {
+      return { kind: "stock" as const, inventory: Math.max(available, 0) };
+    }
+
+    await client.query(
+      `INSERT INTO cart_items (user_id, product_id, quantity)
+       VALUES ($1, $2, $3)
+       ON CONFLICT (user_id, product_id) DO UPDATE
+         SET quantity = cart_items.quantity + EXCLUDED.quantity,
+             updated_at = now()`,
+      [user.id, parsed.productId, parsed.quantity],
+    );
+    return { kind: "success" as const };
+  });
+
+  if (result.kind === "missing") return invalidProductState();
+  if (result.kind === "stock") return stockState(result.inventory);
+  revalidatePath("/shop");
+  revalidatePath("/shop/cart");
+  revalidatePath("/shop/checkout");
+  return { ok: true };
+}
+
+export async function updateCartQuantity(
+  _prev: FormState | null,
+  formData: FormData,
+): Promise<FormState> {
+  const user = await getCurrentUser();
+  if (!user) redirect("/login?next=/shop/cart");
+
+  const parsed = parseCartInput(formData);
+  if (!parsed.ok) return parsed.state;
+
+  const result = await withPool(async (client) => {
+    const product = await getProductInventory(client, user.id, parsed.productId);
+    if (!product) return { kind: "missing" as const };
+    if (parsed.quantity > product.inventory) {
+      return { kind: "stock" as const, inventory: product.inventory };
+    }
+
+    const updated = await client.query(
+      `UPDATE cart_items
+          SET quantity = $1, updated_at = now()
+        WHERE user_id = $2 AND product_id = $3`,
+      [parsed.quantity, user.id, parsed.productId],
+    );
+    if (updated.rowCount === 0) return { kind: "missing" as const };
+    return { kind: "success" as const };
+  });
+
+  if (result.kind === "missing") return invalidProductState();
+  if (result.kind === "stock") return stockState(result.inventory);
+  revalidatePath("/shop");
+  revalidatePath("/shop/cart");
+  revalidatePath("/shop/checkout");
+  return { ok: true };
+}
+
+export async function removeFromCart(
+  _prev: FormState | null,
+  formData: FormData,
+): Promise<FormState> {
+  const user = await getCurrentUser();
+  if (!user) redirect("/login?next=/shop/cart");
+
+  const productId = formData.get("productId");
+  if (typeof productId !== "string" || !isUuid(productId)) {
+    return invalidProductState();
+  }
+
+  await withPool((client) =>
+    client.query(
+      `DELETE FROM cart_items WHERE user_id = $1 AND product_id = $2`,
+      [user.id, productId],
+    ).then(() => undefined),
+  );
+  revalidatePath("/shop");
+  revalidatePath("/shop/cart");
+  revalidatePath("/shop/checkout");
+  return { ok: true };
 }
 
 /**
@@ -94,7 +249,7 @@ export async function checkout(
         {
           amount: totalCents,
           currency: "usd",
-          fail: false,
+          fail: parsed.data.simulateFailure,
         },
         client,
       );
