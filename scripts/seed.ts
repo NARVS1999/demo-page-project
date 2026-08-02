@@ -474,28 +474,64 @@ async function seedDemoData() {
   // subselect on (service slug, date, time) — fixed ids never go stale
   // (Pitfall 2). Then booked_at marks demo the claim state: active bookings
   // claim their slot, the cancelled one reopens it (UI-SPEC Visual Quality 7).
+  // WR-04 guards: if a REAL booking now holds a sample slot, the active-slot
+  // partial unique index rejects the sample upsert (23505) → skip that sample
+  // with a log line instead of crashing; and booked_at is only ever stamped
+  // (b.id = sample guard) / cleared (NOT EXISTS guard) when the slot's claim
+  // genuinely belongs to the sample booking — never over a real customer's.
   for (const booking of SAMPLE_BOOKINGS) {
     const slotDate = toDateKey(nthTemplateDay(booking.dayIndex));
-    const rows = await sqlDirect`
-      INSERT INTO bookings (id, slot_id, user_id, status, price_cents, deposit_payment_id)
-      VALUES (${booking.id},
-        (SELECT id FROM slots
-          WHERE service_id = (SELECT id FROM services WHERE slug = ${booking.serviceSlug})
-            AND slot_date = ${slotDate}::date
-            AND slot_time = ${booking.time}::time),
-        (SELECT id FROM users WHERE email = 'demo@example.com'),
-        ${booking.status}, ${booking.priceCents}, ${booking.depositPaymentId})
-      ON CONFLICT (id) DO UPDATE
-        SET slot_id = EXCLUDED.slot_id, status = EXCLUDED.status,
-            price_cents = EXCLUDED.price_cents,
-            deposit_payment_id = EXCLUDED.deposit_payment_id,
-            updated_at = now()
-      RETURNING slot_id`;
-    const slotId = rows[0].slot_id as string;
-    if (booking.status === "cancelled") {
-      await sqlDirect`UPDATE slots SET booked_at = NULL WHERE id = ${slotId}`;
-    } else {
-      await sqlDirect`UPDATE slots SET booked_at = now() WHERE id = ${slotId}`;
+    try {
+      const rows = await sqlDirect`
+        INSERT INTO bookings (id, slot_id, user_id, status, price_cents, deposit_payment_id)
+        VALUES (${booking.id},
+          (SELECT id FROM slots
+            WHERE service_id = (SELECT id FROM services WHERE slug = ${booking.serviceSlug})
+              AND slot_date = ${slotDate}::date
+              AND slot_time = ${booking.time}::time),
+          (SELECT id FROM users WHERE email = 'demo@example.com'),
+          ${booking.status}, ${booking.priceCents}, ${booking.depositPaymentId})
+        ON CONFLICT (id) DO UPDATE
+          SET slot_id = EXCLUDED.slot_id, status = EXCLUDED.status,
+              price_cents = EXCLUDED.price_cents,
+              deposit_payment_id = EXCLUDED.deposit_payment_id,
+              updated_at = now()
+        RETURNING slot_id`;
+      const slotId = rows[0].slot_id as string;
+      if (booking.status === "cancelled") {
+        // Reopen only when the slot is genuinely free — a real booking that
+        // landed on this sample slot keeps its claim (cancel-path discipline).
+        await sqlDirect`
+          UPDATE slots SET booked_at = NULL
+           WHERE id = ${slotId}
+             AND NOT EXISTS (
+               SELECT 1 FROM bookings
+                WHERE slot_id = ${slotId} AND status <> 'cancelled'
+                  AND id <> ${booking.id}
+             )`;
+      } else {
+        // Claim only when THIS sample booking is the slot's active booking
+        // (id guard) — never stamp booked_at over a real booking's claim.
+        await sqlDirect`
+          UPDATE slots SET booked_at = now()
+           WHERE id = ${slotId}
+             AND EXISTS (
+               SELECT 1 FROM bookings
+                WHERE slot_id = ${slotId} AND status <> 'cancelled'
+                  AND id = ${booking.id}
+             )`;
+      }
+    } catch (error) {
+      // A real booking holds this sample's slot — the partial unique index
+      // rejects the active sample upsert. Skip the sample this run (the demo
+      // keeps its real customer's claim) instead of aborting the whole seed.
+      if ((error as { code?: string }).code === "23505") {
+        console.log(
+          `  · sample booking ${booking.id} skipped — slot now held by a real booking`,
+        );
+        continue;
+      }
+      throw error;
     }
   }
 
