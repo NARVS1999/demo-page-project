@@ -14,8 +14,8 @@ export interface Project {
 
 export const projects: Project[] = [
   {
-    slug: "nextjs-starter",
-    name: "nextjs-starter",
+    slug: "ads-mediatech",
+    name: "ads-mediatech",
     description:
       "Battle-tested starter template with auth, mock services, and reference CRUD app",
     liveUrl: "https://nextjs-starter-narvs.vercel.app",

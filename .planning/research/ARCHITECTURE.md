@@ -35,7 +35,7 @@
 
 | Component | Responsibility | Implementation |
 |-----------|----------------|----------------|
-| `nextjs-starter` | Reusable template with auth, DB, mocks, theme | Copy per project, extend with domain logic |
+| `ads-mediatech` | Reusable template with auth, DB, mocks, theme | Copy per project, extend with domain logic |
 | `app/api/*` | Backend routes (CRUD, auth, business logic) | Next.js Route Handlers (Web Request/Response) |
 | `lib/db.ts` | Database connection pool | `@neondatabase/serverless` Pool (WebSocket) |
 | `lib/mock/*` | Swappable external service mocks | TypeScript modules with standard interfaces |
@@ -46,7 +46,7 @@
 ## Recommended Project Structure
 
 ```
-nextjs-starter/                    # Template (Phase 0)
+ads-mediatech/                    # Template (Phase 0)
 ├── app/
 │   ├── layout.tsx                 # Root layout (dark/light theme, nav)
 │   ├── page.tsx                   # Homepage
@@ -103,7 +103,7 @@ nextjs-starter/                    # Template (Phase 0)
 When creating a new project (e.g., `cms-app`):
 
 ```
-cms-app/                            # Derived from nextjs-starter
+cms-app/                            # Derived from ads-mediatech
 ├── app/
 │   ├── api/
 │   │   ├── posts/route.ts         # GET list, POST create
@@ -138,7 +138,7 @@ cms-app/                            # Derived from nextjs-starter
 
 ### Pattern 1: Template Derivation
 
-**What:** Each project copies `nextjs-starter` and extends it with domain-specific code.
+**What:** Each project copies `ads-mediatech` and extends it with domain-specific code.
 **When to use:** Always — this is the core workflow.
 **Trade-offs:**
 - ✅ Fast setup (~30 min per project)
@@ -149,7 +149,7 @@ cms-app/                            # Derived from nextjs-starter
 **Example:**
 ```bash
 # Create new project from template
-cp -r nextjs-starter cms-app
+cp -r ads-mediatech cms-app
 cd cms-app
 # Remove .git, re-init
 rm -rf .git && git init
@@ -352,7 +352,7 @@ lib/mock/email.ts
 
 ## Build Order
 
-### Phase 0: Template (nextjs-starter)
+### Phase 0: Template (ads-mediatech)
 **Depends on:** Nothing
 **Delivers:** Reusable foundation
 **Key files:**

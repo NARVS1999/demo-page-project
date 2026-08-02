@@ -11,7 +11,7 @@ Build 10–30 simple, fully functional fullstack demo projects, all deployed at 
 **Goals**
 - 100% free hosting, no credit card, no billing info
 - 4 deliverable apps: CMS, Booking, Ecommerce, Portfolio shell
-- One reusable template (`nextjs-starter`) so every additional project takes ~30 min
+- One reusable template (`ads-mediatech`) so every additional project takes ~30 min
 - Every external service replaced with a simulated (mock) implementation first
 - Testable locally (`npm run dev`) with the same remote DB used in production
 
@@ -35,7 +35,7 @@ Build 10–30 simple, fully functional fullstack demo projects, all deployed at 
 ### 3.1 Backend structure (all projects follow this)
 
 ```
-nextjs-starter/                    # bawat project sumusunod dito
+ads-mediatech/                    # bawat project sumusunod dito
 ├── app/
 │   ├── api/                       # ← BACKEND (server-side, Vercel Functions)
 │   │   ├── auth/
@@ -76,7 +76,7 @@ nextjs-starter/                    # bawat project sumusunod dito
 | `maps.ts` | Static mock coordinates/data |
 | `storage.ts` | Upload → Vercel Blob or base64 |
 
-## 5. Template (`nextjs-starter`) — built once
+## 5. Template (`ads-mediatech`) — built once
 
 - Auth (login/register/logout, sessions)
 - `lib/db.ts` (pg serverless pool), schema helpers
@@ -156,7 +156,7 @@ Local test flow: `npm run dev` → `localhost:3000`, DB = Neon cloud (free).
 
 | Phase | Deliverable | Est. |
 |---|---|---|
-| 0 | Template `nextjs-starter` + mock services | 3–4 hrs |
+| 0 | Template `ads-mediatech` + mock services | 3–4 hrs |
 | 1 | CMS app deployed | 3–4 hrs |
 | 2 | Booking app deployed | 3–4 hrs |
 | 3 | Ecommerce app deployed | 4–5 hrs |

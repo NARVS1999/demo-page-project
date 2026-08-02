@@ -2,7 +2,7 @@
 
 ## Project
 
-`nextjs-starter` is a fullstack demo template for a portfolio of ~30 apps. Stack:
+`ads-mediatech` is a fullstack demo template for a portfolio of ~30 apps. Stack:
 Next.js 16 (App Router, TypeScript, Tailwind v4, Turbopack), shadcn/ui, Neon
 Postgres via raw SQL (`@neondatabase/serverless`), jose JWT sessions in an
 httpOnly cookie, bcryptjs password hashing, Zod 4 validation, vitest.

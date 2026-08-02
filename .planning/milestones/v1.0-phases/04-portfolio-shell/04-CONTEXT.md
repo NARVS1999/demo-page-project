@@ -27,7 +27,7 @@ The front door to the entire showcase — a responsive project grid that aggrega
 
 ### Portfolio Page Layout
 - Replace the existing landing page `app/(main)/page.tsx` with the portfolio grid — this is the front door
-- Display 4 flagship projects: nextjs-starter (template), CMS, Booking, Ecommerce
+- Display 4 flagship projects: ads-mediatech (template), CMS, Booking, Ecommerce
 - Responsive 2-column (mobile) → 3-column (md+) card grid using Tailwind grid utilities
 - Public page — no auth required, lives in `(main)` route group which already serves unauthenticated pages
 
@@ -92,7 +92,7 @@ The front door to the entire showcase — a responsive project grid that aggrega
 - Portfolio page should feel like a polished project showcase, not a generic landing — use the card grid from existing product/shop patterns as reference
 - All project cards link out to external deployments (target="_blank") and GitHub repos — both are external resources
 - Demo credentials are the same across all apps (`demo@example.com` / `demo1234` from seed) — display once or per-card depending on clarity
-- Keep the existing `<title>` metadata from layout.tsx — it already reads `SITE.name` which is "nextjs-starter"
+- Keep the existing `<title>` metadata from layout.tsx — it already reads `SITE.name` which is "ads-mediatech"
 </specifics>
 
 <deferred>

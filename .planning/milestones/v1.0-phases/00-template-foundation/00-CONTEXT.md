@@ -6,7 +6,7 @@
 <domain>
 ## Phase Boundary
 
-A battle-tested reusable `nextjs-starter` template that every subsequent project inherits from — auth, database layer, mock services, seed script, and UI components, all designed to prevent the 10 critical pitfalls identified in research. Delivers: register/login/logout with Postgres-persisted sessions via jose JWT, `npm run seed` populating Neon Postgres with demo data (storage report under 200 MB), 6 importable mock services matching real API shapes, Zod env validation on startup, `.env.example`, dark/light theme toggle, loading/error states, and a sample CRUD page as reference implementation.
+A battle-tested reusable `ads-mediatech` template that every subsequent project inherits from — auth, database layer, mock services, seed script, and UI components, all designed to prevent the 10 critical pitfalls identified in research. Delivers: register/login/logout with Postgres-persisted sessions via jose JWT, `npm run seed` populating Neon Postgres with demo data (storage report under 200 MB), 6 importable mock services matching real API shapes, Zod env validation on startup, `.env.example`, dark/light theme toggle, loading/error states, and a sample CRUD page as reference implementation.
 
 </domain>
 
@@ -53,7 +53,7 @@ A battle-tested reusable `nextjs-starter` template that every subsequent project
 - None yet — this phase establishes the patterns all future phases inherit
 
 ### Integration Points
-- Project root becomes the `nextjs-starter` template — Phase 1+ apps copy from it
+- Project root becomes the `ads-mediatech` template — Phase 1+ apps copy from it
 - All future phases depend on: auth, `lib/db.ts`, `lib/mock/*`, seed script, UI components
 
 </code_context>

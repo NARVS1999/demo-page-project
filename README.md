@@ -1,4 +1,4 @@
-# nextjs-starter
+# ads-mediatech
 
 **Fullstack demo template** — a battle-tested starting point for the portfolio's demo apps. Auth, mock services, and a reference CRUD app, deployable to Vercel + Neon at **$0**.
 
@@ -132,7 +132,7 @@ All deployed demo apps sharing this template — one repo, one Vercel deployment
 
 | Project | Live Demo | GitHub | Stack |
 |---------|-----------|--------|-------|
-| nextjs-starter | [nextjs-starter-narvs.vercel.app](https://nextjs-starter-narvs.vercel.app) | [NARVS1999/nextjs-starter](https://github.com/NARVS1999/nextjs-starter) | Next.js 16, TypeScript, Tailwind v4, Neon Postgres, shadcn/ui |
+| ads-mediatech | [nextjs-starter-narvs.vercel.app](https://nextjs-starter-narvs.vercel.app) | [NARVS1999/ads-mediatech](https://github.com/NARVS1999/nextjs-starter) | Next.js 16, TypeScript, Tailwind v4, Neon Postgres, shadcn/ui |
 | CMS Demo | [cms-app-narvs.vercel.app](https://cms-app-narvs.vercel.app) | [NARVS1999/cms-app](https://github.com/NARVS1999/cms-app) | Next.js 16, TypeScript, Tailwind v4, Neon Postgres, shadcn/ui |
 | Booking App | [booking-app-narvs.vercel.app](https://booking-app-narvs.vercel.app) | [NARVS1999/booking-app](https://github.com/NARVS1999/booking-app) | Next.js 16, TypeScript, Tailwind v4, Neon Postgres, shadcn/ui |
 | Northstar Coffee | [ecommerce-app-narvs.vercel.app](https://ecommerce-app-narvs.vercel.app) | [NARVS1999/ecommerce-app](https://github.com/NARVS1999/ecommerce-app) | Next.js 16, TypeScript, Tailwind v4, Neon Postgres, shadcn/ui |

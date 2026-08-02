@@ -78,7 +78,7 @@ This is simpler than NextAuth, has zero config, and works perfectly for demo app
 
 ```bash
 # Create project (includes TypeScript, Tailwind, App Router, ESLint, AGENTS.md)
-npx create-next-app@latest nextjs-starter --yes
+npx create-next-app@latest ads-mediatech --yes
 
 # Core runtime dependencies
 npm install @neondatabase/serverless zod jose bcryptjs server-only

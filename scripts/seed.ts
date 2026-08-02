@@ -179,7 +179,7 @@ const MOCK_EMAILS = [
   {
     id: "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaa1",
     recipient: "demo@example.com",
-    subject: "Welcome to nextjs-starter",
+    subject: "Welcome to ads-mediatech",
     body: "Thanks for signing up. This is a mock email persisted to mock_emails.",
   },
   {

@@ -85,7 +85,7 @@ You build the template with auth, session, db.ts, mock services. Then for the bo
 Each project has slightly different requirements. The template is "just a starting point" so developers feel justified modifying it. Without discipline, every fork drifts. The original template stops being the source of truth.
 
 **How to avoid:**
-- Treat `nextjs-starter` as a **package**, not a starting point. Changes go back to the template first, then propagate.
+- Treat `ads-mediatech` as a **package**, not a starting point. Changes go back to the template first, then propagate.
 - Use a `TEMPLATE_VERSION` constant in every project. When it drifts, you know.
 - Rule: if you modify `lib/auth.ts` for project X, that change goes into the template. Project X then re-copies the template and applies only project-specific code on top.
 - Keep the template generic: role-based auth should be a config flag (`ROLES=admin,user`), not a code fork.

@@ -2,7 +2,7 @@
 
 ## What This Is
 
-Build 10–30 simple, fully functional fullstack demo projects, all deployed at $0/month, for portfolio/showcase purposes. Each project is a standalone app with its own repo and Vercel deployment. A reusable `nextjs-starter` template makes every additional project take ~30 min.
+Build 10–30 simple, fully functional fullstack demo projects, all deployed at $0/month, for portfolio/showcase purposes. Each project is a standalone app with its own repo and Vercel deployment. A reusable `ads-mediatech` template makes every additional project take ~30 min.
 
 ## Core Value
 
@@ -12,7 +12,7 @@ Every project deploys and works end-to-end at zero cost — if it costs money, i
 
 ### Validated
 
-- ✓ Template (`nextjs-starter`) with auth, DB pool, mock services, seed script, dark/light theme — Phase 0
+- ✓ Template (`ads-mediatech`) with auth, DB pool, mock services, seed script, dark/light theme — Phase 0
 - ✓ CMS app — admin CRUD posts, markdown editor, draft/publish, categories/tags, search — Phase 1
 - ✓ Booking app — service listing, slot calendar, book flow, admin confirm/cancel, mock email/SMS — Phase 2 (barber shop; atomic double-booking prevention via conditional UPDATE in Pool transaction; optional 25% mock deposit; rolling 14-day seed window)
 - ✓ Ecommerce app — Northstar Coffee catalog, persistent cart, mock checkout, atomic inventory, owner confirmation, admin orders, and linked receipt outbox — Phase 3
@@ -81,7 +81,7 @@ This document evolves at phase transitions and milestone boundaries.
 
 ## Current State (v1.0 SHIPPED 2026-08-03)
 
-**Template:** `nextjs-starter` — Next.js 16, TypeScript, Tailwind v4, Neon Postgres, shadcn/ui  
+**Template:** `ads-mediatech` — Next.js 16, TypeScript, Tailwind v4, Neon Postgres, shadcn/ui  
 **Deployed:** 4 apps on Vercel (free tier), 4 Neon databases (free tier)  
 **Portfolio:** Live at `/` with project grid, links, badges, demo credentials  
 **Tested:** 9 test files, 120 tests passing  

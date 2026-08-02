@@ -7,7 +7,7 @@
 
 ### Template Foundation
 
-- [x] **TMPL-01**: `nextjs-starter` template with App Router, TypeScript, Tailwind v4
+- [x] **TMPL-01**: `ads-mediatech` template with App Router, TypeScript, Tailwind v4
 - [x] **TMPL-02**: Auth system — login/register/logout with credentials, session in Postgres via jose JWT
 - [x] **TMPL-03**: Database pool — `@neondatabase/serverless` with neon() for queries, Pool for transactions
 - [x] **TMPL-04**: Mock services layer — `lib/mock/*` with interfaces matching real APIs (payment, email, SMS, OAuth, maps, storage)

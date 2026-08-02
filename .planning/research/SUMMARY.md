@@ -7,7 +7,7 @@
 
 ## Executive Summary
 
-This project builds a portfolio of 10-30 fully deployed fullstack demo applications at $0/month using a reusable Next.js 16 template. The architecture is "template derivation" — copy `nextjs-starter` per project, extend with domain logic, deploy independently. Each project gets its own Vercel deployment and Neon Postgres database. The template provides auth, database, mock services, and UI components so each new project takes ~30 minutes.
+This project builds a portfolio of 10-30 fully deployed fullstack demo applications at $0/month using a reusable Next.js 16 template. The architecture is "template derivation" — copy `ads-mediatech` per project, extend with domain logic, deploy independently. Each project gets its own Vercel deployment and Neon Postgres database. The template provides auth, database, mock services, and UI components so each new project takes ~30 minutes.
 
 The stack is deliberately constrained to avoid costs: Next.js 16 (App Router + React 19 + Tailwind v4), Neon Postgres (0.5 GB free per project), shadcn/ui for components, and hand-rolled auth with jose + bcryptjs. No ORMs — raw SQL via `@neondatabase/serverless`. No NextAuth, no Prisma, no Redis. Every external service (payments, email, SMS, OAuth) gets a mock implementation that matches the real service's API shape.
 
@@ -64,10 +64,10 @@ The stack is fully resolved with HIGH confidence. Every technology choice has be
 
 ### Architecture Approach
 
-The architecture is a "template derivation" pattern with strict isolation. Each project copies `nextjs-starter` and extends it with domain-specific routes, schemas, and seed data. Projects are fully independent repos with their own Neon databases and Vercel deployments. The mock service layer uses a Service Provider Interface pattern — mocks implement the same API shape as real services (Stripe, SendGrid) so swapping is a file replacement, not a rewrite.
+The architecture is a "template derivation" pattern with strict isolation. Each project copies `ads-mediatech` and extends it with domain-specific routes, schemas, and seed data. Projects are fully independent repos with their own Neon databases and Vercel deployments. The mock service layer uses a Service Provider Interface pattern — mocks implement the same API shape as real services (Stripe, SendGrid) so swapping is a file replacement, not a rewrite.
 
 **Major components:**
-1. **nextjs-starter (template)** — Reusable foundation: auth, DB pool, mock services, session management, UI components, seed script
+1. **ads-mediatech (template)** — Reusable foundation: auth, DB pool, mock services, session management, UI components, seed script
 2. **Project repos (N)** — Derived from template, extend with domain routes (`app/api/*`), schema (`schema.sql`), and seed data
 3. **Portfolio shell** — Static grid aggregating all projects with live links, GitHub links, tech badges, demo credentials
 4. **Mock services layer** — Swappable implementations matching real service API shapes (payment, email, SMS, OAuth, maps, storage)
@@ -91,7 +91,7 @@ Based on combined research, the suggested phase structure follows the dependency
 
 ### Phase 0: Template Foundation
 **Rationale:** Everything depends on this. Auth, DB, mocks, seed script, UI components — every project inherits from here. Must be solid and battle-tested before building any app.
-**Delivers:** `nextjs-starter` with auth (login/register/logout), Neon DB pool, 6 mock services (payment, email, SMS, OAuth, maps, storage), session management, seed script, shadcn/ui components, `.env.example`, env validation via Zod.
+**Delivers:** `ads-mediatech` with auth (login/register/logout), Neon DB pool, 6 mock services (payment, email, SMS, OAuth, maps, storage), session management, seed script, shadcn/ui components, `.env.example`, env validation via Zod.
 **Addresses:** All table stakes from FEATURES.md (auth, DB, mocks, seed, responsive theme)
 **Avoids:** Template divergence (design with config flags, not forks), mock over-engineering (interfaces match real services), missing env validation (Zod schema in `lib/env.ts`), seed data bloat (storage check script)
 

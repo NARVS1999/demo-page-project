@@ -23,7 +23,7 @@ These features are non-negotiable. Hiring managers spend ~3 minutes per project.
 | Git repo link per project | Hiring managers check commit history | LOW | Portfolio shell |
 | Seed data that tells a story | Empty app = useless demo; "Blog Post 1" = lazy | LOW | All |
 
-**Shared template features (built once in nextjs-starter):**
+**Shared template features (built once in ads-mediatech):**
 - Auth (login/register/logout with session cookies)
 - Database pool (`lib/db.ts`) with connection management
 - Mock services layer (`lib/mock/*`) for payment, email, SMS, OAuth

@@ -35,7 +35,7 @@
 
 ## Summary
 
-Phase 0 scaffolds the `nextjs-starter` template from an empty repo: Next.js 16.2.12 (App Router, TypeScript, Tailwind v4.3.3, shadcn/ui 4.16.1) with hand-rolled auth (jose 6.2.6 JWT in httpOnly cookie + bcryptjs 3.0.3), raw-SQL data layer on `@neondatabase/serverless` 1.1.0, 6 DB-backed mock services, an idempotent seed script with a <200 MB storage report, Zod 4 env validation, next-themes 0.4.6 dark mode, and a Posts CRUD reference. All locked decisions in CONTEXT.md were verified as current and executable with the following deltas found during research:
+Phase 0 scaffolds the `ads-mediatech` template from an empty repo: Next.js 16.2.12 (App Router, TypeScript, Tailwind v4.3.3, shadcn/ui 4.16.1) with hand-rolled auth (jose 6.2.6 JWT in httpOnly cookie + bcryptjs 3.0.3), raw-SQL data layer on `@neondatabase/serverless` 1.1.0, 6 DB-backed mock services, an idempotent seed script with a <200 MB storage report, Zod 4 env validation, next-themes 0.4.6 dark mode, and a Posts CRUD reference. All locked decisions in CONTEXT.md were verified as current and executable with the following deltas found during research:
 
 1. **Next.js 16 renamed `middleware.ts` → `proxy.ts`** (v16.0.0, deprecated with codemod). The auth guard must be `proxy.ts` exporting `proxy()`, which now **defaults to the Node.js runtime** — jose still works everywhere, but bcryptjs is now technically runnable in proxy yet must stay out of it for CPU reasons.
 2. **No `ws` package needed** — Node 24.18.0 (installed) has a global WebSocket; prior research's `neonConfig.webSocketConstructor = ws` pattern is only needed on Node < 22.
@@ -361,7 +361,7 @@ MOCK_STORAGE=mock
 - **Vercel Hobby:** import the GitHub repo in the Vercel dashboard (no CLI required; `vercel` CLI is NOT installed — install `npm i -g vercel` only if CLI-driven deploys are wanted), paste the 9 env vars, deploy. Auto-deploys on git push thereafter (DEPL-02). No `NEXT_PUBLIC_*` vars needed in Phase 0.
 - **Neon:** create one project per app (DEPL-03); the dashboard `Connect` modal provides both strings; pooled toggle is on by default for new projects. No `neonctl` installed — console-only workflow, fine.
 - **README (DEPL-05):** demo credentials (`demo@example.com` / `demo1234`), cold-start note ("first visit may take a few seconds while the DB wakes"), mock service docs table, invocation-budget note (account-wide 1M/mo — Pitfall 1).
-- **GitHub (DEPL-01):** repo exists with commits; create `nextjs-starter` repo on GitHub via web UI and `git remote add origin git@github.com:NARVS1999/nextjs-starter.git && git push -u origin main` (gh CLI not installed — web UI works).
+- **GitHub (DEPL-01):** repo exists with commits; create `ads-mediatech` repo on GitHub via web UI and `git remote add origin git@github.com:NARVS1999/nextjs-starter.git && git push -u origin main` (gh CLI not installed — web UI works).
 - **Never commit `.env.local`** — `.env.example` only; `.gitignore` from create-next-app already covers it.
 
 ## Standard Stack
@@ -463,7 +463,7 @@ scripts/seed.ts (tsx) → migrations (direct) → upserts → size report (<200 
 ### Recommended Project Structure
 
 ```
-nextjs-starter/
+ads-mediatech/
 ├── proxy.ts                      # Next 16 auth guard (NOT middleware.ts)
 ├── app/
 │   ├── layout.tsx                # root: ThemeProvider, site-header, Toaster, footer

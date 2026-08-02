@@ -185,7 +185,7 @@ Rationale: form set (form/input/label/textarea/select) → auth + CRUD forms; di
 
 ### Supporting config
 
-- `lib/site.ts` — `SITE = { name: "nextjs-starter", tagline: "Fullstack demo template", githubUrl, defaultNav }` — single source for header/footer wordmark and links; future apps change only this file
+- `lib/site.ts` — `SITE = { name: "ads-mediatech", tagline: "Fullstack demo template", githubUrl, defaultNav }` — single source for header/footer wordmark and links; future apps change only this file
 - `lib/validate.ts` — Zod schemas: `registerSchema`, `loginSchema`, `postSchema` (TMPL-09)
 
 ---

@@ -113,7 +113,7 @@ Phase 0 rows all remain in force. Phase 1 additions:
 |---------|------|
 | Header nav item | "Blog" (→ `/blog`, visible to guests and authenticated users) |
 | Blog list H1 | "Latest stories" — kicker above it: "The Blog" (mono, primary) |
-| Blog list description | "Field notes from the nextjs-starter template — written in markdown, published to the press." |
+| Blog list description | "Field notes from the ads-mediatech template — written in markdown, published to the press." |
 | Search input placeholder | "Search the blog…" |
 | Search results page | H1 "Search results" · kicker "The Blog" · result count line "N results for "query"" (mono muted, `text-sm`) |
 | Search — empty | Heading: "No results for "query"" / Body: "Try different keywords, or browse all stories." / CTA: "Browse all stories" (→ `/blog`) |

@@ -4,7 +4,7 @@
 export const TEMPLATE_VERSION = "0.1.0";
 
 export const SITE = {
-  name: "nextjs-starter",
+  name: "ads-mediatech",
   tagline: "Fullstack demo template",
   description:
     "A battle-tested starter with auth, mock services, and a sample CRUD app — ready to deploy on Vercel at $0.",

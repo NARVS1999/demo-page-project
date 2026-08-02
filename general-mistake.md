@@ -43,7 +43,7 @@ Symptom:     Auth guard silently never runs — protected routes exposed, 401s m
 Evidence:    No middleware execution on any request; Next 16 ignores the old file name
 Root cause:  Next 16 renamed the middleware convention to proxy.ts
 Fix:         Use root `proxy.ts` exporting `proxy()`. Never add `export const runtime` to it.
-Found in:    nextjs-starter
+Found in:    ads-mediatech
 Status:      active
 Date:        2026-08-02
 
@@ -55,7 +55,7 @@ Evidence:    Build-time static prerender of DB queries breaks the build
 Root cause:  Next 16 statically prerenders pages without the dynamic escape hatch
 Fix:         Add `export const dynamic = 'force-dynamic'` to every DB-reading
              page and route handler
-Found in:    nextjs-starter
+Found in:    ads-mediatech
 Status:      active
 Date:        2026-08-02
 
@@ -66,7 +66,7 @@ Evidence:    Client imports are build errors; bundler pulls server-only code int
 Root cause:  Server modules have no boundary marker, so nothing stops client imports
 Fix:         `lib/db.ts`, `lib/session.ts`, `lib/mock/*` must start with
              `import "server-only"`
-Found in:    nextjs-starter
+Found in:    ads-mediatech
 Status:      active
 Date:        2026-08-02
 
@@ -76,6 +76,6 @@ Symptom:     TypeScript reports TS2502 and the test suite cannot type-check.
 Evidence:    `TS2502: 'client' is referenced directly or indirectly in its own type annotation.`
 Root cause:  A Vitest transaction-double callback used the local fake client's inferred type before that value's declaration had completed.
 Fix:         Type the mock callback boundary with an independent client shape (or `unknown`) and pass the fake client as the mock implementation value.
-Found in:    nextjs-starter
+Found in:    ads-mediatech
 Status:      active
 Date:        2026-08-02

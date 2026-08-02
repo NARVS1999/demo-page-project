@@ -115,7 +115,7 @@
 |---------|------|-------|
 | Page title | "Projects" | h1, simple and clear |
 | Page subtitle | "Fullstack demo apps — deployed at $0" | Matches project value prop |
-| Card: Template name | "nextjs-starter" | From lib/site.ts |
+| Card: Template name | "ads-mediatech" | From lib/site.ts |
 | Card: Template desc | "Battle-tested starter template with auth, mock services, and reference CRUD app" | Short one-liner |
 | Card: CMS name | "CMS Demo" | |
 | Card: CMS desc | "Blog/content management with post CRUD, markdown editor, categories, and admin dashboard" | |
