@@ -54,7 +54,7 @@ const CAPABILITIES = [
 
 const STACK = ["Next.js", "TypeScript", "Postgres", "Tailwind CSS", "shadcn/ui"];
 const PROOF_POINTS = [
-  "Deployed at ₱0 — Vercel + Neon free tiers",
+  "Deployed at Vercel + Neon",
   "Auth with signed session cookies",
   "120+ unit tests passing",
   "Database-backed, not static mockups",
