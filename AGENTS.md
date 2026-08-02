@@ -38,6 +38,20 @@ See `.env.example` — 9 vars: both DATABASE_URLs, SESSION_SECRET (>= 32 chars),
 and 6 `MOCK_*` switches (`mock` default; `real` reserved for future apps).
 Never commit real secrets; `.env.local` is gitignored.
 
+## Known mistakes
+
+`general-mistake.md` is the verified-mistake ledger — read it before starting any
+task, and sweep its entry signatures against code you touch.
+
+- **MUST read `general-mistake.md` before starting any task.**
+- **MUST append an entry** when a non-obvious failure is root-caused and the fix
+  verified (reproduced error + confirmed fix) — this is part of done-criteria,
+  not optional. Follow the entry template and rules in that file.
+- **MUST sweep signatures** — grep the ledger's `Signature` patterns against
+  changed/new files to catch dormant mistakes before they fail.
+- **Fork inheritance** — the ledger travels with every fork; tag new entries
+  `Found in: <app name>` for provenance.
+
 ## Template versioning
 
 `TEMPLATE_VERSION` lives in `lib/site.ts`. Bump it when forking for a new app.
