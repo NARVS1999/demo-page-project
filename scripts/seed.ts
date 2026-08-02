@@ -1,7 +1,9 @@
 // npm run seed — migrations + idempotent demo data + size report.
 // Self-contained on purpose: does NOT import lib/* modules (they carry
-// "server-only", which throws outside Next). Uses sqlDirect (direct URL) for
-// migrations per Neon docs; pooler URL is for the app only.
+// "server-only", which throws outside Next) — the ONE exception is the
+// client-safe pure helper toDateKey from lib/booking.ts (no server-only,
+// no env). Uses sqlDirect (direct URL) for migrations per Neon docs; pooler
+// URL is for the app only.
 //
 // Order: (1) load env → (2) run pending migrations → (3) upsert demo data →
 // (4) report per-table counts + total size; exit(1) at >= 200 MB (hard gate).
@@ -10,6 +12,7 @@ import { existsSync } from "node:fs";
 import { readdir, readFile } from "node:fs/promises";
 import { neon } from "@neondatabase/serverless";
 import bcrypt from "bcryptjs";
+import { toDateKey } from "@/lib/booking";
 
 // ─── 1. Load env (Pitfall 4: Next does not load .env.local for scripts) ─────
 if (existsSync(".env.local")) {
@@ -215,6 +218,147 @@ const MOCK_PAYMENTS = [
   },
 ];
 
+// ─── Phase 2: barber-shop booking domain (CONTEXT: Demo Data & Domain) ───────
+// Fixed ids use fresh prefixes (e1-e4, f, a3, b3) — never reuse c/d/a/b.
+
+// 3 services, exact UI-SPEC pricing/durations. Upsert keyed on slug.
+const SERVICES = [
+  {
+    id: "e1111111-1111-4111-8111-111111111111",
+    slug: "haircut",
+    name: "Haircut",
+    description: "Classic cut, hot towel finish, and style.",
+    priceCents: 3000,
+    durationMin: 30,
+  },
+  {
+    id: "e2222222-2222-4222-8222-222222222222",
+    slug: "beard-trim",
+    name: "Beard Trim",
+    description: "Shape, line-up, and beard oil.",
+    priceCents: 2000,
+    durationMin: 20,
+  },
+  {
+    id: "e3333333-3333-4333-8333-333333333333",
+    slug: "haircut-beard",
+    name: "Haircut + Beard",
+    description: "The full reset — cut and beard together.",
+    priceCents: 4500,
+    durationMin: 50,
+  },
+];
+
+// Weekly recurring schedule: day-of-week → hourly start times. Tue–Sat,
+// 09:00–16:00 (8 slots/day per RESEARCH Pattern 4 grid).
+const WEEKLY_TEMPLATE: Record<number, string[]> = {
+  2: ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00"],
+  3: ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00"],
+  4: ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00"],
+  5: ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00"],
+  6: ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00"],
+};
+
+// Date of the nth upcoming day that has WEEKLY_TEMPLATE times (Tue–Sat).
+// Fixed day-of-week offsets drift onto Sunday/Monday — days the template does
+// not schedule — on 5 of 7 weekdays, so sample bookings resolve their slot via
+// the template itself instead of a raw +N days offset (keeps every booking
+// inside the rolling window AND on an open day, every run).
+function nthTemplateDay(n: number): Date {
+  let found = 0;
+  const d = new Date();
+  while (found < n) {
+    d.setDate(d.getDate() + 1);
+    if (WEEKLY_TEMPLATE[d.getDay()]) found++;
+  }
+  return d;
+}
+
+// 4 sample bookings: 2 confirmed, 1 pending, 1 cancelled. slot_id is
+// re-pointed into the current 14-day window on EVERY run via subselect
+// (Pitfall 2 — fixed ids must never go stale). deposit_payment_id references
+// BOOKING_PAYMENTS (e4 prefix); non-deposit bookings pass null.
+// dayIndex 1..4 = 1st..4th upcoming Tue–Sat day (f3 nearest, f4 farthest).
+const SAMPLE_BOOKINGS = [
+  {
+    id: "f1111111-1111-4111-8111-111111111111",
+    serviceSlug: "haircut",
+    dayIndex: 2,
+    time: "10:00",
+    status: "confirmed",
+    priceCents: 3000,
+    depositPaymentId: "e4111111-1111-4111-8111-111111111111",
+  },
+  {
+    id: "f2222222-2222-4222-8222-222222222222",
+    serviceSlug: "beard-trim",
+    dayIndex: 3,
+    time: "11:00",
+    status: "confirmed",
+    priceCents: 2000,
+    depositPaymentId: null,
+  },
+  {
+    id: "f3333333-3333-4333-8333-333333333333",
+    serviceSlug: "haircut",
+    dayIndex: 1,
+    time: "14:00",
+    status: "pending",
+    priceCents: 3000,
+    depositPaymentId: null,
+  },
+  {
+    id: "f4444444-4444-4444-8444-444444444444",
+    serviceSlug: "haircut-beard",
+    dayIndex: 4,
+    time: "15:00",
+    status: "cancelled",
+    priceCents: 4500,
+    depositPaymentId: "e4222222-2222-4222-8222-222222222222",
+  },
+];
+
+// Deposit payments for the deposit bookings: f1's deposit succeeded (25% of
+// $30 = 750), f4's was refunded when the booking was cancelled (25% of $45 =
+// 1125) — demoing the refund path in /admin/payments.
+const BOOKING_PAYMENTS = [
+  { id: "e4111111-1111-4111-8111-111111111111", amount: 750, status: "succeeded" },
+  { id: "e4222222-2222-4222-8222-222222222222", amount: 1125, status: "refunded" },
+];
+
+// Booking-linked notices (a3/b3 prefix — distinct from the Phase 0 a/b rows).
+const BOOKING_EMAILS = [
+  {
+    id: "a3111111-1111-4111-8111-111111111111",
+    bookingId: "f1111111-1111-4111-8111-111111111111",
+    recipient: "demo@example.com",
+    subject: "Booking confirmation",
+    body: "Hi Demo User — your Haircut is booked. We'll text you a reminder before your appointment. See you at the shop!",
+  },
+  {
+    id: "a4111111-1111-4111-8111-111111111111",
+    bookingId: "f4444444-4444-4444-8444-444444444444",
+    recipient: "demo@example.com",
+    subject: "Booking confirmation",
+    body: "Hi Demo User — your Haircut + Beard booking was cancelled, so no appointment is scheduled. Your deposit of $11.25 has been refunded.",
+  },
+];
+
+const BOOKING_SMS = [
+  {
+    id: "b3111111-1111-4111-8111-111111111111",
+    bookingId: "f1111111-1111-4111-8111-111111111111",
+    recipient: "+15551234567",
+    message: "Reminder: your Haircut is booked at the barbershop. Reply STOP to opt out of booking texts.",
+  },
+  {
+    id: "b4111111-1111-4111-8111-111111111111",
+    bookingId: "f4444444-4444-4444-8444-444444444444",
+    recipient: "+15551234567",
+    message: "Your Haircut + Beard booking was cancelled. Any deposit has been refunded. Reply STOP to opt out.",
+  },
+];
+
 async function seedDemoData() {
   const passwordHash = await bcrypt.hash("demo1234", 10);
   await sqlDirect`
@@ -265,15 +409,15 @@ async function seedDemoData() {
 
   for (const email of MOCK_EMAILS) {
     await sqlDirect`
-      INSERT INTO mock_emails (id, recipient, subject, body, status)
-      VALUES (${email.id}, ${email.recipient}, ${email.subject}, ${email.body}, 'sent')
+      INSERT INTO mock_emails (id, recipient, subject, body, status, booking_id)
+      VALUES (${email.id}, ${email.recipient}, ${email.subject}, ${email.body}, 'sent', null)
       ON CONFLICT (id) DO NOTHING`;
   }
 
   for (const sms of MOCK_SMS) {
     await sqlDirect`
-      INSERT INTO mock_sms (id, recipient, message, status)
-      VALUES (${sms.id}, ${sms.recipient}, ${sms.message}, 'delivered')
+      INSERT INTO mock_sms (id, recipient, message, status, booking_id)
+      VALUES (${sms.id}, ${sms.recipient}, ${sms.message}, 'delivered', null)
       ON CONFLICT (id) DO NOTHING`;
   }
 
@@ -281,6 +425,91 @@ async function seedDemoData() {
     await sqlDirect`
       INSERT INTO mock_payments (id, amount, currency, status)
       VALUES (${payment.id}, ${payment.amount}, ${payment.currency}, ${payment.status})
+      ON CONFLICT (id) DO NOTHING`;
+  }
+
+  // ─── Phase 2: services → slots → bookings → booked_at marks → linked ───────
+  for (const service of SERVICES) {
+    await sqlDirect`
+      INSERT INTO services (id, slug, name, description, price_cents, duration_min)
+      VALUES (${service.id}, ${service.slug}, ${service.name}, ${service.description},
+        ${service.priceCents}, ${service.durationMin})
+      ON CONFLICT (slug) DO UPDATE
+        SET name = EXCLUDED.name, description = EXCLUDED.description,
+            price_cents = EXCLUDED.price_cents,
+            duration_min = EXCLUDED.duration_min`;
+  }
+
+  // Rolling 14-day slot generation from WEEKLY_TEMPLATE. Explicit ::date/::time
+  // casts on the JS-computed string params (Pitfall 8 — never interpolate a
+  // date literal into the SQL string). ON CONFLICT DO NOTHING: new days append,
+  // old days linger harmlessly (queries filter slot_date >= CURRENT_DATE).
+  for (let offset = 0; offset < 14; offset++) {
+    const day = new Date();
+    day.setDate(day.getDate() + offset);
+    const times = WEEKLY_TEMPLATE[day.getDay()];
+    if (!times) continue;
+    const dateKey = toDateKey(day);
+    for (const service of SERVICES) {
+      for (const time of times) {
+        await sqlDirect`
+          INSERT INTO slots (service_id, slot_date, slot_time)
+          VALUES (${service.id}, ${dateKey}::date, ${time}::time)
+          ON CONFLICT (service_id, slot_date, slot_time) DO NOTHING`;
+      }
+    }
+  }
+
+  // Deposit payments FIRST — the bookings upsert below references them via
+  // deposit_payment_id (FK ordering: the referenced row must exist first).
+  for (const pay of BOOKING_PAYMENTS) {
+    await sqlDirect`
+      INSERT INTO mock_payments (id, amount, currency, status)
+      VALUES (${pay.id}, ${pay.amount}, 'usd', ${pay.status})
+      ON CONFLICT (id) DO UPDATE
+        SET amount = EXCLUDED.amount, status = EXCLUDED.status`;
+  }
+
+  // Sample bookings re-point slot_id into the CURRENT window on every run via
+  // subselect on (service slug, date, time) — fixed ids never go stale
+  // (Pitfall 2). Then booked_at marks demo the claim state: active bookings
+  // claim their slot, the cancelled one reopens it (UI-SPEC Visual Quality 7).
+  for (const booking of SAMPLE_BOOKINGS) {
+    const slotDate = toDateKey(nthTemplateDay(booking.dayIndex));
+    const rows = await sqlDirect`
+      INSERT INTO bookings (id, slot_id, user_id, status, price_cents, deposit_payment_id)
+      VALUES (${booking.id},
+        (SELECT id FROM slots
+          WHERE service_id = (SELECT id FROM services WHERE slug = ${booking.serviceSlug})
+            AND slot_date = ${slotDate}::date
+            AND slot_time = ${booking.time}::time),
+        (SELECT id FROM users WHERE email = 'demo@example.com'),
+        ${booking.status}, ${booking.priceCents}, ${booking.depositPaymentId})
+      ON CONFLICT (id) DO UPDATE
+        SET slot_id = EXCLUDED.slot_id, status = EXCLUDED.status,
+            price_cents = EXCLUDED.price_cents,
+            deposit_payment_id = EXCLUDED.deposit_payment_id,
+            updated_at = now()
+      RETURNING slot_id`;
+    const slotId = rows[0].slot_id as string;
+    if (booking.status === "cancelled") {
+      await sqlDirect`UPDATE slots SET booked_at = NULL WHERE id = ${slotId}`;
+    } else {
+      await sqlDirect`UPDATE slots SET booked_at = now() WHERE id = ${slotId}`;
+    }
+  }
+
+  for (const notice of BOOKING_EMAILS) {
+    await sqlDirect`
+      INSERT INTO mock_emails (id, recipient, subject, body, status, booking_id)
+      VALUES (${notice.id}, ${notice.recipient}, ${notice.subject}, ${notice.body}, 'sent', ${notice.bookingId})
+      ON CONFLICT (id) DO NOTHING`;
+  }
+
+  for (const notice of BOOKING_SMS) {
+    await sqlDirect`
+      INSERT INTO mock_sms (id, recipient, message, status, booking_id)
+      VALUES (${notice.id}, ${notice.recipient}, ${notice.message}, 'delivered', ${notice.bookingId})
       ON CONFLICT (id) DO NOTHING`;
   }
 }
@@ -293,6 +522,9 @@ const TABLES = [
   "categories",
   "tags",
   "post_tags",
+  "services",
+  "slots",
+  "bookings",
   "mock_payments",
   "mock_emails",
   "mock_sms",

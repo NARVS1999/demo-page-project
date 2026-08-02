@@ -17,6 +17,7 @@ import { email, payment, sms } from "@/lib/mock";
 import { getCurrentUser } from "@/lib/session";
 import { isUuid } from "@/lib/utils";
 import { bookingSchema } from "@/lib/validate";
+import { depositCents } from "@/lib/booking";
 
 type FormState = {
   errors?: Record<string, string[] | undefined>;
@@ -71,12 +72,13 @@ export async function createBooking(
       );
       if (claim.rowCount === 0) throw new BookingConflictError();
 
-      // 3. Deposit INSIDE the txn (BOOK-08) — 25%, server-computed; ROLLBACK
-      //    removes the payment row with everything else (no orphan payment).
+      // 3. Deposit INSIDE the txn (BOOK-08) — 25% (depositCents is the single
+      //    source of truth for the formula); ROLLBACK removes the payment row
+      //    with everything else (no orphan payment, no claimed-without-deposit).
       let depositPaymentId: string | null = null;
       if (deposit) {
         const pay = await payment.createPayment(
-          { amount: Math.round(priceCents * 0.25), currency: "usd" },
+          { amount: depositCents(priceCents), currency: "usd" },
           client,
         );
         depositPaymentId = pay.id;
@@ -121,4 +123,57 @@ export async function createBooking(
     }
     throw error;
   }
+}
+
+// User cancel (BOOK-05): owner-scoped (WHERE b.user_id) + "upcoming" guard
+// (slot still in the future) — the ONLY differences from cancelBookingAdmin.
+// Race-safe reopen (Pitfall 7): the slot's claim is cleared only when NO OTHER
+// active booking exists on it, so a concurrent fresh claim is never wiped.
+// Refund runs inside the same transaction via the mock's client branch.
+export async function cancelBooking(
+  _prev: FormState | null,
+  formData: FormData,
+): Promise<FormState> {
+  const user = await getCurrentUser();
+  if (!user) redirect("/login?next=/book");
+
+  const id = formData.get("bookingId");
+  if (typeof id !== "string" || !isUuid(id)) {
+    return { message: "This booking no longer exists." }; // generic, anti-enumeration
+  }
+
+  const outcome = await withPool(async (client) => {
+    const rows = await client.query(
+      `UPDATE bookings b SET status = 'cancelled', updated_at = now()
+         FROM slots s
+        WHERE b.id = $1 AND b.slot_id = s.id
+          AND b.status IN ('pending', 'confirmed')
+          AND b.user_id = $2
+          AND (s.slot_date > CURRENT_DATE
+               OR (s.slot_date = CURRENT_DATE AND s.slot_time > CURRENT_TIME))
+        RETURNING b.slot_id, b.deposit_payment_id`,
+      [id, user.id],
+    );
+    if (rows.rowCount === 0) return { ok: false as const };
+
+    const { slot_id, deposit_payment_id } = rows.rows[0];
+    // Reopen, race-safe: only clear the claim if no OTHER active booking
+    // (status <> 'cancelled', id <> the one being cancelled) holds the slot.
+    await client.query(
+      `UPDATE slots SET booked_at = NULL
+        WHERE id = $1 AND booked_at IS NOT NULL
+          AND NOT EXISTS (
+            SELECT 1 FROM bookings
+             WHERE slot_id = $1 AND status <> 'cancelled' AND id <> $2
+          )`,
+      [slot_id, id],
+    );
+    if (deposit_payment_id) await payment.refund(deposit_payment_id, client);
+
+    return { ok: true as const };
+  });
+
+  if (!outcome.ok) return { message: "This booking no longer exists." };
+  revalidatePath("/book");
+  return { ok: true };
 }
