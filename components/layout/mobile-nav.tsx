@@ -19,7 +19,7 @@ export function MobileNav({
 
   const links = user
     ? [
-        { label: "Projects", href: "/" },
+        { label: "Home", href: "/" },
         { label: "Blog", href: "/blog" },
         { label: "Shop", href: "/shop" },
         { label: "Cart", href: "/shop/cart" },
@@ -30,7 +30,7 @@ export function MobileNav({
         { label: "Admin", href: "/admin" },
       ]
     : [
-        { label: "Projects", href: "/" },
+        { label: "Home", href: "/" },
         { label: "Blog", href: "/blog" },
         { label: "Shop", href: "/shop" },
         { label: "Cart", href: "/shop/cart" },
