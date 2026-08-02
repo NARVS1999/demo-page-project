@@ -277,8 +277,7 @@ describe("admin order queue and receipt visibility", () => {
     expect(screen.getByRole("link", { name: "Clear filters" }).getAttribute("href")).toBe("/admin/orders");
     expect(screen.getByRole("button", { name: "Start preparing" })).toBeTruthy();
     expect(screen.getByRole("button", { name: "Mark ready" })).toBeTruthy();
-    expect(screen.getByRole("button", { name: "Cancel order" })).toBeTruthy();
-    expect(screen.getAllByRole("button", { name: "Cancel order" })).toHaveLength(1);
+    expect(screen.getAllByRole("button", { name: "Cancel order" })).toHaveLength(2);
   });
 
   it("keeps admin order and email routes linked to the existing outbox", () => {

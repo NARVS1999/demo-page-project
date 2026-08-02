@@ -128,7 +128,9 @@ function CancelOrderDialog({ row }: { row: OrderRow }) {
 }
 
 function OrderActions({ row }: { row: OrderRow }) {
-  if (row.status === "paid") return <TransitionDialog row={row} target="preparing" label="Start preparing" />;
+  if (row.status === "paid") {
+    return <><TransitionDialog row={row} target="preparing" label="Start preparing" /><CancelOrderDialog row={row} /></>;
+  }
   if (row.status === "preparing") {
     return <><TransitionDialog row={row} target="ready" label="Mark ready" /><CancelOrderDialog row={row} /></>;
   }
