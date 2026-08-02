@@ -7,6 +7,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   Blocks,
+  CalendarCheck,
   FolderOpen,
   Hash,
   Inbox,
@@ -70,6 +71,16 @@ const adminNav = [
         label: "Tags",
         href: "/admin/tags",
         icon: <Hash className="h-4 w-4" aria-hidden="true" />,
+      },
+    ],
+  },
+  {
+    group: "Bookings",
+    items: [
+      {
+        label: "Bookings",
+        href: "/admin/bookings",
+        icon: <CalendarCheck className="h-4 w-4" aria-hidden="true" />,
       },
     ],
   },

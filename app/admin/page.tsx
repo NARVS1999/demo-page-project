@@ -1,6 +1,6 @@
 // Admin overview (UI-SPEC Page 8) — force-dynamic, seed-visible mock activity.
 import { redirect } from "next/navigation";
-import { FileText, FolderOpen, Hash, Inbox, Mail, MessageSquare } from "lucide-react";
+import { CalendarClock, FileText, FolderOpen, Hash, Inbox, Mail, MessageSquare } from "lucide-react";
 import { sql } from "@/lib/db";
 import { getCurrentUser } from "@/lib/session";
 import { Badge } from "@/components/ui/badge";
@@ -23,13 +23,14 @@ export default async function AdminOverviewPage() {
   const user = await getCurrentUser();
   if (!user) redirect("/login?next=/admin");
 
-  const [postRows, emailRows, smsRows, categoryRows, tagRows, emailActivity, smsActivity] =
+  const [postRows, emailRows, smsRows, categoryRows, tagRows, bookingRows, emailActivity, smsActivity] =
     await Promise.all([
       sql`SELECT count(*)::int AS count FROM posts`,
       sql`SELECT count(*)::int AS count FROM mock_emails`,
       sql`SELECT count(*)::int AS count FROM mock_sms`,
       sql`SELECT count(*)::int AS count FROM categories`,
       sql`SELECT count(*)::int AS count FROM tags`,
+      sql`SELECT count(*)::int AS count FROM bookings`,
       sql`SELECT recipient, status, created_at FROM mock_emails ORDER BY created_at DESC LIMIT 5`,
       sql`SELECT recipient, status, created_at FROM mock_sms ORDER BY created_at DESC LIMIT 5`,
     ]);
@@ -52,6 +53,7 @@ export default async function AdminOverviewPage() {
         <StatCard label="Tags" value={tagRows[0].count as number} icon={<Hash className="h-5 w-5" aria-hidden="true" />} />
         <StatCard label="Mock emails" value={emailRows[0].count as number} icon={<Mail className="h-5 w-5" aria-hidden="true" />} />
         <StatCard label="Mock SMS" value={smsRows[0].count as number} icon={<MessageSquare className="h-5 w-5" aria-hidden="true" />} />
+        <StatCard label="Bookings" value={bookingRows[0].count as number} icon={<CalendarClock className="h-5 w-5" aria-hidden="true" />} />
       </div>
 
       <section className="flex flex-col gap-4">
