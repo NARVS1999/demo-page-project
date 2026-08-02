@@ -48,14 +48,20 @@ export async function createBooking(
 
   try {
     const booked = await withPool(async (client) => {
-      // 1. Slot + service snapshot (unknown slot → conflict, never a 500)
+      // 1. Slot + service snapshot (unknown slot → conflict, never a 500).
+      //    Future-time guard: a slot that has already started (or a stale slot
+      //    from a previous seed window) is rejected the same way as a taken
+      //    one — such a booking could never be self-cancelled (cancel's
+      //    upcoming guard would refuse it), so never accept it (WR-01).
       const slot = await client.query(
         `SELECT s.service_id, sv.name AS service_name,
                 s.slot_date::text AS slot_date,
                 to_char(s.slot_time, 'HH24:MI') AS slot_time,
                 sv.price_cents
            FROM slots s JOIN services sv ON sv.id = s.service_id
-          WHERE s.id = $1`,
+          WHERE s.id = $1
+            AND (s.slot_date > CURRENT_DATE
+                 OR (s.slot_date = CURRENT_DATE AND s.slot_time > CURRENT_TIME))`,
         [slotId],
       );
       if (slot.rowCount === 0) throw new BookingConflictError();

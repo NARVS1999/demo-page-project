@@ -49,6 +49,8 @@ export default async function BookPage({
         LEFT JOIN bookings b ON b.slot_id = s.id AND b.status <> 'cancelled'
        WHERE s.service_id = ${selected.id}
          AND s.slot_date >= CURRENT_DATE AND s.slot_date <= CURRENT_DATE + 13
+         AND (s.slot_date > CURRENT_DATE
+              OR (s.slot_date = CURRENT_DATE AND s.slot_time > CURRENT_TIME))
        ORDER BY s.slot_date, s.slot_time`;
 
     const byDate = new Map<string, SlotDay>();
