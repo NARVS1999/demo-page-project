@@ -110,7 +110,11 @@ describe("checkout", () => {
     expect(client.query.mock.calls.some(([query]) => query.includes("DELETE FROM cart_items"))).toBe(true);
     expect(mockSendEmail).toHaveBeenCalledTimes(1);
     expect(mockSendEmail).toHaveBeenCalledWith(
-      expect.objectContaining({ orderId: ORDER_ID, to: "demo@example.com" }),
+      expect.objectContaining({
+        orderId: ORDER_ID,
+        to: "demo@example.com",
+        text: expect.stringContaining("was received and is awaiting preparation"),
+      }),
     );
     expect(mockRevalidatePath).toHaveBeenCalledWith("/shop");
     expect(mockRevalidatePath).toHaveBeenCalledWith("/shop/cart");

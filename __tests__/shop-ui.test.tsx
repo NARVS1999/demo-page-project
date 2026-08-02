@@ -190,10 +190,33 @@ describe("cart, checkout, and order confirmation components", () => {
       />,
     );
 
-    expect(screen.getByRole("heading", { name: "Thanks for your order" })).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "Thanks — we received your order" })).toBeTruthy();
+    expect(screen.getByText("Your payment was received. We will prepare your counter-pickup order next.")).toBeTruthy();
     expect(screen.getByText("House Filter")).toBeTruthy();
     expect(screen.getByText("Simulated receipt — no real email was sent.")).toBeTruthy();
     expect(screen.getByText("Counter pickup")).toBeTruthy();
+    expect(screen.getByText("Paid")).toBeTruthy();
+  });
+
+  it("shows cancellation and refund state on the owner confirmation", async () => {
+    const { OrderConfirmation } = await import("@/components/shop/order-confirmation");
+    render(
+      <OrderConfirmation
+        order={{
+          id: "3042abcd-1234-4111-8111-111111111111",
+          status: "cancelled",
+          totalCents: 1300,
+          paymentStatus: "refunded",
+          createdAt: "2026-08-02T12:00:00.000Z",
+          items: [],
+        }}
+        user={{ name: "Demo User", email: "demo@example.com" }}
+      />,
+    );
+
+    expect(screen.getByRole("heading", { name: "Your order was cancelled" })).toBeTruthy();
+    expect(screen.getByText("Your order was cancelled and your payment was refunded.")).toBeTruthy();
+    expect(screen.getByText("Refunded")).toBeTruthy();
   });
 
   it("protects cart, checkout, and order reads with route-level auth/ownership contracts", () => {

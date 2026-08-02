@@ -318,7 +318,7 @@ export async function checkout(
     await email.sendEmail({
       to: user.email,
       subject: "Northstar Coffee receipt",
-      text: `Your Northstar Coffee order ${result.orderId} is ready for counter pickup.`,
+      text: `Your Northstar Coffee order ${result.orderId} was received and is awaiting preparation. We'll let you know when it's ready for counter pickup.`,
       orderId: result.orderId,
     });
     revalidatePath("/shop");

@@ -2,9 +2,39 @@ import Link from "next/link";
 import { Check, Coffee } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { formatShopPrice, orderRef, type OrderSummary } from "@/lib/shop";
+import { formatShopPrice, orderRef, type OrderStatus, type OrderSummary } from "@/lib/shop";
 
 const dateFmt = new Intl.DateTimeFormat("en-US", { dateStyle: "medium", timeStyle: "short" });
+
+const ORDER_COPY: Record<OrderStatus, { eyebrow: string; title: string; description: string }> = {
+  paid: {
+    eyebrow: "Order received",
+    title: "Thanks — we received your order",
+    description: "Your payment was received. We will prepare your counter-pickup order next.",
+  },
+  preparing: {
+    eyebrow: "Order in preparation",
+    title: "We’re preparing your order",
+    description: "Your counter-pickup order is being prepared.",
+  },
+  ready: {
+    eyebrow: "Ready for pickup",
+    title: "Your order is ready",
+    description: "Your counter-pickup order is ready to collect.",
+  },
+  cancelled: {
+    eyebrow: "Order cancelled",
+    title: "Your order was cancelled",
+    description: "Your order was cancelled. Review the payment status below for refund details.",
+  },
+};
+
+function paymentLabel(status: string): string {
+  if (status === "succeeded") return "Paid";
+  if (status === "refunded") return "Refunded";
+  if (status === "failed") return "Failed";
+  return status;
+}
 
 export function OrderConfirmation({
   order,
@@ -13,18 +43,24 @@ export function OrderConfirmation({
   order: OrderSummary;
   user: { name: string; email: string };
 }) {
+  const copy = ORDER_COPY[order.status];
+  const description =
+    order.status === "cancelled" && order.paymentStatus === "refunded"
+      ? "Your order was cancelled and your payment was refunded."
+      : copy.description;
+
   return (
     <div className="flex flex-col gap-8">
       <div className="flex flex-col gap-3">
         <p className="border-b-2 border-primary font-mono text-xs uppercase tracking-[0.28em] text-primary">
-          Order confirmed <span className="normal-case tracking-normal text-muted-foreground">{orderRef(order.id)}</span>
+          {copy.eyebrow} <span className="normal-case tracking-normal text-muted-foreground">{orderRef(order.id)}</span>
         </p>
         <div className="h-px w-full bg-muted-foreground/40" />
         <div className="flex flex-wrap items-center gap-3">
-          <h1 className="font-serif text-4xl font-bold tracking-tight sm:text-5xl">Thanks for your order</h1>
+          <h1 className="font-serif text-4xl font-bold tracking-tight sm:text-5xl">{copy.title}</h1>
           <Badge variant={order.status === "ready" ? "outline" : "secondary"}>{order.status}</Badge>
         </div>
-        <p className="text-base text-muted-foreground">We saved your counter-pickup order.</p>
+        <p className="text-base text-muted-foreground">{description}</p>
       </div>
 
       <div className="grid gap-6 md:grid-cols-[1fr_0.8fr]">
@@ -69,6 +105,10 @@ export function OrderConfirmation({
             <div className="flex items-center justify-between gap-4 py-3">
               <dt className="text-sm text-muted-foreground">Email</dt>
               <dd className="max-w-[12rem] truncate font-mono text-xs" title={user.email}>{user.email}</dd>
+            </div>
+            <div className="flex items-center justify-between gap-4 py-3">
+              <dt className="text-sm text-muted-foreground">Payment</dt>
+              <dd className="text-right text-sm">{paymentLabel(order.paymentStatus)}</dd>
             </div>
             <div className="flex items-center justify-between gap-4 py-3">
               <dt className="text-sm text-muted-foreground">Placed</dt>
