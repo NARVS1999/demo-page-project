@@ -5,14 +5,32 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-// Absolute-path-only redirect target for ?next= (WR-01): rejects open redirects
-// like "https://evil.com" or "//evil.com". Returns the fallback when next is
-// absent or unsafe. Shared by any page/logout flow that honors ?next=.
+// Absolute-path-only redirect target for ?next= (BL-02): rejects open redirects
+// like "https://evil.com", "//evil.com", and backslash-normalized network
+// paths. Returns the fallback when next is absent or unsafe. Shared by any
+// page/logout flow that honors ?next=.
+const TRUSTED_ORIGIN = "http://northstar.local";
+const UNSAFE_NEXT_CHARACTERS = /[\\\u0000-\u001f\u007f-\u009f]/;
+
 export function safeNextUrl(
   next: string | null | undefined,
   fallback = "/dashboard",
 ): string {
-  return next && next.startsWith("/") && !next.startsWith("//") ? next : fallback;
+  if (
+    !next ||
+    !next.startsWith("/") ||
+    next.startsWith("//") ||
+    UNSAFE_NEXT_CHARACTERS.test(next)
+  ) {
+    return fallback;
+  }
+
+  try {
+    const target = new URL(next, TRUSTED_ORIGIN);
+    return target.origin === TRUSTED_ORIGIN ? next : fallback;
+  } catch {
+    return fallback;
+  }
 }
 
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;

@@ -111,7 +111,10 @@ export async function addToCart(
   formData: FormData,
 ): Promise<FormState> {
   const user = await getCurrentUser();
-  if (!user) redirect(`/login?next=${loginTarget(formData, "/shop")}`);
+  if (!user) {
+    const next = encodeURIComponent(loginTarget(formData, "/shop"));
+    redirect(`/login?next=${next}`);
+  }
 
   const parsed = parseCartInput(formData);
   if (!parsed.ok) return parsed.state;

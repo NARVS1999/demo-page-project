@@ -125,7 +125,12 @@ describe("checkout", () => {
     guestData.set("next", "/shop/house-filter");
 
     await expect(addToCart(null, guestData)).rejects.toThrow(
-      "REDIRECT:/login?next=/shop/house-filter",
+      "REDIRECT:/login?next=%2Fshop%2Fhouse-filter",
+    );
+
+    guestData.set("next", "/\\evil.com");
+    await expect(addToCart(null, guestData)).rejects.toThrow(
+      "REDIRECT:/login?next=%2Fshop",
     );
 
     mockGetCurrentUser.mockResolvedValue({
