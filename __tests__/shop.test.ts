@@ -37,8 +37,8 @@ const ORDER_ID = "3042abcd-1234-4111-8111-111111111111";
 describe("shop helpers", () => {
   it("formats integer cents at the display edge", async () => {
     const { formatShopPrice } = await import("@/lib/shop");
-    expect(formatShopPrice(650)).toBe("$6.50");
-    expect(formatShopPrice(1200)).toBe("$12");
+    expect(formatShopPrice(650)).toBe("₱6.50");
+    expect(formatShopPrice(1200)).toBe("₱12");
   });
 
   it("creates a stable display-only order reference", async () => {

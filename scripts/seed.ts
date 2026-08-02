@@ -186,7 +186,7 @@ const MOCK_EMAILS = [
     id: "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaa2",
     recipient: "demo@example.com",
     subject: "Your invoice is ready",
-    body: "Invoice #0042 for $49.00 is ready to view (mock event).",
+    body: "Invoice #0042 for ₱49.00 is ready to view (mock event).",
   },
 ];
 
@@ -340,7 +340,7 @@ const BOOKING_EMAILS = [
     bookingId: "f4444444-4444-4444-8444-444444444444",
     recipient: "demo@example.com",
     subject: "Booking confirmation",
-    body: "Hi Demo User — your Haircut + Beard booking was cancelled, so no appointment is scheduled. Your deposit of $11.25 has been refunded.",
+    body: "Hi Demo User — your Haircut + Beard booking was cancelled, so no appointment is scheduled. Your deposit of ₱11.25 has been refunded.",
   },
 ];
 
@@ -598,7 +598,7 @@ async function seedDemoData() {
     // Deterministic staggered publish dates, computed in JS (avoids
     // parameter-type inference issues with interval arithmetic).
     const publishedAt = new Date(Date.now() - post.daysAgo * 86_400_000);
-    const coverImage = `https://picsum.photos/seed/${post.slug}/800/533`;
+    const coverImage = `/images/blog/${post.slug}.jpg`;
     await sqlDirect`
       INSERT INTO posts (id, title, content, status, slug, category_id,
         cover_image, author_id, published_at)
@@ -773,7 +773,7 @@ async function seedDemoData() {
   }
 
   for (const product of NORTHSTAR_PRODUCTS) {
-    const imageUrl = `https://picsum.photos/seed/${product.slug}/800/800`;
+    const imageUrl = `/images/shop/${product.slug}.jpg`;
     await sqlDirect`
       INSERT INTO products
         (id, category_id, slug, name, description, image_url, price_cents, inventory)

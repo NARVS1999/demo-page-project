@@ -69,7 +69,7 @@ describe("Northstar catalog components", () => {
     expect(screen.getByRole("link", { name: "View product" }).getAttribute("href")).toBe(
       "/shop/house-filter",
     );
-    expect(screen.getByText("$6.50")).toBeTruthy();
+    expect(screen.getByText("₱6.50")).toBeTruthy();
     expect(screen.getByText("Only 4 left")).toBeTruthy();
   });
 
@@ -144,7 +144,7 @@ describe("cart, checkout, and order confirmation components", () => {
     expect(quantityInput.getAttribute("aria-describedby")).toBeNull();
     expect(screen.getByRole("button", { name: "Update quantity for House Filter" })).toBeTruthy();
     expect(screen.getByRole("button", { name: "Remove House Filter" })).toBeTruthy();
-    expect(screen.getByText("$13")).toBeTruthy();
+    expect(screen.getByText("₱13")).toBeTruthy();
   });
 
   it("keeps payment failure visible and retryable on the counter-pickup checkout form", async () => {

@@ -41,9 +41,9 @@ export function ProductFilters({ current }: { current: ProductFilterValues }) {
           className="h-10 w-full rounded-lg border border-input bg-transparent px-3 text-sm dark:[color-scheme:dark] sm:w-auto"
         >
           <option value="all">All prices</option>
-          <option value="under-5">Under $5</option>
-          <option value="5-15">$5–$15</option>
-          <option value="over-15">Over $15</option>
+          <option value="under-5">Under ₱5</option>
+          <option value="5-15">₱5–₱15</option>
+          <option value="over-15">Over ₱15</option>
         </select>
       </div>
       {(current.category !== "all" || current.price !== "all") && (

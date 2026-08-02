@@ -53,7 +53,7 @@ export function formatSlotTime(time: string): string {
   }).format(new Date(2026, 0, 1, hours, minutes));
 }
 
-/** Cents → "$30" / "$7.50" / "$0.25" (trailing ".00" stripped — UI-SPEC copy). */
+/** Cents → "₱30" / "₱7.50" / "₱0.25" (trailing ".00" stripped — UI-SPEC copy). */
 export function formatUsd(cents: number): string {
-  return `$${(cents / 100).toFixed(2).replace(/\.00$/, "")}`;
+  return `₱${(cents / 100).toFixed(2).replace(/\.00$/, "")}`;
 }

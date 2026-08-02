@@ -50,7 +50,7 @@ export type OrderSummary = {
 
 /** Format integer cents for the Northstar display edge. */
 export function formatShopPrice(cents: number): string {
-  return `$${(cents / 100).toFixed(2).replace(/\.00$/, "")}`;
+  return `₱${(cents / 100).toFixed(2).replace(/\.00$/, "")}`;
 }
 
 /** Display-only reference; the UUID remains the canonical order identifier. */

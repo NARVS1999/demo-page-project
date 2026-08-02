@@ -56,11 +56,11 @@ describe("formatSlotTime", () => {
 
 describe("formatUsd", () => {
   it("strips a trailing '.00' for whole dollars", () => {
-    expect(formatUsd(3000)).toBe("$30");
+    expect(formatUsd(3000)).toBe("₱30");
   });
 
   it("keeps cents when present", () => {
-    expect(formatUsd(750)).toBe("$7.50");
-    expect(formatUsd(25)).toBe("$0.25");
+    expect(formatUsd(750)).toBe("₱7.50");
+    expect(formatUsd(25)).toBe("₱0.25");
   });
 });
