@@ -1,9 +1,9 @@
 ---
 phase: 02-booking-app
-verified: 2026-08-02T20:20:00Z
-status: human_needed
-score: 13/18 must-haves verified
-behavior_unverified: 3
+verified: 2026-08-02T21:30:00Z
+status: passed
+score: 18/18 must-haves verified
+behavior_unverified: 0
 overrides_applied: 0
 human_verification:
   - test: "Full browser booking loop (logged in as demo@example.com): /book → select service → select an available pill → Confirm booking with the deposit checkbox checked → toast 'Booking confirmed.' → land on /booking/{id} with the summary card, 2 notice rows, and the 'Simulated — no real email or SMS was sent.' note. Then book a second slot with deposit unchecked → Deposit row shows '—'."
