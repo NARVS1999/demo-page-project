@@ -763,7 +763,7 @@ async function seedDemoData() {
       ON CONFLICT (id) DO NOTHING`;
   }
 
-  // ─── Phase 3: shop categories → products → payments → orders → receipts ────
+  // ─── Phase 3: shop categories → products → payments → cart → orders → receipts ────
   for (const category of NORTHSTAR_CATEGORIES) {
     await sqlDirect`
       INSERT INTO shop_categories (id, slug, name)
@@ -789,7 +789,6 @@ async function seedDemoData() {
             description = EXCLUDED.description,
             image_url = EXCLUDED.image_url,
             price_cents = EXCLUDED.price_cents,
-            inventory = EXCLUDED.inventory,
             updated_at = now()`;
   }
 
@@ -798,10 +797,21 @@ async function seedDemoData() {
     await sqlDirect`
       INSERT INTO mock_payments (id, amount, currency, status)
       VALUES (${pay.id}, ${pay.amount}, 'usd', ${pay.status})
-      ON CONFLICT (id) DO UPDATE
-        SET amount = EXCLUDED.amount, currency = EXCLUDED.currency,
-            status = EXCLUDED.status`;
+      ON CONFLICT (id) DO NOTHING`;
   }
+
+  // Seed the walkthrough cart only before the demo order fixtures exist. The
+  // first seed's order rows act as a durable marker, so a later seed never
+  // repopulates a cart that a user checked out, cleared, or edited.
+  await sqlDirect`
+    INSERT INTO cart_items (user_id, product_id, quantity)
+    SELECT demo.id, product.id, 1
+      FROM (SELECT id FROM users WHERE email = 'demo@example.com') AS demo
+      CROSS JOIN (SELECT id FROM products WHERE slug = 'morning-scone') AS product
+     WHERE NOT EXISTS (
+       SELECT 1 FROM orders WHERE user_id = demo.id
+     )
+    ON CONFLICT (user_id, product_id) DO NOTHING`;
 
   for (const order of NORTHSTAR_ORDERS) {
     const createdAt = new Date(Date.now() - order.daysAgo * 86_400_000);
@@ -812,13 +822,7 @@ async function seedDemoData() {
         (SELECT id FROM users WHERE email = 'demo@example.com'),
         ${order.paymentId}, ${order.totalCents}, ${order.status}, ${createdAt}, ${createdAt}
       )
-      ON CONFLICT (id) DO UPDATE
-        SET user_id = EXCLUDED.user_id,
-            payment_id = EXCLUDED.payment_id,
-            total_cents = EXCLUDED.total_cents,
-            status = EXCLUDED.status,
-            created_at = EXCLUDED.created_at,
-            updated_at = now()`;
+      ON CONFLICT (id) DO NOTHING`;
   }
 
   for (const item of NORTHSTAR_ORDER_ITEMS) {
@@ -832,25 +836,8 @@ async function seedDemoData() {
         ${item.productName}, ${item.quantity},
         ${item.unitPriceCents}, ${item.lineTotalCents}
       )
-      ON CONFLICT (id) DO UPDATE
-        SET order_id = EXCLUDED.order_id,
-            product_id = EXCLUDED.product_id,
-            product_name = EXCLUDED.product_name,
-            quantity = EXCLUDED.quantity,
-            unit_price_cents = EXCLUDED.unit_price_cents,
-            line_total_cents = EXCLUDED.line_total_cents`;
+      ON CONFLICT (id) DO NOTHING`;
   }
-
-  // Keep one safe demo cart row available for the signed-in browser walkthrough.
-  await sqlDirect`
-    INSERT INTO cart_items (user_id, product_id, quantity)
-    VALUES (
-      (SELECT id FROM users WHERE email = 'demo@example.com'),
-      (SELECT id FROM products WHERE slug = 'morning-scone'),
-      1
-    )
-    ON CONFLICT (user_id, product_id) DO UPDATE
-      SET quantity = EXCLUDED.quantity, updated_at = now()`;
 
   for (const notice of NORTHSTAR_EMAILS) {
     await sqlDirect`
@@ -860,13 +847,7 @@ async function seedDemoData() {
         ${notice.id}, 'demo@example.com', ${notice.subject}, ${notice.body},
         'sent', null, ${notice.orderId}
       )
-      ON CONFLICT (id) DO UPDATE
-        SET recipient = EXCLUDED.recipient,
-            subject = EXCLUDED.subject,
-            body = EXCLUDED.body,
-            status = EXCLUDED.status,
-            booking_id = EXCLUDED.booking_id,
-            order_id = EXCLUDED.order_id`;
+      ON CONFLICT (id) DO NOTHING`;
   }
 }
 

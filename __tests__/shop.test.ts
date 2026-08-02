@@ -378,6 +378,9 @@ describe("checkout", () => {
 
   it("keeps the Northstar seed fixtures and size-report tables explicit", () => {
     const source = readFileSync("scripts/seed.ts", "utf8");
+    const shopSeedStart = source.indexOf("// ─── Phase 3: shop categories");
+    const shopSeedEnd = source.indexOf("// ─── 4. Report");
+    const shopSeed = source.slice(shopSeedStart, shopSeedEnd);
     const productsStart = source.indexOf("const NORTHSTAR_PRODUCTS = [");
     const productsEnd = source.indexOf("const NORTHSTAR_ORDERS = [");
     const products = source.slice(productsStart, productsEnd);
@@ -391,5 +394,9 @@ describe("checkout", () => {
     for (const table of ["shop_categories", "products", "cart_items", "orders", "order_items"]) {
       expect(source).toContain(`"${table}"`);
     }
+    expect(shopSeed).not.toContain("inventory = EXCLUDED.inventory");
+    expect(shopSeed).not.toContain("status = EXCLUDED.status");
+    expect(shopSeed).toContain("ON CONFLICT (user_id, product_id) DO NOTHING");
+    expect(shopSeed).toContain("WHERE NOT EXISTS");
   });
 });
