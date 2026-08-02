@@ -1,9 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { readFileSync } from "node:fs";
 
 const {
   mockWithPool,
   mockGetCurrentUser,
   mockCreatePayment,
+  mockRefund,
   mockSendEmail,
   mockRevalidatePath,
   mockRedirect,
@@ -11,6 +13,7 @@ const {
     mockWithPool: vi.fn(),
     mockGetCurrentUser: vi.fn(),
     mockCreatePayment: vi.fn(),
+    mockRefund: vi.fn(),
     mockSendEmail: vi.fn(),
     mockRevalidatePath: vi.fn(),
     mockRedirect: vi.fn((url: string) => {
@@ -21,7 +24,7 @@ const {
 vi.mock("@/lib/db", () => ({ withPool: mockWithPool }));
 vi.mock("@/lib/session", () => ({ getCurrentUser: mockGetCurrentUser }));
 vi.mock("@/lib/mock", () => ({
-  payment: { createPayment: mockCreatePayment },
+  payment: { createPayment: mockCreatePayment, refund: mockRefund },
   email: { sendEmail: mockSendEmail },
 }));
 vi.mock("next/cache", () => ({ revalidatePath: mockRevalidatePath }));
@@ -49,6 +52,7 @@ describe("checkout", () => {
     mockWithPool.mockReset();
     mockGetCurrentUser.mockReset();
     mockCreatePayment.mockReset();
+    mockRefund.mockReset();
     mockSendEmail.mockReset();
     mockRevalidatePath.mockReset();
     mockRedirect.mockReset();
@@ -256,5 +260,95 @@ describe("checkout", () => {
     expect(await checkout(null, new FormData())).toEqual({ message: "Your cart is empty." });
     expect(mockCreatePayment).not.toHaveBeenCalled();
     expect(mockSendEmail).not.toHaveBeenCalled();
+  });
+
+  it("enforces legal order transitions and rejects stale or terminal actions generically", async () => {
+    const { updateOrderStatus } = await import("@/app/admin/orders/actions");
+    mockGetCurrentUser.mockResolvedValue({
+      id: USER_ID,
+      email: "demo@example.com",
+      name: "Demo User",
+    });
+    const client = {
+      query: vi.fn(async (query: string) => {
+        if (query.includes("UPDATE orders")) {
+          return { rows: [{ payment_id: "5042abcd-1234-4111-8111-111111111111" }], rowCount: 1 };
+        }
+        return { rows: [], rowCount: 1 };
+      }),
+    };
+    mockWithPool.mockImplementation(async (callback: (client: unknown) => Promise<unknown>) =>
+      callback(client),
+    );
+
+    const preparing = new FormData();
+    preparing.set("orderId", ORDER_ID);
+    preparing.set("status", "preparing");
+    expect(await updateOrderStatus(null, preparing)).toEqual({ ok: true });
+    expect(client.query.mock.calls[0][1]).toEqual([ORDER_ID, "preparing"]);
+
+    mockWithPool.mockImplementationOnce(async (callback: (client: unknown) => Promise<unknown>) =>
+      callback({
+        query: vi.fn(async (query: string) =>
+          query.includes("UPDATE orders")
+            ? { rows: [], rowCount: 0 }
+            : { rows: [], rowCount: 1 },
+        ),
+      }),
+    );
+    const illegal = new FormData();
+    illegal.set("orderId", ORDER_ID);
+    illegal.set("status", "ready");
+    expect(await updateOrderStatus(null, illegal)).toEqual({
+      message: "This order is no longer available for that action.",
+    });
+    expect(mockRefund).not.toHaveBeenCalled();
+  });
+
+  it("cancels a paid or preparing order with one refund and inventory restoration", async () => {
+    const { updateOrderStatus } = await import("@/app/admin/orders/actions");
+    mockGetCurrentUser.mockResolvedValue({
+      id: USER_ID,
+      email: "demo@example.com",
+      name: "Demo User",
+    });
+    const paymentId = "5042abcd-1234-4111-8111-111111111111";
+    const client = {
+      query: vi.fn(async (query: string) => {
+        if (query.includes("UPDATE orders")) return { rows: [{ payment_id: paymentId }], rowCount: 1 };
+        if (query.includes("FROM order_items")) {
+          return { rows: [{ product_id: PRODUCT_ID, quantity: 2 }], rowCount: 1 };
+        }
+        return { rows: [], rowCount: 1 };
+      }),
+    };
+    mockWithPool.mockImplementation(async (callback: (client: unknown) => Promise<unknown>) =>
+      callback(client),
+    );
+    mockRefund.mockResolvedValue({ id: paymentId, status: "refunded" });
+
+    const cancel = new FormData();
+    cancel.set("orderId", ORDER_ID);
+    cancel.set("status", "cancelled");
+    expect(await updateOrderStatus(null, cancel)).toEqual({ ok: true });
+    expect(mockRefund).toHaveBeenCalledWith(paymentId, client);
+    expect(client.query.mock.calls.some(([query]) => query.includes("UPDATE products"))).toBe(true);
+  });
+
+  it("keeps the Northstar seed fixtures and size-report tables explicit", () => {
+    const source = readFileSync("scripts/seed.ts", "utf8");
+    const productsStart = source.indexOf("const NORTHSTAR_PRODUCTS = [");
+    const productsEnd = source.indexOf("const NORTHSTAR_ORDERS = [");
+    const products = source.slice(productsStart, productsEnd);
+    expect(source).toContain("const NORTHSTAR_CATEGORIES = [");
+    expect(products.match(/slug:/g)).toHaveLength(12);
+    expect(products).toContain('categorySlug: "drinks"');
+    expect(products).toContain('categorySlug: "beans"');
+    expect(products).toContain('categorySlug: "bakery"');
+    expect(source).toContain("const NORTHSTAR_ORDERS = [");
+    expect(source).toContain("order_id");
+    for (const table of ["shop_categories", "products", "cart_items", "orders", "order_items"]) {
+      expect(source).toContain(`"${table}"`);
+    }
   });
 });
