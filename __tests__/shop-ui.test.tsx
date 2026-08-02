@@ -1,6 +1,6 @@
 import { existsSync, readFileSync } from "node:fs";
-import { fireEvent, render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { SITE } from "@/lib/site";
 import type { CatalogProduct } from "@/lib/shop";
 import { ProductCard } from "@/components/shop/product-card";
@@ -16,6 +16,8 @@ vi.mock("next/navigation", () => ({
 vi.mock("sonner", () => ({
   toast: { success: vi.fn(), error: vi.fn() },
 }));
+
+afterEach(() => cleanup());
 
 const product: CatalogProduct = {
   id: "2042abcd-1234-4111-8111-111111111111",
@@ -60,12 +62,15 @@ describe("Northstar catalog components", () => {
   it("keeps category and price filters as shareable GET controls", () => {
     render(<ProductFilters current={{ category: "drinks", price: "under-5" }} />);
 
-    const form = screen.getByRole("form");
-    expect(form.getAttribute("method")).toBe("get");
+    const form = screen.getByRole("form", { name: "Shop filters" });
+    expect(form.getAttribute("method")).toBe("GET");
     expect(form.getAttribute("action")).toBe("/shop");
     expect((screen.getByLabelText("Category") as HTMLSelectElement).value).toBe("drinks");
     expect((screen.getByLabelText("Price") as HTMLSelectElement).value).toBe("under-5");
+    const submit = vi.spyOn(HTMLFormElement.prototype, "submit").mockImplementation(() => undefined);
     fireEvent.change(screen.getByLabelText("Category"), { target: { value: "beans" } });
+    expect(submit).toHaveBeenCalledTimes(1);
+    submit.mockRestore();
   });
 });
 

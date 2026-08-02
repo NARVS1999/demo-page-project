@@ -20,6 +20,8 @@ export async function SiteHeader() {
     ? [
         { label: "Home", href: "/" },
         { label: "Blog", href: "/blog" },
+        { label: "Shop", href: "/shop" },
+        { label: "Cart", href: "/shop/cart" },
         { label: "Services", href: "/services" },
         { label: "Bookings", href: "/bookings" },
         { label: "Posts", href: "/posts" },
@@ -28,6 +30,8 @@ export async function SiteHeader() {
     : [
         { label: "Home", href: "/" },
         { label: "Blog", href: "/blog" },
+        { label: "Shop", href: "/shop" },
+        { label: "Cart", href: "/shop/cart" },
         { label: "Services", href: "/services" },
       ];
 

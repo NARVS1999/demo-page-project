@@ -21,6 +21,8 @@ export function MobileNav({
     ? [
         { label: "Home", href: "/" },
         { label: "Blog", href: "/blog" },
+        { label: "Shop", href: "/shop" },
+        { label: "Cart", href: "/shop/cart" },
         { label: "Services", href: "/services" },
         { label: "Bookings", href: "/bookings" },
         { label: "Dashboard", href: "/dashboard" },
@@ -30,6 +32,8 @@ export function MobileNav({
     : [
         { label: "Home", href: "/" },
         { label: "Blog", href: "/blog" },
+        { label: "Shop", href: "/shop" },
+        { label: "Cart", href: "/shop/cart" },
         { label: "Services", href: "/services" },
         { label: "Sign in", href: "/login" },
       ];
