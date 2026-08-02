@@ -61,8 +61,18 @@ export const tagSchema = z.object({
   slug: z.string().regex(slugRegex, "Use lowercase letters, numbers, and hyphens."),
 });
 
+// Booking dialog contract (BOOK-03): slotId is the hidden-field UUID the
+// slot-picker submits; deposit is a checkbox that submits "on" when checked and
+// NOTHING (null) when unchecked — preprocess normalizes both to a boolean
+// (RESEARCH Pitfall 6 — an unchecked box never reaches the server).
+export const bookingSchema = z.object({
+  slotId: z.uuid("Select a time slot."),
+  deposit: z.preprocess((v) => v === "on", z.boolean()).default(false),
+});
+
 export type RegisterInput = z.infer<typeof registerSchema>;
 export type LoginInput = z.infer<typeof loginSchema>;
 export type PostInput = z.infer<typeof postSchema>;
 export type CategoryInput = z.infer<typeof categorySchema>;
 export type TagInput = z.infer<typeof tagSchema>;
+export type BookingInput = z.infer<typeof bookingSchema>;
