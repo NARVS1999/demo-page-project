@@ -1,4 +1,5 @@
 import { existsSync, readFileSync } from "node:fs";
+import * as React from "react";
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { SITE } from "@/lib/site";
@@ -7,14 +8,29 @@ import { ProductCard } from "@/components/shop/product-card";
 import { ProductDetail } from "@/components/shop/product-detail";
 import { ProductFilters } from "@/components/shop/product-filters";
 
+const { mockAddToCart, mockUpdateCartQuantity, mockRemoveFromCart, mockCheckout } = vi.hoisted(() => ({
+  mockAddToCart: vi.fn(),
+  mockUpdateCartQuantity: vi.fn(),
+  mockRemoveFromCart: vi.fn(),
+  mockCheckout: vi.fn(),
+}));
+
 vi.mock("@/app/(main)/shop/actions", () => ({
-  addToCart: vi.fn(),
+  addToCart: mockAddToCart,
+  updateCartQuantity: mockUpdateCartQuantity,
+  removeFromCart: mockRemoveFromCart,
+  checkout: mockCheckout,
 }));
 vi.mock("next/navigation", () => ({
   useRouter: () => ({ push: vi.fn(), refresh: vi.fn() }),
 }));
 vi.mock("sonner", () => ({
   toast: { success: vi.fn(), error: vi.fn() },
+}));
+vi.mock("@/components/ui/checkbox", () => ({
+  Checkbox: (props: React.InputHTMLAttributes<HTMLInputElement>) => (
+    <input {...props} type="checkbox" />
+  ),
 }));
 
 afterEach(() => cleanup());
