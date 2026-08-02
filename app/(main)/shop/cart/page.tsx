@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { ShoppingBag } from "lucide-react";
 import { sql } from "@/lib/db";
 import { getCurrentUser } from "@/lib/session";
-import { type CartItemRow } from "@/lib/shop";
+import { formatShopPrice, type CartItemRow } from "@/lib/shop";
 import { CartTable } from "@/components/shop/cart-table";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Button } from "@/components/ui/button";
@@ -32,6 +32,7 @@ export default async function CartPage() {
     inventory: Number(row.inventory),
     lineTotalCents: Number(row.line_total_cents),
   }));
+  const subtotalCents = items.reduce((sum, item) => sum + item.lineTotalCents, 0);
 
   return (
     <div className="flex flex-col gap-8">
@@ -54,7 +55,13 @@ export default async function CartPage() {
           <CartTable rows={items} />
           <div className="sticky bottom-0 -mx-4 flex flex-col gap-4 border-t border-border bg-background/95 p-4 backdrop-blur sm:-mx-6 sm:px-6 md:static md:mx-0 md:flex-row md:items-center md:justify-between md:bg-transparent md:p-0 md:backdrop-blur-none lg:-mx-0">
             <Button asChild variant="ghost"><Link href="/shop">Continue shopping</Link></Button>
-            <Button asChild size="lg"><Link href="/shop/checkout">Continue to checkout</Link></Button>
+            <div className="flex flex-wrap items-center justify-end gap-4">
+              <p className="flex items-center gap-3 text-sm">
+                <span className="text-muted-foreground">Subtotal</span>
+                <span className="font-mono text-base font-medium">{formatShopPrice(subtotalCents)}</span>
+              </p>
+              <Button asChild size="lg"><Link href="/shop/checkout">Continue to checkout</Link></Button>
+            </div>
           </div>
         </>
       )}

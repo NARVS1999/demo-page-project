@@ -238,6 +238,8 @@ describe("cart, checkout, and order confirmation components", () => {
     const orderPage = readFileSync("app/(main)/orders/[id]/page.tsx", "utf8");
     expect(cartPage).toContain('export const dynamic = "force-dynamic"');
     expect(cartPage).toContain("/login?next=/shop/cart");
+    expect(cartPage).toContain("const subtotalCents = items.reduce");
+    expect(cartPage).toContain("formatShopPrice(subtotalCents)");
     expect(checkoutPage).toContain("simulateFailure");
     expect(checkoutPage).toContain("/shop/cart");
     expect(orderPage).toContain('export const dynamic = "force-dynamic"');
