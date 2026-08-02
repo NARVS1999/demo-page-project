@@ -81,18 +81,28 @@ async function getProductInventory(
   userId: string,
   productId: string,
 ) {
-  const result = await client.query(
-    `SELECT inventory, ci.quantity AS cart_quantity
-       FROM products p
-       LEFT JOIN cart_items ci ON ci.product_id = p.id AND ci.user_id = $2
-      WHERE p.id = $1
-      FOR UPDATE OF p`,
-    [productId, userId],
+  // Serialize all cart changes for a product before checking the user's
+  // current cart quantity. The product lock also covers the missing-cart-row
+  // case, where there is no row for PostgreSQL to lock yet.
+  const productResult = await client.query(
+    `SELECT inventory
+       FROM products
+      WHERE id = $1
+      FOR UPDATE`,
+    [productId],
   );
-  if (result.rowCount === 0) return null;
+  if (productResult.rowCount === 0) return null;
+
+  const cartResult = await client.query(
+    `SELECT quantity AS cart_quantity
+       FROM cart_items
+      WHERE user_id = $1 AND product_id = $2
+      FOR UPDATE`,
+    [userId, productId],
+  );
   return {
-    inventory: Number(result.rows[0].inventory),
-    cartQuantity: Number(result.rows[0].cart_quantity ?? 0),
+    inventory: Number(productResult.rows[0].inventory),
+    cartQuantity: Number(cartResult.rows[0]?.cart_quantity ?? 0),
   };
 }
 

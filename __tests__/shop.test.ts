@@ -142,6 +142,41 @@ describe("checkout", () => {
     expect(mockWithPool).not.toHaveBeenCalled();
   });
 
+  it("locks the product and existing cart row before validating an add", async () => {
+    const { addToCart } = await import("@/app/(main)/shop/actions");
+    mockGetCurrentUser.mockResolvedValue({
+      id: USER_ID,
+      email: "demo@example.com",
+      name: "Demo User",
+    });
+    const client = {
+      query: vi.fn()
+        .mockResolvedValueOnce({ rows: [{ inventory: 3 }], rowCount: 1 })
+        .mockResolvedValueOnce({ rows: [{ cart_quantity: 1 }], rowCount: 1 })
+        .mockResolvedValueOnce({ rows: [], rowCount: 1 }),
+    };
+    mockWithPool.mockImplementation(async (callback: (client: unknown) => Promise<unknown>) =>
+      callback(client),
+    );
+
+    const formData = new FormData();
+    formData.set("productId", PRODUCT_ID);
+    formData.set("quantity", "1");
+
+    expect(await addToCart(null, formData)).toEqual({ ok: true });
+    const [productLock, cartLock, insert] = client.query.mock.calls as unknown as [
+      [string, unknown[]],
+      [string, unknown[]],
+      [string, unknown[]],
+    ];
+    expect(productLock[0]).toContain("FROM products");
+    expect(productLock[0]).toContain("FOR UPDATE");
+    expect(cartLock[0]).toContain("FROM cart_items");
+    expect(cartLock[0]).toContain("FOR UPDATE");
+    expect(cartLock[1]).toEqual([USER_ID, PRODUCT_ID]);
+    expect(insert[0]).toContain("ON CONFLICT (user_id, product_id)");
+  });
+
   it("returns inline validation and stock errors without clamping cart quantities", async () => {
     const { addToCart, updateCartQuantity } = await import("@/app/(main)/shop/actions");
     mockGetCurrentUser.mockResolvedValue({
