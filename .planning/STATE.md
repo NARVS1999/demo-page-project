@@ -5,15 +5,15 @@ milestone_name: milestone
 current_phase: 2
 current_phase_name: Booking App
 status: planning
-stopped_at: Phase 1 (CMS App) complete and verified
-last_updated: "2026-08-01T23:38:22.180Z"
+stopped_at: Completed 02-01-PLAN.md
+last_updated: "2026-08-02T11:04:20.214Z"
 last_activity: 2026-08-02
-last_activity_desc: Phase 1 complete, transitioned to Phase 2
+last_activity_desc: "Plan 02-01 complete: booking schema + atomic transactions + rolling seed"
 progress:
-  total_phases: 2
+  total_phases: 3
   completed_phases: 2
-  total_plans: 4
-  completed_plans: 4
+  total_plans: 6
+  completed_plans: 5
 ---
 
 # Project State
@@ -28,11 +28,11 @@ See: .planning/PROJECT.md (updated 2026-08-01)
 ## Current Position
 
 Phase: 2 of 5 (Booking App)
-Plan: Not started
-Status: Ready to plan
-Last activity: 2026-08-02 — Phase 1 complete, transitioned to Phase 2
+Plan: 1 of 2 complete (02-01 data layer) — 02-02 UI next
+Status: Executing
+Last activity: 2026-08-02 — Plan 02-01 complete: booking schema + atomic transactions + rolling seed
 
-Progress: [██████████] 100%
+Progress: [████████░░] 83%
 
 ## Performance Metrics
 
@@ -64,6 +64,7 @@ Progress: [██████████] 100%
 | Phase 00-template-foundation P00-02 | 85 | 10 tasks | 62 files |
 | Phase 01-cms-app P01-01 | 72 | 4 tasks | 13 files |
 | Phase 01-cms-app P01-02 | 220 | 4 tasks | 36 files |
+| Phase 02-booking-app P01 | 16min | 3 tasks | 12 files |
 
 ## Accumulated Context
 
@@ -87,6 +88,9 @@ Recent decisions affecting current work:
 - [Phase ?]: neon timestamptz rows arrive as JS Date — compare with getTime(), not localeCompare
 - [Phase ?]: Server actions broken in this environment (Next 16.2.12 + Windows): verified framework-level, not project code — surfaced as blocking checkpoint for human decision.
 - [Phase 1] RESOLVED 2026-08-02: the server-action "Connection closed." defect was a **curl artifact, not an environment defect** — `curl -F` emits lowercase-only multipart boundaries that Next 16's Flight parser rejects; real browsers (mixed-case boundaries, fetch path) work end-to-end, proven with a real headless Chrome against the live Neon DB (create post, edit page, taxonomy create, delete — all POST 200 and persisted). One real app bug found and fixed (Radix AlertDialogAction unmounting forms before submit → `delete-post-dialog.tsx` requestSubmit intercept; later propagated to category/tag tables per REVIEW CR-01). Stack stays on pinned Next 16.2.12. See `.planning/phases/01-cms-app/01-02-SUMMARY.md`.
+- [Phase ?]: Sample booking dates resolve to the nth upcoming Tue-Sat template day (nthTemplateDay) instead of fixed +N offsets — fixed offsets drift onto Sunday/Monday where the locked Tue-Sat grid has no slots
+- [Phase ?]: depositCents() in lib/booking.ts is the single source of truth for the 25% deposit formula; createBooking and the seed deposit amounts share it
+- [Phase ?]: Booking deposit payments are upserted before sample bookings in the seed — bookings.deposit_payment_id FK requires referenced rows to exist first
 
 ### Pending Todos
 
@@ -104,6 +108,6 @@ None — all Phase 1 blockers resolved (see decision log above).
 
 ## Session Continuity
 
-Last session: 2026-08-02T07:30:00.000Z
-Stopped at: Phase 1 (CMS App) complete and verified
+Last session: 2026-08-02T11:03:41.598Z
+Stopped at: Completed 02-01-PLAN.md
 Resume file: None

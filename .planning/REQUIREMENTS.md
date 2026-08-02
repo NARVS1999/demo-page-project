@@ -34,7 +34,7 @@
 - [ ] **BOOK-01**: Service listing page
 - [ ] **BOOK-02**: Slot calendar showing available/taken slots
 - [ ] **BOOK-03**: Booking flow — user selects slot and confirms
-- [ ] **BOOK-04**: Double-booking prevention (atomic slot reservation)
+- [x] **BOOK-04**: Double-booking prevention (atomic slot reservation)
 - [ ] **BOOK-05**: Admin confirm/cancel bookings
 - [ ] **BOOK-06**: Mock email confirmation (saved to DB, viewable in admin)
 - [ ] **BOOK-07**: Mock SMS reminder (logged to table)
@@ -134,7 +134,7 @@
 | BOOK-01 | Phase 2 | Pending |
 | BOOK-02 | Phase 2 | Pending |
 | BOOK-03 | Phase 2 | Pending |
-| BOOK-04 | Phase 2 | Pending |
+| BOOK-04 | Phase 2 | Complete |
 | BOOK-05 | Phase 2 | Pending |
 | BOOK-06 | Phase 2 | Pending |
 | BOOK-07 | Phase 2 | Pending |

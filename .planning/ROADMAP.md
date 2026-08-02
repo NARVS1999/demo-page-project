@@ -73,7 +73,7 @@ Plans:
 
 Plans:
 
-- [ ] 02-01: Schema + API routes — services, slots, bookings tables; atomic booking with BEGIN/COMMIT transaction
+- [x] 02-01: Schema + API routes — services, slots, bookings tables; atomic booking with BEGIN/COMMIT transaction
 - [ ] 02-02: UI pages — service listing, slot calendar, booking confirmation, admin management, mock email/SMS views
 
 ### Phase 3: Ecommerce App
