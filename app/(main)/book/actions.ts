@@ -17,7 +17,7 @@ import { email, payment, sms } from "@/lib/mock";
 import { getCurrentUser } from "@/lib/session";
 import { isUuid } from "@/lib/utils";
 import { bookingSchema } from "@/lib/validate";
-import { depositCents } from "@/lib/booking";
+import { BOOKING_CONFLICT_MESSAGE, depositCents } from "@/lib/booking";
 
 type FormState = {
   errors?: Record<string, string[] | undefined>;
@@ -122,10 +122,10 @@ export async function createBooking(
     return { ok: true, bookingId: booked.id };
   } catch (error) {
     if (error instanceof BookingConflictError) {
-      return { message: "That slot was just taken." }; // UI-SPEC conflict copy
+      return { message: BOOKING_CONFLICT_MESSAGE }; // UI-SPEC conflict copy
     }
     if ((error as { code?: string }).code === "23505") {
-      return { message: "That slot was just taken." }; // partial-index fallback
+      return { message: BOOKING_CONFLICT_MESSAGE }; // partial-index fallback
     }
     throw error;
   }

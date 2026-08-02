@@ -18,7 +18,13 @@ import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { createBooking } from "@/app/(main)/book/actions";
-import { depositCents, formatSlotDate, formatSlotTime, formatUsd } from "@/lib/booking";
+import {
+  BOOKING_CONFLICT_MESSAGE,
+  depositCents,
+  formatSlotDate,
+  formatSlotTime,
+  formatUsd,
+} from "@/lib/booking";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -31,8 +37,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-
-const CONFLICT_MESSAGE = "That slot was just taken.";
 
 export function BookingDialog({
   open,
@@ -63,7 +67,7 @@ export function BookingDialog({
       return;
     }
     // Conflict only — the refreshed list is the next step (Interaction 3).
-    if (state.message === CONFLICT_MESSAGE) {
+    if (state.message === BOOKING_CONFLICT_MESSAGE) {
       router.refresh();
       const timer = setTimeout(() => {
         onOpenChange(false);

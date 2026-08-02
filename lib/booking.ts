@@ -10,6 +10,14 @@ export function bookingRef(id: string): string {
   return `#BK-${id.slice(0, 4).toUpperCase()}`;
 }
 
+/**
+ * Atomic-conflict copy (UI-SPEC Interaction 3) — the single source of truth
+ * shared by the action (which returns it as FormState.message) and the dialog
+ * (which detects the conflict by message equality to close + refresh + clear
+ * the selection). Never edit one side without the other (IN-03).
+ */
+export const BOOKING_CONFLICT_MESSAGE = "That slot was just taken.";
+
 /** 25% deposit in integer cents (UI-SPEC Interaction 4 — single source of truth). */
 export function depositCents(priceCents: number): number {
   return Math.round(priceCents * 0.25);
