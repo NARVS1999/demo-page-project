@@ -14,12 +14,16 @@ const { mockAddToCart, mockUpdateCartQuantity, mockRemoveFromCart, mockCheckout 
   mockRemoveFromCart: vi.fn(),
   mockCheckout: vi.fn(),
 }));
+const { mockUpdateOrderStatus } = vi.hoisted(() => ({ mockUpdateOrderStatus: vi.fn() }));
 
 vi.mock("@/app/(main)/shop/actions", () => ({
   addToCart: mockAddToCart,
   updateCartQuantity: mockUpdateCartQuantity,
   removeFromCart: mockRemoveFromCart,
   checkout: mockCheckout,
+}));
+vi.mock("@/app/admin/orders/actions", () => ({
+  updateOrderStatus: mockUpdateOrderStatus,
 }));
 vi.mock("next/navigation", () => ({
   useRouter: () => ({ push: vi.fn(), refresh: vi.fn() }),
@@ -215,5 +219,82 @@ describe("cart, checkout, and order confirmation components", () => {
     expect(checkoutPage).toContain("/shop/cart");
     expect(orderPage).toContain('export const dynamic = "force-dynamic"');
     expect(orderPage).toContain("user_id");
+  });
+});
+
+describe("admin order queue and receipt visibility", () => {
+  it("renders shareable status filters and only legal row actions", async () => {
+    const { OrderFilters } = await import("@/components/admin/order-filters");
+    const { OrdersTable } = await import("@/components/admin/orders-table");
+    const rows = [
+      {
+        id: "71111111-1111-4111-8111-111111111111",
+        status: "paid" as const,
+        customerName: "Demo User",
+        customerEmail: "demo@example.com",
+        totalCents: 1125,
+        createdAt: "2026-08-01T12:00:00.000Z",
+        paymentStatus: "succeeded",
+      },
+      {
+        id: "72222222-2222-4222-8222-222222222222",
+        status: "preparing" as const,
+        customerName: "Demo User",
+        customerEmail: "demo@example.com",
+        totalCents: 2550,
+        createdAt: "2026-08-01T11:00:00.000Z",
+        paymentStatus: "succeeded",
+      },
+      {
+        id: "73333333-3333-4333-8333-333333333333",
+        status: "ready" as const,
+        customerName: "Demo User",
+        customerEmail: "demo@example.com",
+        totalCents: 600,
+        createdAt: "2026-08-01T10:00:00.000Z",
+        paymentStatus: "succeeded",
+      },
+      {
+        id: "74444444-4444-4444-8444-444444444444",
+        status: "cancelled" as const,
+        customerName: "Demo User",
+        customerEmail: "demo@example.com",
+        totalCents: 600,
+        createdAt: "2026-08-01T09:00:00.000Z",
+        paymentStatus: "refunded",
+      },
+    ];
+    render(
+      <>
+        <OrderFilters current="preparing" />
+        <OrdersTable rows={rows} />
+      </>,
+    );
+
+    const filterForm = screen.getByRole("form", { name: "Order filters" });
+    expect(filterForm.getAttribute("method")).toBe("GET");
+    expect((screen.getByLabelText("Status") as HTMLSelectElement).value).toBe("preparing");
+    expect(screen.getByRole("link", { name: "Clear filters" }).getAttribute("href")).toBe("/admin/orders");
+    expect(screen.getByRole("button", { name: "Start preparing" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Mark ready" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Cancel order" })).toBeTruthy();
+    expect(screen.getAllByRole("button", { name: "Cancel order" })).toHaveLength(1);
+  });
+
+  it("keeps admin order and email routes linked to the existing outbox", () => {
+    const ordersPage = readFileSync("app/admin/orders/page.tsx", "utf8");
+    const emailsPage = readFileSync("app/admin/emails/page.tsx", "utf8");
+    const adminShell = readFileSync("components/layout/admin-shell.tsx", "utf8");
+    expect(existsSync("app/admin/orders/loading.tsx")).toBe(true);
+    expect(existsSync("app/admin/orders/error.tsx")).toBe(true);
+    expect(ordersPage).toContain('export const dynamic = "force-dynamic"');
+    expect(ordersPage).toContain("created_at DESC");
+    expect(ordersPage).toContain("order");
+    expect(ordersPage).toContain("status");
+    expect(adminShell).toContain('group: "Shop"');
+    expect(adminShell).toContain('href: "/admin/orders"');
+    expect(emailsPage).toContain("order_id");
+    expect(emailsPage).toContain("orderRef");
+    expect(emailsPage).toContain("/admin/orders?order=");
   });
 });
