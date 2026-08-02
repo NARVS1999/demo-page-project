@@ -5,7 +5,10 @@ import { envSchema } from "@/lib/env";
 import {
   bookingSchema,
   categorySchema,
+  checkoutSchema,
+  cartQuantitySchema,
   loginSchema,
+  orderStatusSchema,
   postSchema,
   registerSchema,
   tagSchema,
@@ -352,6 +355,32 @@ describe("bookingSchema", () => {
       const fieldErrors = result.error.flatten().fieldErrors;
       expect(fieldErrors.slotId).toBeDefined();
     }
+  });
+});
+
+describe("shop checkout and cart schemas", () => {
+  it("normalizes the checked checkout failure checkbox", () => {
+    const result = checkoutSchema.safeParse({ simulateFailure: "on" });
+    expect(result.success).toBe(true);
+    if (result.success) expect(result.data.simulateFailure).toBe(true);
+  });
+
+  it("defaults an absent checkout failure checkbox to false", () => {
+    const result = checkoutSchema.safeParse({});
+    expect(result.success).toBe(true);
+    if (result.success) expect(result.data.simulateFailure).toBe(false);
+  });
+
+  it("accepts only positive integer cart quantities", () => {
+    expect(cartQuantitySchema.safeParse("1").success).toBe(true);
+    expect(cartQuantitySchema.safeParse("0").success).toBe(false);
+    expect(cartQuantitySchema.safeParse("1.5").success).toBe(false);
+    expect(cartQuantitySchema.safeParse("nope").success).toBe(false);
+  });
+
+  it("allowlists order lifecycle statuses", () => {
+    expect(orderStatusSchema.safeParse("paid").success).toBe(true);
+    expect(orderStatusSchema.safeParse("shipped").success).toBe(false);
   });
 });
 

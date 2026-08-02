@@ -104,6 +104,20 @@ describe("mock email", () => {
     expect(sqlText()).toContain("INSERT INTO mock_emails");
     expect(sqlArgs()).toContain("a@example.com");
   });
+
+  it("sendEmail preserves an order-linked receipt id", async () => {
+    const { email } = await import("@/lib/mock");
+    const orderId = "e4111111-1111-4111-8111-111111111111";
+    const result = await email.sendEmail({
+      to: "a@example.com",
+      subject: "Receipt",
+      text: "Order received",
+      orderId,
+    });
+    expect(result).toMatchObject({ status: "sent" });
+    expect(sqlText()).toContain("order_id");
+    expect(sqlArgs()).toContain(orderId);
+  });
 });
 
 describe("mock sms", () => {
