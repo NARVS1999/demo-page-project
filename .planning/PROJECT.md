@@ -12,13 +12,12 @@ Every project deploys and works end-to-end at zero cost — if it costs money, i
 
 ### Validated
 
-(None yet — ship to validate)
+- ✓ Template (`nextjs-starter`) with auth, DB pool, mock services, seed script, dark/light theme — Phase 0
+- ✓ CMS app — admin CRUD posts, markdown editor, draft/publish, categories/tags, search — Phase 1
+- ✓ Booking app — service listing, slot calendar, book flow, admin confirm/cancel, mock email/SMS — Phase 2 (barber shop; atomic double-booking prevention via conditional UPDATE in Pool transaction; optional 25% mock deposit; rolling 14-day seed window)
 
 ### Active
 
-- [ ] Template (`nextjs-starter`) with auth, DB pool, mock services, seed script, dark/light theme
-- [ ] CMS app — admin CRUD posts, markdown editor, draft/publish, categories/tags, search
-- [ ] Booking app — service listing, slot calendar, book flow, admin confirm/cancel, mock email/SMS
 - [ ] Ecommerce app — catalog, cart, checkout with mock payment, order confirmation, admin dashboard
 - [ ] Portfolio shell — grid of all projects with live links, GitHub links, tech badges, demo credentials
 - [ ] 7–27 batch projects (task manager, inventory, expense tracker, job board, quiz, forum, etc.)
@@ -59,6 +58,7 @@ Every project deploys and works end-to-end at zero cost — if it costs money, i
 | Separate repo per project | Each gets own Vercel deployment and public URL | ✓ Decided |
 | Neon cloud DB for local dev | No local Postgres install needed; same DB for local + prod | ✓ Decided |
 | No real payments/emails/SMS | Portfolio scale only, not production | ✓ Decided |
+| Atomic booking via conditional UPDATE in Pool transaction | rowCount-0 = conflict + partial unique index fallback; mock payment/email/SMS join the txn via optional client/bookingId params (Phase 2) | ✓ Decided |
 
 ## Evolution
 
@@ -78,4 +78,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-08-01 after initialization*
+*Last updated: 2026-08-02 after Phase 2*
