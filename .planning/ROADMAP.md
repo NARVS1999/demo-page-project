@@ -1,25 +1,32 @@
-# Roadmap: Free Fullstack Showcase
+# Roadmap: ads-mediatech v1.0
 
-## Overview
+**Milestone:** v1.0 — Philippine Peso & Real Images
+**Created:** 2026-08-03
+**Phases:** 1
+**Requirements:** 10 mapped
 
-Build 10–30 fully deployed fullstack demo apps at $0/month. Every project gets its own GitHub repo and Vercel deployment with a shared $0 budget.
+## Phase 1: Currency & Images
 
-## Milestones
+**Goal:** Localize all currency displays to ₱ and replace placeholder images with real product/blog imagery.
 
-### v1.0 — Template + 3 Flagships + Portfolio (SHIPPED 2026-08-03)
+**Requirements:** CURL-01, CURL-02, CURL-03, CURL-04, CURL-05, CURL-06, IMG-01, IMG-02, IMG-03, IMG-04
 
-[Full details → .planning/milestones/v1.0-ROADMAP.md](milestones/v1.0-ROADMAP.md)
+**Success Criteria:**
+1. `formatShopPrice()` and `formatUsd()` return `₱` prefix in all outputs
+2. Product filter labels display `₱` currency symbols
+3. Landing page proof point shows `₱0`
+4. Seed email bodies use `₱` currency
+5. All test expectations match `₱` format
+6. 12 shop product images downloaded to `public/images/shop/`
+7. 5 blog cover images downloaded to `public/images/blog/`
+8. Seed data references local image paths, not picsum.photos
+9. Shop and blog pages render real images correctly
 
-- [x] **Phase 0: Template Foundation** — Auth, DB, mocks, seed, UI components
-- [x] **Phase 1: CMS App** — Blog CRUD, markdown editor, admin dashboard
-- [x] **Phase 2: Booking App** — Slot calendar, booking flow, mock email/SMS
-- [x] **Phase 3: Ecommerce App** — Storefront, cart, checkout, order management
-- [x] **Phase 4: Portfolio Shell** — Project grid, live links, tech badges
+**Build Order:**
+1. Currency swap (CURL-01 through CURL-06) — code changes + test updates
+2. Image download (IMG-01, IMG-02) — fetch and save images
+3. Seed update (IMG-03) — update seed.ts image URLs
+4. Verification (IMG-04) — visual check and test pass
 
-**Stats:** 5 phases, 9 plans, 41 requirements, $0 budget.
-
-### v2.0 — Batch Projects (planned)
-
-7-27 additional demo apps scaling the template pattern. Requirements: BATCH-01 through BATCH-25.
-
-To start v2.0, run `/gsd-new-milestone`.
+---
+*Roadmap created: 2026-08-03*
