@@ -18,6 +18,7 @@ import {
   type ServiceCardData,
 } from "@/components/booking/service-card";
 import { SlotPicker, type SlotDay } from "@/components/booking/slot-picker";
+import { BookingDialog } from "@/components/booking/booking-dialog";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
 
@@ -124,8 +125,17 @@ export function BookingFlow({
         </section>
       )}
 
-      {/* The confirm dialog lives here — added by plan 02-02 Task 3. */}
-      {dialogOpen && null}
+      {/* Step 3b — Confirm dialog (booking-dialog, plan 02-02 Task 3) */}
+      {selectedService && selectedSlot && (
+        <BookingDialog
+          open={dialogOpen}
+          onOpenChange={setDialogOpen}
+          service={{ name: selectedService.name }}
+          slot={selectedSlot}
+          price={selectedService.priceCents}
+          onConflict={() => setSelectedSlot(null)}
+        />
+      )}
     </div>
   );
 }
