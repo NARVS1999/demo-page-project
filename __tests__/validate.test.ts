@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 // schemas stay in lib/validate.ts (client-safe).
 import { envSchema } from "@/lib/env";
 import {
+  bookingSchema,
   categorySchema,
   loginSchema,
   postSchema,
@@ -320,6 +321,37 @@ describe("postSchema", () => {
       coverImage: "http://example.com/cover.jpg",
     });
     expect(result.success).toBe(true);
+  });
+});
+
+describe("bookingSchema", () => {
+  const slotUuid = "1042abcd-1234-4111-8111-111111111111";
+
+  it("accepts a checked deposit ('on') as true", () => {
+    const result = bookingSchema.safeParse({ slotId: slotUuid, deposit: "on" });
+    expect(result.success).toBe(true);
+    if (result.success) expect(result.data.deposit).toBe(true);
+  });
+
+  it("treats an unchecked (null) deposit as false", () => {
+    const result = bookingSchema.safeParse({ slotId: slotUuid, deposit: null });
+    expect(result.success).toBe(true);
+    if (result.success) expect(result.data.deposit).toBe(false);
+  });
+
+  it("treats a missing deposit as false", () => {
+    const result = bookingSchema.safeParse({ slotId: slotUuid });
+    expect(result.success).toBe(true);
+    if (result.success) expect(result.data.deposit).toBe(false);
+  });
+
+  it("rejects a non-UUID slotId with a slotId field error", () => {
+    const result = bookingSchema.safeParse({ slotId: "not-a-uuid", deposit: "on" });
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      const fieldErrors = result.error.flatten().fieldErrors;
+      expect(fieldErrors.slotId).toBeDefined();
+    }
   });
 });
 

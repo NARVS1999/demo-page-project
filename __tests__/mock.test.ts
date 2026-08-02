@@ -48,6 +48,46 @@ describe("mock payment", () => {
   });
 });
 
+// Phase 2 client-branch tests (RESEARCH Pattern 3): the fake PoolClient is
+// passed directly — no vi.mock change needed. The module `sql` must NOT be
+// called when a client is present (the tagged template is HTTP-only and can
+// never join a transaction — Pitfall 5).
+describe("mock payment client branch", () => {
+  beforeEach(() => mockSql.mockClear());
+
+  it("createPayment with a client uses client.query (pg-style) and skips module sql", async () => {
+    const { payment } = await import("@/lib/mock");
+    const fakeClient = { query: vi.fn() };
+    const result = await payment.createPayment(
+      { amount: 750, currency: "usd" },
+      fakeClient as unknown as import("@neondatabase/serverless").PoolClient,
+    );
+    expect(result).toMatchObject({ status: "succeeded", amount: 750, currency: "usd" });
+    expect(fakeClient.query).toHaveBeenCalledTimes(1);
+    const [sqlText, params] = fakeClient.query.mock.calls[0];
+    expect(sqlText).toContain("INSERT INTO mock_payments");
+    expect(params).toEqual([result.id, 750, "usd", "succeeded"]);
+    expect(mockSql).not.toHaveBeenCalled();
+  });
+
+  it("refund with a client marks the payment refunded via client.query", async () => {
+    const { payment } = await import("@/lib/mock");
+    const fakeClient = { query: vi.fn() };
+    const id = "e4111111-1111-4111-8111-111111111111";
+    const result = await payment.refund(
+      id,
+      fakeClient as unknown as import("@neondatabase/serverless").PoolClient,
+    );
+    expect(result).toMatchObject({ id, status: "refunded" });
+    expect(fakeClient.query).toHaveBeenCalledTimes(1);
+    const [sqlText, params] = fakeClient.query.mock.calls[0];
+    expect(sqlText).toContain("UPDATE mock_payments");
+    expect(sqlText).toContain("'refunded'");
+    expect(params).toEqual([id]);
+    expect(mockSql).not.toHaveBeenCalled();
+  });
+});
+
 describe("mock email", () => {
   beforeEach(() => mockSql.mockClear());
 
