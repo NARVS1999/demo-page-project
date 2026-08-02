@@ -50,6 +50,21 @@ const noticeDateFmt = new Intl.DateTimeFormat("en-US", {
   timeStyle: "short",
 });
 
+// Guests (shareable link, WR-02): mask the owner's email + notice recipients
+// so a shared link never discloses the full address or phone number. The owner
+// sees them in full. Masking keeps the locked shareable layout intact — only
+// the PII is hidden from anonymous visitors.
+function maskRecipient(value: string): string {
+  if (value.includes("@")) {
+    return value.replace(/^(.{2})[^@]*(@.*)$/, "$1•••$2");
+  }
+  // Phone number: keep the country code + last 3 digits, mask the middle.
+  if (value.length > 6) {
+    return `${value.slice(0, 3)}•••${value.slice(-3)}`;
+  }
+  return "•••";
+}
+
 export type BookingSummary = {
   id: string;
   status: "pending" | "confirmed" | "cancelled";
@@ -171,7 +186,7 @@ export function BookingConfirmation({
           </Badge>
         </div>
         <p className="text-base text-muted-foreground">
-          Sent to {booking.userEmail}
+          Sent to {isOwner ? booking.userEmail : maskRecipient(booking.userEmail)}
           <span aria-hidden="true"> · </span>
           {formatSlotDate(booking.slotDate)}
         </p>
@@ -230,7 +245,7 @@ export function BookingConfirmation({
                   <div className="flex min-w-0 flex-col gap-1">
                     <span className="text-sm font-medium">{email.subject}</span>
                     <span className="truncate font-mono text-xs text-muted-foreground" title={email.recipient}>
-                      To {email.recipient}
+                      To {isOwner ? email.recipient : maskRecipient(email.recipient)}
                       <span aria-hidden="true"> · </span>
                       {noticeDateFmt.format(email.createdAt)}
                     </span>
@@ -249,7 +264,7 @@ export function BookingConfirmation({
                   <div className="flex min-w-0 flex-col gap-1">
                     <span className="text-sm font-medium">Reminder</span>
                     <span className="truncate font-mono text-xs text-muted-foreground" title={sms.recipient}>
-                      To {sms.recipient}
+                      To {isOwner ? sms.recipient : maskRecipient(sms.recipient)}
                       <span aria-hidden="true"> · </span>
                       {noticeDateFmt.format(sms.createdAt)}
                     </span>
