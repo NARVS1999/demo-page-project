@@ -359,6 +359,220 @@ const BOOKING_SMS = [
   },
 ];
 
+// ─── Phase 3: Northstar Coffee ecommerce fixtures ────────────────────────────
+// Fresh deterministic id families keep shop rows separate from foundation,
+// CMS, and booking fixtures. Product ids/slugs are stable so cart/order
+// upserts remain idempotent across seed runs.
+const NORTHSTAR_CATEGORIES = [
+  { id: "91111111-1111-4111-8111-111111111111", slug: "drinks", name: "Drinks" },
+  { id: "92222222-2222-4222-8222-222222222222", slug: "beans", name: "Beans" },
+  { id: "93333333-3333-4333-8333-333333333333", slug: "bakery", name: "Bakery" },
+];
+
+const NORTHSTAR_PRODUCTS = [
+  {
+    id: "81111111-1111-4111-8111-111111111111",
+    categorySlug: "drinks",
+    slug: "house-espresso",
+    name: "House Espresso",
+    description: "Dark chocolate, toasted almond, and a clean finish.",
+    priceCents: 350,
+    inventory: 28,
+  },
+  {
+    id: "82222222-2222-4222-8222-222222222222",
+    categorySlug: "drinks",
+    slug: "oat-milk-latte",
+    name: "Oat Milk Latte",
+    description: "Silky oat milk over the house espresso blend.",
+    priceCents: 550,
+    inventory: 24,
+  },
+  {
+    id: "83333333-3333-4333-8333-333333333333",
+    categorySlug: "drinks",
+    slug: "northstar-cold-brew",
+    name: "Northstar Cold Brew",
+    description: "Slow-steeped and bright, served over a full glass of ice.",
+    priceCents: 600,
+    inventory: 18,
+  },
+  {
+    id: "84444444-4444-4444-8444-444444444444",
+    categorySlug: "drinks",
+    slug: "honey-cinnamon-cortado",
+    name: "Honey Cinnamon Cortado",
+    description: "Equal parts espresso and steamed milk with local honey.",
+    priceCents: 650,
+    inventory: 12,
+  },
+  {
+    id: "85555555-5555-4555-8555-555555555555",
+    categorySlug: "beans",
+    slug: "house-roast",
+    name: "House Roast",
+    description: "A dependable medium roast for mornings that need a little lift.",
+    priceCents: 1600,
+    inventory: 16,
+  },
+  {
+    id: "86666666-6666-4666-8666-666666666666",
+    categorySlug: "beans",
+    slug: "bright-morning",
+    name: "Bright Morning",
+    description: "Washed Colombia with citrus, caramel, and a soft body.",
+    priceCents: 1800,
+    inventory: 11,
+  },
+  {
+    id: "87777777-7777-4777-8777-777777777777",
+    categorySlug: "beans",
+    slug: "decaf-afterglow",
+    name: "Decaf Afterglow",
+    description: "Swiss-water decaf with cocoa nib and brown sugar notes.",
+    priceCents: 1700,
+    inventory: 9,
+  },
+  {
+    id: "88888888-8888-4888-8888-888888888888",
+    categorySlug: "beans",
+    slug: "kenya-single-origin",
+    name: "Kenya Single Origin",
+    description: "Blackcurrant, hibiscus, and a sparkling finish from Nyeri.",
+    priceCents: 2200,
+    inventory: 7,
+  },
+  {
+    id: "89999999-9999-4999-8999-999999999999",
+    categorySlug: "bakery",
+    slug: "butter-croissant",
+    name: "Butter Croissant",
+    description: "Flaky layers, cultured butter, and a crisp golden edge.",
+    priceCents: 425,
+    inventory: 14,
+  },
+  {
+    id: "8aaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaa1",
+    categorySlug: "bakery",
+    slug: "cardamom-bun",
+    name: "Cardamom Bun",
+    description: "Twisted brioche with cardamom sugar and orange zest.",
+    priceCents: 475,
+    inventory: 10,
+  },
+  {
+    id: "8bbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbb1",
+    categorySlug: "bakery",
+    slug: "chocolate-rye-cookie",
+    name: "Chocolate Rye Cookie",
+    description: "Bittersweet chocolate, rye flour, and a pinch of sea salt.",
+    priceCents: 325,
+    inventory: 20,
+  },
+  {
+    id: "8ccccccc-cccc-4ccc-8ccc-ccccccccccc1",
+    categorySlug: "bakery",
+    slug: "morning-scone",
+    name: "Morning Scone",
+    description: "Tender cream scone with seasonal fruit and lemon glaze.",
+    priceCents: 400,
+    inventory: 13,
+  },
+];
+
+const NORTHSTAR_PAYMENTS = [
+  { id: "54444444-4444-4444-8444-444444444444", amount: 1125, status: "succeeded" },
+  { id: "55555555-5555-4555-8555-555555555555", amount: 2550, status: "succeeded" },
+  { id: "56666666-6666-4666-8666-666666666666", amount: 600, status: "refunded" },
+];
+
+const NORTHSTAR_ORDERS = [
+  {
+    id: "71111111-1111-4111-8111-111111111111",
+    paymentId: "54444444-4444-4444-8444-444444444444",
+    status: "paid",
+    totalCents: 1125,
+    daysAgo: 1,
+  },
+  {
+    id: "72222222-2222-4222-8222-222222222222",
+    paymentId: "55555555-5555-4555-8555-555555555555",
+    status: "preparing",
+    totalCents: 2550,
+    daysAgo: 2,
+  },
+  {
+    id: "73333333-3333-4333-8333-333333333333",
+    paymentId: "56666666-6666-4666-8666-666666666666",
+    status: "cancelled",
+    totalCents: 600,
+    daysAgo: 3,
+  },
+];
+
+const NORTHSTAR_ORDER_ITEMS = [
+  {
+    id: "61111111-1111-4111-8111-111111111111",
+    orderId: "71111111-1111-4111-8111-111111111111",
+    productSlug: "house-espresso",
+    productName: "House Espresso",
+    quantity: 2,
+    unitPriceCents: 350,
+    lineTotalCents: 700,
+  },
+  {
+    id: "62222222-2222-4222-8222-222222222222",
+    orderId: "71111111-1111-4111-8111-111111111111",
+    productSlug: "butter-croissant",
+    productName: "Butter Croissant",
+    quantity: 1,
+    unitPriceCents: 425,
+    lineTotalCents: 425,
+  },
+  {
+    id: "63333333-3333-4333-8333-333333333333",
+    orderId: "72222222-2222-4222-8222-222222222222",
+    productSlug: "house-roast",
+    productName: "House Roast",
+    quantity: 1,
+    unitPriceCents: 1600,
+    lineTotalCents: 1600,
+  },
+  {
+    id: "64444444-4444-4444-8444-444444444444",
+    orderId: "72222222-2222-4222-8222-222222222222",
+    productSlug: "cardamom-bun",
+    productName: "Cardamom Bun",
+    quantity: 2,
+    unitPriceCents: 475,
+    lineTotalCents: 950,
+  },
+  {
+    id: "65555555-5555-4555-8555-555555555555",
+    orderId: "73333333-3333-4333-8333-333333333333",
+    productSlug: "northstar-cold-brew",
+    productName: "Northstar Cold Brew",
+    quantity: 1,
+    unitPriceCents: 600,
+    lineTotalCents: 600,
+  },
+];
+
+const NORTHSTAR_EMAILS = [
+  {
+    id: "a5111111-1111-4111-8111-111111111111",
+    orderId: "71111111-1111-4111-8111-111111111111",
+    subject: "Northstar Coffee receipt",
+    body: "Your Northstar Coffee order is confirmed for counter pickup.",
+  },
+  {
+    id: "a5222222-2222-4222-8222-222222222222",
+    orderId: "72222222-2222-4222-8222-222222222222",
+    subject: "Northstar Coffee receipt",
+    body: "Your Northstar Coffee order is being prepared for counter pickup.",
+  },
+];
+
 async function seedDemoData() {
   const passwordHash = await bcrypt.hash("demo1234", 10);
   await sqlDirect`
@@ -548,6 +762,112 @@ async function seedDemoData() {
       VALUES (${notice.id}, ${notice.recipient}, ${notice.message}, 'delivered', ${notice.bookingId})
       ON CONFLICT (id) DO NOTHING`;
   }
+
+  // ─── Phase 3: shop categories → products → payments → orders → receipts ────
+  for (const category of NORTHSTAR_CATEGORIES) {
+    await sqlDirect`
+      INSERT INTO shop_categories (id, slug, name)
+      VALUES (${category.id}, ${category.slug}, ${category.name})
+      ON CONFLICT (slug) DO UPDATE
+        SET name = EXCLUDED.name, updated_at = now()`;
+  }
+
+  for (const product of NORTHSTAR_PRODUCTS) {
+    const imageUrl = `https://picsum.photos/seed/${product.slug}/800/800`;
+    await sqlDirect`
+      INSERT INTO products
+        (id, category_id, slug, name, description, image_url, price_cents, inventory)
+      VALUES (
+        ${product.id},
+        (SELECT id FROM shop_categories WHERE slug = ${product.categorySlug}),
+        ${product.slug}, ${product.name}, ${product.description}, ${imageUrl},
+        ${product.priceCents}, ${product.inventory}
+      )
+      ON CONFLICT (slug) DO UPDATE
+        SET category_id = EXCLUDED.category_id,
+            name = EXCLUDED.name,
+            description = EXCLUDED.description,
+            image_url = EXCLUDED.image_url,
+            price_cents = EXCLUDED.price_cents,
+            inventory = EXCLUDED.inventory,
+            updated_at = now()`;
+  }
+
+  // Payment rows must exist before orders because orders.payment_id is a FK.
+  for (const pay of NORTHSTAR_PAYMENTS) {
+    await sqlDirect`
+      INSERT INTO mock_payments (id, amount, currency, status)
+      VALUES (${pay.id}, ${pay.amount}, 'usd', ${pay.status})
+      ON CONFLICT (id) DO UPDATE
+        SET amount = EXCLUDED.amount, currency = EXCLUDED.currency,
+            status = EXCLUDED.status`;
+  }
+
+  for (const order of NORTHSTAR_ORDERS) {
+    const createdAt = new Date(Date.now() - order.daysAgo * 86_400_000);
+    await sqlDirect`
+      INSERT INTO orders (id, user_id, payment_id, total_cents, status, created_at, updated_at)
+      VALUES (
+        ${order.id},
+        (SELECT id FROM users WHERE email = 'demo@example.com'),
+        ${order.paymentId}, ${order.totalCents}, ${order.status}, ${createdAt}, ${createdAt}
+      )
+      ON CONFLICT (id) DO UPDATE
+        SET user_id = EXCLUDED.user_id,
+            payment_id = EXCLUDED.payment_id,
+            total_cents = EXCLUDED.total_cents,
+            status = EXCLUDED.status,
+            created_at = EXCLUDED.created_at,
+            updated_at = now()`;
+  }
+
+  for (const item of NORTHSTAR_ORDER_ITEMS) {
+    await sqlDirect`
+      INSERT INTO order_items
+        (id, order_id, product_id, product_name, quantity,
+         unit_price_cents, line_total_cents)
+      VALUES (
+        ${item.id}, ${item.orderId},
+        (SELECT id FROM products WHERE slug = ${item.productSlug}),
+        ${item.productName}, ${item.quantity},
+        ${item.unitPriceCents}, ${item.lineTotalCents}
+      )
+      ON CONFLICT (id) DO UPDATE
+        SET order_id = EXCLUDED.order_id,
+            product_id = EXCLUDED.product_id,
+            product_name = EXCLUDED.product_name,
+            quantity = EXCLUDED.quantity,
+            unit_price_cents = EXCLUDED.unit_price_cents,
+            line_total_cents = EXCLUDED.line_total_cents`;
+  }
+
+  // Keep one safe demo cart row available for the signed-in browser walkthrough.
+  await sqlDirect`
+    INSERT INTO cart_items (user_id, product_id, quantity)
+    VALUES (
+      (SELECT id FROM users WHERE email = 'demo@example.com'),
+      (SELECT id FROM products WHERE slug = 'morning-scone'),
+      1
+    )
+    ON CONFLICT (user_id, product_id) DO UPDATE
+      SET quantity = EXCLUDED.quantity, updated_at = now()`;
+
+  for (const notice of NORTHSTAR_EMAILS) {
+    await sqlDirect`
+      INSERT INTO mock_emails
+        (id, recipient, subject, body, status, booking_id, order_id)
+      VALUES (
+        ${notice.id}, 'demo@example.com', ${notice.subject}, ${notice.body},
+        'sent', null, ${notice.orderId}
+      )
+      ON CONFLICT (id) DO UPDATE
+        SET recipient = EXCLUDED.recipient,
+            subject = EXCLUDED.subject,
+            body = EXCLUDED.body,
+            status = EXCLUDED.status,
+            booking_id = EXCLUDED.booking_id,
+            order_id = EXCLUDED.order_id`;
+  }
 }
 
 // ─── 4. Report (exact counts — RESEARCH A7) + size gate ─────────────────────
@@ -561,6 +881,11 @@ const TABLES = [
   "services",
   "slots",
   "bookings",
+  "shop_categories",
+  "products",
+  "cart_items",
+  "orders",
+  "order_items",
   "mock_payments",
   "mock_emails",
   "mock_sms",

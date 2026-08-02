@@ -285,7 +285,8 @@ describe("checkout", () => {
     preparing.set("orderId", ORDER_ID);
     preparing.set("status", "preparing");
     expect(await updateOrderStatus(null, preparing)).toEqual({ ok: true });
-    expect(client.query.mock.calls[0][1]).toEqual([ORDER_ID, "preparing"]);
+    const firstCall = client.query.mock.calls[0] as unknown as [string, unknown[]];
+    expect(firstCall[1]).toEqual([ORDER_ID, "preparing"]);
 
     mockWithPool.mockImplementationOnce(async (callback: (client: unknown) => Promise<unknown>) =>
       callback({
