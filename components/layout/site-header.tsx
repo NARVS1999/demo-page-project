@@ -18,7 +18,7 @@ export async function SiteHeader() {
 
   const desktopNav = user
     ? [
-        { label: "Home", href: "/" },
+        { label: "Projects", href: "/" },
         { label: "Blog", href: "/blog" },
         { label: "Shop", href: "/shop" },
         { label: "Cart", href: "/shop/cart" },
@@ -28,7 +28,7 @@ export async function SiteHeader() {
         { label: "Admin", href: "/admin" },
       ]
     : [
-        { label: "Home", href: "/" },
+        { label: "Projects", href: "/" },
         { label: "Blog", href: "/blog" },
         { label: "Shop", href: "/shop" },
         { label: "Cart", href: "/shop/cart" },

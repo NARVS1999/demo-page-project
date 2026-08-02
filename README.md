@@ -123,3 +123,25 @@ Upload URLs are **simulated**: `https://mock.storage/…` URLs never resolve —
 npm run seed   # migrations + 5 posts, 4 categories, 7 tags (idempotent)
 npm run dev
 ```
+
+## Portfolio
+
+All deployed demo apps sharing this template — one repo, one Vercel deployment, one Neon free-tier database each.
+
+| Project | Live Demo | GitHub | Stack |
+|---------|-----------|--------|-------|
+| nextjs-starter | [nextjs-starter-narvs.vercel.app](https://nextjs-starter-narvs.vercel.app) | [NARVS1999/nextjs-starter](https://github.com/NARVS1999/nextjs-starter) | Next.js 16, TypeScript, Tailwind v4, Neon Postgres, shadcn/ui |
+| CMS Demo | [cms-app-narvs.vercel.app](https://cms-app-narvs.vercel.app) | [NARVS1999/cms-app](https://github.com/NARVS1999/cms-app) | Next.js 16, TypeScript, Tailwind v4, Neon Postgres, shadcn/ui |
+| Booking App | [booking-app-narvs.vercel.app](https://booking-app-narvs.vercel.app) | [NARVS1999/booking-app](https://github.com/NARVS1999/booking-app) | Next.js 16, TypeScript, Tailwind v4, Neon Postgres, shadcn/ui |
+| Northstar Coffee | [ecommerce-app-narvs.vercel.app](https://ecommerce-app-narvs.vercel.app) | [NARVS1999/ecommerce-app](https://github.com/NARVS1999/ecommerce-app) | Next.js 16, TypeScript, Tailwind v4, Neon Postgres, shadcn/ui |
+
+All projects share the same demo credentials: `demo@example.com` / `demo1234` (seeded by `npm run seed`). Each app simulates the external services listed on its card — no real payments, emails, or credit cards anywhere in the portfolio.
+
+### Maintenance Checklist
+
+- [ ] Verify all 4 live demo URLs resolve (no 404s) monthly
+- [ ] Update `lib/projects.ts` when new apps are deployed
+- [ ] Monitor Vercel invocation budget (< 1M/month account-wide, shared across all projects)
+- [ ] Monitor Neon storage budget (< 0.5 GB per project)
+- [ ] Re-run `npm run seed` after Neon cold-starts
+- [ ] Bump `TEMPLATE_VERSION` in `lib/site.ts` when forking for a new app
